@@ -31,7 +31,7 @@
         <Card
           v-for="store in availableStores.slice(0, 6)"
           :key="store.id"
-          class="group cursor-pointer overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg"
+          class="group cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.99]"
           :style="{ borderLeftColor: categoryColors(store.category).border }"
           @click="handleAddStore(store.id)"
         >
@@ -78,7 +78,7 @@
           <Card
             v-for="store in availableStores.slice(0, 9)"
             :key="store.id"
-            class="group cursor-pointer overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg"
+            class="group cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.99]"
             :style="{ borderLeftColor: categoryColors(store.category).border }"
             @click="handleAddStore(store.id)"
           >
@@ -147,7 +147,7 @@
               v-for="cat in categories"
               :key="cat"
               :variant="selectedCategory === cat ? 'default' : 'outline'"
-              class="cursor-pointer"
+              class="min-h-[44px] cursor-pointer px-3 py-2 text-sm"
               @click="toggleCategory(cat)"
             >
               {{ getCategoryEmoji(cat) }} {{ cat }}
@@ -155,7 +155,7 @@
             <Badge
               v-if="selectedCategory"
               variant="secondary"
-              class="cursor-pointer"
+              class="min-h-[44px] cursor-pointer px-3 py-2 text-sm"
               @click="selectedCategory = null"
             >
               Clear filter
@@ -172,7 +172,7 @@
           <Card
             v-for="store in filteredStores"
             :key="store.id"
-            class="cursor-pointer overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-md"
+            class="cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-md active:scale-[0.99]"
             :style="{ borderLeftColor: categoryColors(store.category).border }"
             @click="handleAddStore(store.id)"
           >

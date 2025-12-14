@@ -2,7 +2,7 @@
   <TabsList
     :orientation="orientation"
     :class="[
-      'inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground',
+      'inline-flex min-h-[44px] items-center justify-center rounded-md bg-muted p-1 text-muted-foreground',
       orientation === 'vertical' && 'h-auto flex-col',
     ]"
   >

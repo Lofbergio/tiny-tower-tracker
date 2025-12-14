@@ -56,8 +56,35 @@
             </div>
           </div>
 
-          <div v-if="importProgressText" class="text-sm text-muted-foreground">
-            {{ importProgressText }}
+          <div
+            class="rounded-md border border-dashed p-4 text-sm text-muted-foreground"
+            :class="isDragOver ? 'bg-muted' : ''"
+            tabindex="0"
+            @click="triggerScreenshotPicker"
+            @dragover.prevent="isDragOver = true"
+            @dragleave="isDragOver = false"
+            @drop.prevent="handleScreenshotDrop"
+          >
+            <div class="font-medium text-foreground">Paste / drop screenshots</div>
+            <div class="mt-1 sm:hidden">Tap to choose screenshots.</div>
+            <div class="mt-1 hidden sm:block">
+              Paste an image (Ctrl+V), drag & drop here, or click to choose.
+            </div>
+          </div>
+
+          <div class="min-h-5 text-sm text-muted-foreground">
+            {{ importStatusText }}
+          </div>
+
+          <div class="h-2">
+            <div v-if="overallOcrProgress !== null" class="h-2 overflow-hidden rounded bg-muted">
+              <div
+                class="h-2 bg-primary transition-[width]"
+                :style="{
+                  width: `${Math.max(0, Math.min(100, Math.round(overallOcrProgress * 100)))}%`,
+                }"
+              />
+            </div>
           </div>
 
           <div class="flex flex-col gap-2 sm:flex-row">
@@ -84,28 +111,41 @@
                   Selected <span class="font-medium">{{ selectedImportCount }}</span
                   >.
                 </div>
-                <div class="flex gap-2">
-                  <Button variant="outline" size="sm" @click="selectAllMatched"
+                <div class="flex flex-col gap-2 sm:flex-row">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    class="w-full sm:w-auto"
+                    @click="selectAllMatched"
                     >Select matched</Button
                   >
-                  <Button variant="outline" size="sm" @click="selectNone">Select none</Button>
+                  <Button variant="outline" size="sm" class="w-full sm:w-auto" @click="selectNone"
+                    >Select none</Button
+                  >
                 </div>
               </div>
             </div>
 
-            <div class="max-h-[320px] overflow-auto rounded-md border">
-              <div
+            <div class="max-h-[50vh] overflow-auto rounded-md border sm:max-h-[320px]">
+              <label
                 v-for="(c, idx) in importCandidates"
                 :key="idx"
-                class="flex items-start gap-3 border-b p-3 last:border-b-0"
+                class="flex items-start gap-3 border-b p-4 last:border-b-0 sm:p-3"
+                :class="
+                  !c.name || !c.dreamJobStoreId
+                    ? 'cursor-not-allowed opacity-60'
+                    : 'cursor-pointer active:bg-muted/60'
+                "
               >
-                <input
-                  v-model="c.selected"
-                  type="checkbox"
-                  class="mt-1 h-4 w-4 rounded border-input bg-background text-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  :disabled="!c.name || !c.dreamJobStoreId"
-                  :aria-label="`Select ${c.name}`"
-                />
+                <div class="-m-2 p-2">
+                  <input
+                    v-model="c.selected"
+                    type="checkbox"
+                    class="mt-0.5 h-6 w-6 rounded border-input bg-background text-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:mt-1 sm:h-4 sm:w-4"
+                    :disabled="!c.name || !c.dreamJobStoreId"
+                    :aria-label="`Select ${c.name}`"
+                  />
+                </div>
                 <div class="min-w-0 flex-1">
                   <div class="flex flex-wrap items-center gap-2">
                     <span class="font-medium">{{ c.name || c.nameRaw }}</span>
@@ -136,7 +176,7 @@
                     {{ c.issues[0] }}
                   </div>
                 </div>
-              </div>
+              </label>
             </div>
 
             <Button
@@ -146,17 +186,6 @@
             >
               Import {{ selectedImportCount }} Residents
             </Button>
-          </div>
-
-          <div
-            v-else-if="hasChosenScreenshots && !isImporting"
-            class="text-sm text-muted-foreground"
-          >
-            Ready to run OCR.
-          </div>
-
-          <div v-if="!allStores" class="text-sm text-muted-foreground">
-            Store data is still loading. Please wait.
           </div>
         </div>
 
@@ -278,7 +307,7 @@ import {
   type ScreenshotResidentCandidate,
 } from '@/utils/residentScreenshotImport'
 import { useToast } from '@/utils/toast'
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 
 const residentsStore = useResidentsStore()
 const storesStore = useStoresStore()
@@ -299,6 +328,10 @@ const screenshotFiles = ref<File[]>([])
 const importCandidates = ref<ScreenshotResidentCandidate[]>([])
 const isImporting = ref(false)
 const importProgressText = ref<string>('')
+const isDragOver = ref(false)
+const ocrFileProgress = ref<number | null>(null)
+const ocrFileIndex = ref<number | null>(null)
+const ocrFileCount = ref<number | null>(null)
 
 const hasChosenScreenshots = computed(() => screenshotFiles.value.length > 0)
 const selectedScreenshotCountText = computed(() => {
@@ -310,6 +343,25 @@ const selectedImportCount = computed(() => importCandidates.value.filter(c => c.
 
 const canRunOcr = computed(() => {
   return Boolean(allStores.value) && hasChosenScreenshots.value && !isImporting.value
+})
+
+const importStatusText = computed(() => {
+  if (!allStores.value) return 'Store data is still loading. Please wait.'
+  if (importProgressText.value) return importProgressText.value
+  if (hasChosenScreenshots.value && !isImporting.value && importCandidates.value.length === 0) {
+    return 'Ready to run OCR.'
+  }
+  return ''
+})
+
+const overallOcrProgress = computed(() => {
+  if (!isImporting.value) return null
+  if (ocrFileProgress.value === null) return null
+  const count = ocrFileCount.value ?? screenshotFiles.value.length
+  if (!count) return null
+  const index = ocrFileIndex.value ?? 0
+  const perFile = 1 / count
+  return index * perFile + ocrFileProgress.value * perFile
 })
 
 const storeItems = computed(() => {
@@ -338,16 +390,66 @@ function handleImportDialogOpenChange(isOpen: boolean) {
   }
 }
 
+watch(showImportDialog, (isOpen: boolean) => {
+  if (isOpen) {
+    window.addEventListener('paste', handlePaste)
+  } else {
+    isDragOver.value = false
+    window.removeEventListener('paste', handlePaste)
+  }
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('paste', handlePaste)
+})
+
 function triggerScreenshotPicker() {
   screenshotInput.value?.click()
+}
+
+function appendScreenshotFiles(files: File[]) {
+  const incoming = files.filter(f => f.type.startsWith('image/'))
+  if (incoming.length === 0) return
+
+  const existingKeys = new Set(
+    screenshotFiles.value.map(f => `${f.name}|${f.size}|${f.lastModified}`)
+  )
+  const unique = incoming.filter(f => !existingKeys.has(`${f.name}|${f.size}|${f.lastModified}`))
+  if (unique.length === 0) return
+
+  screenshotFiles.value = [...screenshotFiles.value, ...unique]
+  importCandidates.value = []
+  importProgressText.value = ''
+}
+
+function handleScreenshotDrop(event: DragEvent) {
+  isDragOver.value = false
+  const files = Array.from(event.dataTransfer?.files ?? [])
+  appendScreenshotFiles(files)
+}
+
+function handlePaste(event: ClipboardEvent) {
+  if (!showImportDialog.value) return
+
+  const items = Array.from(event.clipboardData?.items ?? [])
+  const imageFiles = items
+    .filter(i => i.kind === 'file' && i.type.startsWith('image/'))
+    .map(i => i.getAsFile())
+    .filter((f): f is File => Boolean(f))
+
+  if (imageFiles.length === 0) return
+  event.preventDefault()
+  appendScreenshotFiles(imageFiles)
+  toast.success(
+    `Added ${imageFiles.length} pasted image${imageFiles.length === 1 ? '' : 's'} to import`
+  )
 }
 
 function handleScreenshotFiles(event: Event) {
   const target = event.target as HTMLInputElement
   const files = Array.from(target.files ?? [])
-  screenshotFiles.value = files
-  importCandidates.value = []
-  importProgressText.value = ''
+  screenshotFiles.value = []
+  appendScreenshotFiles(files)
 
   // Reset input so selecting the same files again re-triggers change
   target.value = ''
@@ -358,11 +460,14 @@ function resetScreenshotImport() {
   screenshotFiles.value = []
   importCandidates.value = []
   importProgressText.value = ''
+  ocrFileProgress.value = null
+  ocrFileIndex.value = null
+  ocrFileCount.value = null
 }
 
 function selectAllMatched() {
   for (const c of importCandidates.value) {
-    c.selected = Boolean(c.name) && Boolean(c.dreamJobStoreId)
+    c.selected = Boolean(c.name) && Boolean(c.dreamJobStoreId) && c.matchConfidence >= 0.85
   }
 }
 
@@ -380,6 +485,9 @@ async function runScreenshotOcr() {
   isImporting.value = true
   importProgressText.value = 'Starting OCR…'
   importCandidates.value = []
+  ocrFileProgress.value = 0
+  ocrFileIndex.value = 0
+  ocrFileCount.value = screenshotFiles.value.length
 
   try {
     const candidates = await extractResidentsFromScreenshots({
@@ -388,15 +496,30 @@ async function runScreenshotOcr() {
       onProgress: info => {
         if (info.phase === 'loading') {
           importProgressText.value = 'Loading OCR engine…'
+          ocrFileProgress.value = null
           return
         }
+        if (typeof info.progress === 'number') {
+          ocrFileProgress.value = info.progress
+        }
+        if (typeof info.fileIndex === 'number') {
+          ocrFileIndex.value = info.fileIndex
+        }
+        if (typeof info.fileCount === 'number') {
+          ocrFileCount.value = info.fileCount
+        }
+
+        const count = info.fileCount ?? screenshotFiles.value.length
+        const idx = (info.fileIndex ?? 0) + 1
         const pct = info.progress !== undefined ? ` (${Math.round(info.progress * 100)}%)` : ''
-        importProgressText.value = `Recognizing ${info.fileName ?? 'image'}${pct}…`
+        const filePart = count > 1 ? ` (${idx}/${count})` : ''
+        importProgressText.value = `Recognizing ${info.fileName ?? 'image'}${filePart}${pct}…`
       },
     })
 
     importCandidates.value = candidates
     importProgressText.value = `Done. Found ${candidates.length} residents.`
+    ocrFileProgress.value = 1
 
     if (candidates.length === 0) {
       toast.info('No residents detected. Try a clearer screenshot.')
@@ -407,6 +530,7 @@ async function runScreenshotOcr() {
     importProgressText.value = ''
   } finally {
     isImporting.value = false
+    // Keep last progress value for a moment via status text; bar hides when not importing.
   }
 }
 

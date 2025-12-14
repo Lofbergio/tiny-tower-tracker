@@ -144,7 +144,7 @@
         <Card
           v-for="mission in sortedCompletableMissions"
           :key="mission.id"
-          class="group relative cursor-pointer overflow-hidden border-l-4 border-green-500 transition-all hover:scale-[1.02] hover:shadow-lg dark:border-green-600"
+          class="group relative cursor-pointer touch-manipulation overflow-hidden border-l-4 border-green-500 transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.99] dark:border-green-600"
           @click="handleAddMission(mission.id)"
         >
           <div
@@ -193,7 +193,7 @@
         <Card
           v-for="mission in sortedNonCompletableMissions"
           :key="mission.id"
-          class="group relative cursor-pointer overflow-hidden border-l-4 border-gray-400 opacity-70 transition-all hover:opacity-90 dark:border-gray-600"
+          class="group relative cursor-pointer touch-manipulation overflow-hidden border-l-4 border-gray-400 opacity-70 transition-all hover:opacity-90 active:opacity-95 dark:border-gray-600"
           @click="handleAddMission(mission.id)"
         >
           <div class="relative flex flex-col space-y-1 p-3 md:p-4">

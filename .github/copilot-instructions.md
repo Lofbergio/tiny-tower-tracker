@@ -24,6 +24,13 @@
 3. Review `src/stores/index.ts` for business logic
 4. Follow existing patterns and conventions
 
+## Working Style (Important)
+
+- **Default to completing the full sweep.** When the user asks for a change, apply it **everywhere it makes sense across the project**, not just one or two files.
+- **Do not pause to ask “should I continue?”** Assume the answer is **yes**.
+- Only ask a question when the request is **genuinely ambiguous**, has **multiple reasonable interpretations**, or carries **non-trivial risk** (data loss, breaking changes). Otherwise, proceed end-to-end: find all instances → implement → validate/build.
+- Prefer creating small, focused components/composables over bloating existing ones.
+
 ## Common Tasks
 
 - **Adding a feature:** Update types → validation schemas → store logic → views

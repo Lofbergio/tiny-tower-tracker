@@ -1,18 +1,22 @@
 <template>
   <div class="container mx-auto p-4 pb-24 md:pb-4">
-    <div class="mb-6">
-      <div class="mb-1 flex items-center gap-2">
-        <h1 class="flex items-center gap-2 text-2xl font-bold md:text-3xl">
-          <span class="text-3xl md:text-4xl">🎯</span>
-          <span
-            class="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent dark:from-green-400 dark:to-blue-400"
-          >
-            Missions
-          </span>
-        </h1>
-      </div>
-      <p class="text-sm text-muted-foreground md:text-base">Complete missions and earn Bux</p>
-    </div>
+    <PageHeader icon="🎯">
+      <template #title>
+        <span
+          class="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent dark:from-green-400 dark:to-blue-400"
+        >
+          Missions
+        </span>
+      </template>
+      <template #subtitle>Complete missions and earn Bux</template>
+      <template #aside>
+        <TowerIllustration
+          :width="110"
+          :height="165"
+          class="opacity-70 transition-opacity hover:opacity-100"
+        />
+      </template>
+    </PageHeader>
 
     <!-- Quick Stats Banner -->
     <div v-if="stats.totalPending > 0 || stats.completableAvailable > 0" class="mb-6">
@@ -250,6 +254,8 @@
 
 <script setup lang="ts">
 import MissionCard from '@/components/MissionCard.vue'
+import PageHeader from '@/components/PageHeader.vue'
+import TowerIllustration from '@/components/TowerIllustration.vue'
 import Badge from '@/components/ui/Badge.vue'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'

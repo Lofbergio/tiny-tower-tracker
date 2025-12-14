@@ -1,214 +1,15 @@
 <template>
   <div class="container mx-auto p-4 pb-24 md:pb-4">
-    <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div class="flex-1">
-        <h1 class="mb-1 flex items-center gap-2 text-2xl font-bold md:text-3xl">
-          <span class="text-3xl md:text-4xl">👥</span>
-          <span
-            class="bg-gradient-to-r from-pink-600 to-orange-600 bg-clip-text text-transparent dark:from-pink-400 dark:to-orange-400"
-          >
-            Residents
-          </span>
-        </h1>
-        <p class="text-sm text-muted-foreground md:text-base">
-          Manage residents and place them in their dream jobs
-        </p>
-      </div>
-
-      <Dialog :open="showImportDialog" @update:open="handleImportDialogOpenChange">
-        <DialogContent class="max-w-2xl">
-          <div class="flex flex-col space-y-1.5 text-center sm:text-left">
-            <DialogTitle class="flex items-center gap-2">
-              <span class="text-2xl">📸</span>
-              <span>Import Residents from Screenshots</span>
-            </DialogTitle>
-          </div>
-
-          <div class="space-y-4">
-            <p class="text-sm text-muted-foreground">
-              Upload one or more screenshots of your Tiny Tower resident list. We'll OCR the images
-              and extract resident names + dream jobs.
-            </p>
-
-            <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
-              <Button
-                variant="outline"
-                class="w-full sm:w-auto"
-                :disabled="!allStores"
-                @click="triggerScreenshotPicker"
-              >
-                Choose Screenshots
-              </Button>
-              <div class="text-sm text-muted-foreground">
-                {{ selectedScreenshotCountText }}
-              </div>
-            </div>
-
-            <div v-if="importProgressText" class="text-sm text-muted-foreground">
-              {{ importProgressText }}
-            </div>
-
-            <div class="flex flex-col gap-2 sm:flex-row">
-              <Button class="w-full sm:w-auto" :disabled="!canRunOcr" @click="runScreenshotOcr">
-                Run OCR
-              </Button>
-              <Button
-                variant="ghost"
-                class="w-full sm:w-auto"
-                :disabled="isImporting"
-                @click="resetScreenshotImport"
-              >
-                Reset
-              </Button>
-            </div>
-
-            <div v-if="importCandidates.length > 0" class="space-y-3">
-              <div class="rounded-md bg-muted p-3">
-                <div
-                  class="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <div>
-                    Found <span class="font-medium">{{ importCandidates.length }}</span> residents.
-                    Selected <span class="font-medium">{{ selectedImportCount }}</span
-                    >.
-                  </div>
-                  <div class="flex gap-2">
-                    <Button variant="outline" size="sm" @click="selectAllMatched"
-                      >Select matched</Button
-                    >
-                    <Button variant="outline" size="sm" @click="selectNone">Select none</Button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="max-h-[320px] overflow-auto rounded-md border">
-                <div
-                  v-for="(c, idx) in importCandidates"
-                  :key="idx"
-                  class="flex items-start gap-3 border-b p-3 last:border-b-0"
-                >
-                  <input
-                    v-model="c.selected"
-                    type="checkbox"
-                    class="mt-1 h-4 w-4"
-                    :disabled="!c.name || !c.dreamJobStoreId"
-                    :aria-label="`Select ${c.name}`"
-                  />
-                  <div class="min-w-0 flex-1">
-                    <div class="flex flex-wrap items-center gap-2">
-                      <span class="font-medium">{{ c.name || c.nameRaw }}</span>
-                      <span class="text-xs text-muted-foreground">({{ c.sourceFileName }})</span>
-                    </div>
-                    <div class="text-sm">
-                      <span class="text-muted-foreground">Dream job:</span>
-                      <span class="ml-1 font-medium">
-                        {{ c.matchedStoreName ?? c.dreamJobRaw }}
-                      </span>
-                      <span class="ml-2 text-xs text-muted-foreground">
-                        {{ Math.round(c.matchConfidence * 100) }}%
-                      </span>
-                    </div>
-                    <div v-if="c.currentJobRaw || c.currentJobStoreId" class="text-sm">
-                      <span class="text-muted-foreground">Current job:</span>
-                      <span class="ml-1 font-medium">
-                        {{ c.matchedCurrentStoreName ?? c.currentJobRaw ?? 'Unknown' }}
-                      </span>
-                      <span
-                        v-if="c.currentMatchConfidence !== undefined"
-                        class="ml-2 text-xs text-muted-foreground"
-                      >
-                        {{ Math.round(c.currentMatchConfidence * 100) }}%
-                      </span>
-                    </div>
-                    <div v-if="c.issues.length > 0" class="mt-1 text-xs text-destructive">
-                      {{ c.issues[0] }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <Button
-                class="w-full"
-                :disabled="selectedImportCount === 0 || isImporting"
-                @click="importSelectedResidents"
-              >
-                Import {{ selectedImportCount }} Residents
-              </Button>
-            </div>
-
-            <div
-              v-else-if="hasChosenScreenshots && !isImporting"
-              class="text-sm text-muted-foreground"
-            >
-              Ready to run OCR.
-            </div>
-
-            <div v-if="!allStores" class="text-sm text-muted-foreground">
-              Store data is still loading. Please wait.
-            </div>
-          </div>
-
-          <input
-            ref="screenshotInput"
-            type="file"
-            accept="image/*"
-            multiple
-            class="hidden"
-            @change="handleScreenshotFiles"
-          />
-        </DialogContent>
-      </Dialog>
-
-      <Dialog :open="showAddDialog" @update:open="handleDialogOpenChange">
-        <DialogContent class="max-w-md">
-          <div class="flex flex-col space-y-1.5 text-center sm:text-left">
-            <DialogTitle class="flex items-center gap-2">
-              <span class="text-2xl">👤</span>
-              <span>Add New Resident</span>
-            </DialogTitle>
-          </div>
-          <div class="space-y-4">
-            <div>
-              <Label class="mb-2 flex items-center gap-1 text-sm font-medium">
-                <span>Name</span>
-                <span class="text-destructive">*</span>
-              </Label>
-              <Input
-                ref="nameInput"
-                v-model="newResidentName"
-                placeholder="e.g., John Smith"
-                @keydown.enter="focusDreamJobSelect"
-              />
-            </div>
-            <div>
-              <Label class="mb-2 flex items-center gap-1 text-sm font-medium">
-                <span>Dream Job</span>
-                <span class="text-destructive">*</span>
-              </Label>
-              <SearchableSelect
-                v-model="newResidentDreamJob"
-                :items="storeItems"
-                placeholder="Choose their dream job..."
-                search-placeholder="Search stores…"
-              />
-              <p class="mt-1 text-xs text-muted-foreground">The store they want to work in</p>
-            </div>
-          </div>
-          <div class="mt-6 flex flex-col gap-2">
-            <Button
-              :disabled="!newResidentName || !newResidentDreamJob"
-              class="w-full"
-              @click="handleAddResident"
-            >
-              <span v-if="!newResidentName || !newResidentDreamJob">Add Resident</span>
-              <span v-else>Add {{ newResidentName }}</span>
-            </Button>
-            <Button variant="ghost" class="w-full" @click="showAddDialog = false">Cancel</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+    <PageHeader icon="👥">
+      <template #title>
+        <span
+          class="bg-gradient-to-r from-pink-600 to-orange-600 bg-clip-text text-transparent dark:from-pink-400 dark:to-orange-400"
+        >
+          Residents
+        </span>
+      </template>
+      <template #subtitle>Manage residents and place them in their dream jobs</template>
+      <template #actions>
         <Button variant="outline" class="w-full sm:w-auto" @click="showImportDialog = true">
           Import Screenshots
         </Button>
@@ -216,8 +17,208 @@
           <span class="sm:hidden">Add</span>
           <span class="hidden sm:inline">Add Resident</span>
         </Button>
-      </div>
-    </div>
+      </template>
+      <template #aside>
+        <TowerIllustration
+          :width="110"
+          :height="165"
+          class="opacity-70 transition-opacity hover:opacity-100"
+        />
+      </template>
+    </PageHeader>
+
+    <Dialog :open="showImportDialog" @update:open="handleImportDialogOpenChange">
+      <DialogContent class="max-w-2xl">
+        <div class="flex flex-col space-y-1.5 text-center sm:text-left">
+          <DialogTitle class="flex items-center gap-2">
+            <span class="text-2xl">📸</span>
+            <span>Import Residents from Screenshots</span>
+          </DialogTitle>
+        </div>
+
+        <div class="space-y-4">
+          <p class="text-sm text-muted-foreground">
+            Upload one or more screenshots of your Tiny Tower resident list. We'll OCR the images
+            and extract resident names + dream jobs.
+          </p>
+
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <Button
+              variant="outline"
+              class="w-full sm:w-auto"
+              :disabled="!allStores"
+              @click="triggerScreenshotPicker"
+            >
+              Choose Screenshots
+            </Button>
+            <div class="text-sm text-muted-foreground">
+              {{ selectedScreenshotCountText }}
+            </div>
+          </div>
+
+          <div v-if="importProgressText" class="text-sm text-muted-foreground">
+            {{ importProgressText }}
+          </div>
+
+          <div class="flex flex-col gap-2 sm:flex-row">
+            <Button class="w-full sm:w-auto" :disabled="!canRunOcr" @click="runScreenshotOcr">
+              Run OCR
+            </Button>
+            <Button
+              variant="ghost"
+              class="w-full sm:w-auto"
+              :disabled="isImporting"
+              @click="resetScreenshotImport"
+            >
+              Reset
+            </Button>
+          </div>
+
+          <div v-if="importCandidates.length > 0" class="space-y-3">
+            <div class="rounded-md bg-muted p-3">
+              <div
+                class="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div>
+                  Found <span class="font-medium">{{ importCandidates.length }}</span> residents.
+                  Selected <span class="font-medium">{{ selectedImportCount }}</span
+                  >.
+                </div>
+                <div class="flex gap-2">
+                  <Button variant="outline" size="sm" @click="selectAllMatched"
+                    >Select matched</Button
+                  >
+                  <Button variant="outline" size="sm" @click="selectNone">Select none</Button>
+                </div>
+              </div>
+            </div>
+
+            <div class="max-h-[320px] overflow-auto rounded-md border">
+              <div
+                v-for="(c, idx) in importCandidates"
+                :key="idx"
+                class="flex items-start gap-3 border-b p-3 last:border-b-0"
+              >
+                <input
+                  v-model="c.selected"
+                  type="checkbox"
+                  class="mt-1 h-4 w-4"
+                  :disabled="!c.name || !c.dreamJobStoreId"
+                  :aria-label="`Select ${c.name}`"
+                />
+                <div class="min-w-0 flex-1">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="font-medium">{{ c.name || c.nameRaw }}</span>
+                    <span class="text-xs text-muted-foreground">({{ c.sourceFileName }})</span>
+                  </div>
+                  <div class="text-sm">
+                    <span class="text-muted-foreground">Dream job:</span>
+                    <span class="ml-1 font-medium">
+                      {{ c.matchedStoreName ?? c.dreamJobRaw }}
+                    </span>
+                    <span class="ml-2 text-xs text-muted-foreground">
+                      {{ Math.round(c.matchConfidence * 100) }}%
+                    </span>
+                  </div>
+                  <div v-if="c.currentJobRaw || c.currentJobStoreId" class="text-sm">
+                    <span class="text-muted-foreground">Current job:</span>
+                    <span class="ml-1 font-medium">
+                      {{ c.matchedCurrentStoreName ?? c.currentJobRaw ?? 'Unknown' }}
+                    </span>
+                    <span
+                      v-if="c.currentMatchConfidence !== undefined"
+                      class="ml-2 text-xs text-muted-foreground"
+                    >
+                      {{ Math.round(c.currentMatchConfidence * 100) }}%
+                    </span>
+                  </div>
+                  <div v-if="c.issues.length > 0" class="mt-1 text-xs text-destructive">
+                    {{ c.issues[0] }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Button
+              class="w-full"
+              :disabled="selectedImportCount === 0 || isImporting"
+              @click="importSelectedResidents"
+            >
+              Import {{ selectedImportCount }} Residents
+            </Button>
+          </div>
+
+          <div
+            v-else-if="hasChosenScreenshots && !isImporting"
+            class="text-sm text-muted-foreground"
+          >
+            Ready to run OCR.
+          </div>
+
+          <div v-if="!allStores" class="text-sm text-muted-foreground">
+            Store data is still loading. Please wait.
+          </div>
+        </div>
+
+        <input
+          ref="screenshotInput"
+          type="file"
+          accept="image/*"
+          multiple
+          class="hidden"
+          @change="handleScreenshotFiles"
+        />
+      </DialogContent>
+    </Dialog>
+
+    <Dialog :open="showAddDialog" @update:open="handleDialogOpenChange">
+      <DialogContent class="max-w-md">
+        <div class="flex flex-col space-y-1.5 text-center sm:text-left">
+          <DialogTitle class="flex items-center gap-2">
+            <span class="text-2xl">👤</span>
+            <span>Add New Resident</span>
+          </DialogTitle>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <Label class="mb-2 flex items-center gap-1 text-sm font-medium">
+              <span>Name</span>
+              <span class="text-destructive">*</span>
+            </Label>
+            <Input
+              ref="nameInput"
+              v-model="newResidentName"
+              placeholder="e.g., John Smith"
+              @keydown.enter="focusDreamJobSelect"
+            />
+          </div>
+          <div>
+            <Label class="mb-2 flex items-center gap-1 text-sm font-medium">
+              <span>Dream Job</span>
+              <span class="text-destructive">*</span>
+            </Label>
+            <SearchableSelect
+              v-model="newResidentDreamJob"
+              :items="storeItems"
+              placeholder="Choose their dream job..."
+              search-placeholder="Search stores…"
+            />
+            <p class="mt-1 text-xs text-muted-foreground">The store they want to work in</p>
+          </div>
+        </div>
+        <div class="mt-6 flex flex-col gap-2">
+          <Button
+            :disabled="!newResidentName || !newResidentDreamJob"
+            class="w-full"
+            @click="handleAddResident"
+          >
+            <span v-if="!newResidentName || !newResidentDreamJob">Add Resident</span>
+            <span v-else>Add {{ newResidentName }}</span>
+          </Button>
+          <Button variant="ghost" class="w-full" @click="showAddDialog = false">Cancel</Button>
+        </div>
+      </DialogContent>
+    </Dialog>
 
     <EmptyState
       v-if="residents.length === 0"
@@ -255,7 +256,9 @@
 </template>
 
 <script setup lang="ts">
+import PageHeader from '@/components/PageHeader.vue'
 import ResidentCard from '@/components/ResidentCard.vue'
+import TowerIllustration from '@/components/TowerIllustration.vue'
 import Button from '@/components/ui/Button.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import Dialog from '@/components/ui/Dialog.vue'

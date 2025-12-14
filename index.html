@@ -5,6 +5,22 @@
     <link rel="icon" type="image/svg+xml" href="/tower-icon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Track your Tiny Tower missions, stores, and residents" />
+    <script>
+      ;(function () {
+        try {
+          var key = 'tiny-tower-tracker-theme'
+          var stored = localStorage.getItem(key)
+          var isDark =
+            stored === 'dark' ||
+            (!stored &&
+              window.matchMedia &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches)
+          if (isDark) document.documentElement.classList.add('dark')
+        } catch (e) {
+          // ignore
+        }
+      })()
+    </script>
     <title>Tiny Tower Tracker - Manage Your Tower</title>
   </head>
   <body>

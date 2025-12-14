@@ -1,27 +1,24 @@
 <template>
   <div class="container mx-auto p-4 pb-24 md:pb-4">
-    <div class="mb-6 flex items-start justify-between md:mb-8">
-      <div class="flex-1">
-        <h1 class="mb-2 flex items-center gap-2 text-2xl font-bold md:text-3xl">
-          <span class="text-3xl md:text-4xl">🏢</span>
-          <span
-            class="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent dark:from-purple-400 dark:to-pink-400"
-          >
-            Dashboard
-          </span>
-        </h1>
-        <p class="text-sm text-muted-foreground md:text-base">
-          Welcome to your tower! Track progress and manage everything here
-        </p>
-      </div>
-      <div class="hidden md:block">
+    <PageHeader icon="🏢">
+      <template #title>
+        <span
+          class="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent dark:from-purple-400 dark:to-pink-400"
+        >
+          Dashboard
+        </span>
+      </template>
+      <template #subtitle
+        >Welcome to your tower! Track progress and manage everything here</template
+      >
+      <template #aside>
         <TowerIllustration
           :width="120"
           :height="180"
           class="opacity-70 transition-opacity hover:opacity-100"
         />
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <!-- First Time Experience -->
     <div
@@ -57,6 +54,7 @@
 <script setup lang="ts">
 import DashboardStats from '@/components/DashboardStats.vue'
 import DataManagement from '@/components/DataManagement.vue'
+import PageHeader from '@/components/PageHeader.vue'
 import PendingChanges from '@/components/PendingChanges.vue'
 import TowerIllustration from '@/components/TowerIllustration.vue'
 import Button from '@/components/ui/Button.vue'

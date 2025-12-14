@@ -1,20 +1,22 @@
 <template>
   <div class="container mx-auto p-4 pb-24 md:pb-4">
-    <div class="mb-6">
-      <div class="flex-1">
-        <h1 class="mb-1 flex items-center gap-2 text-2xl font-bold md:text-3xl">
-          <span class="text-3xl md:text-4xl">🏪</span>
-          <span
-            class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
-          >
-            Stores
-          </span>
-        </h1>
-        <p class="text-sm text-muted-foreground md:text-base">
-          🍔 Food • 🛎️ Service • 🎮 Recreation • 🛍️ Retail • 🎨 Creative
-        </p>
-      </div>
-    </div>
+    <PageHeader icon="🏪">
+      <template #title>
+        <span
+          class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
+        >
+          Stores
+        </span>
+      </template>
+      <template #subtitle>🍔 Food • 🛎️ Service • 🎮 Recreation • 🛍️ Retail • 🎨 Creative</template>
+      <template #aside>
+        <TowerIllustration
+          :width="110"
+          :height="165"
+          class="opacity-70 transition-opacity hover:opacity-100"
+        />
+      </template>
+    </PageHeader>
 
     <!-- Available Stores Section -->
     <div v-if="availableStores.length > 0 && userStoresWithData.length > 0" class="mb-8">
@@ -208,8 +210,10 @@
 </template>
 
 <script setup lang="ts">
+import PageHeader from '@/components/PageHeader.vue'
 import StoreCard from '@/components/StoreCard.vue'
 import StoreIcon from '@/components/StoreIcon.vue'
+import TowerIllustration from '@/components/TowerIllustration.vue'
 import Badge from '@/components/ui/Badge.vue'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'

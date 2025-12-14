@@ -1,6 +1,7 @@
+import { APP_CONSTANTS } from '@/constants'
 import { ref, watch } from 'vue'
 
-const STORAGE_KEY = 'tiny-tower-tracker-theme'
+const STORAGE_KEY = APP_CONSTANTS.THEME_STORAGE_KEY
 
 function getInitialTheme(): boolean {
   if (typeof window === 'undefined') return false

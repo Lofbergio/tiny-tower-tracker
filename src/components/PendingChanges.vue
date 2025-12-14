@@ -13,7 +13,7 @@
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ mission.name }}</h4>
-                <p class="mb-2 text-sm text-muted-foreground">{{ mission.description }}</p>
+                <p class="text-muted-foreground mb-2 text-sm">{{ mission.description }}</p>
                 <p class="text-sm">Reward: {{ mission.reward }} Bux</p>
               </div>
               <Button @click="handleCompleteMission(mission.id)"> Mark Done </Button>
@@ -36,7 +36,7 @@
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ placement.resident.name }}</h4>
-                <p class="text-sm text-muted-foreground">
+                <p class="text-muted-foreground text-sm">
                   Should be placed in <strong>{{ placement.storeName }}</strong> (dream job)
                 </p>
                 <p
@@ -71,11 +71,11 @@
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ warning.resident.name }}</h4>
-                <p class="text-sm text-muted-foreground">
+                <p class="text-muted-foreground text-sm">
                   Dream job is <strong>{{ warning.storeName }}</strong
                   >, but store is full (3/3)
                 </p>
-                <p class="mt-1 text-sm text-muted-foreground">
+                <p class="text-muted-foreground mt-1 text-sm">
                   Consider evicting a resident from this store
                 </p>
               </div>
@@ -98,7 +98,7 @@
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ opportunity.storeName }}</h4>
-                <p class="text-sm text-muted-foreground">
+                <p class="text-muted-foreground text-sm">
                   {{ opportunity.residents.length }} resident(s) have this as their dream job:
                 </p>
                 <ul class="mt-1 space-y-1 text-sm">
@@ -123,19 +123,21 @@
 </template>
 
 <script setup lang="ts">
-import { useMissions } from '@/composables/useMissions'
-import { useResidents } from '@/composables/useResidents'
-import { useStores } from '@/composables/useStores'
+import { useCompletableMissions, useUserStoresWithData } from '@/queries'
+import { useMissionsStore, useResidentsStore, useStoresStore } from '@/stores'
 import type { Resident, Store } from '@/types'
+import { useToast } from '@/utils/toast'
 import { computed } from 'vue'
 import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
 import EmptyState from './ui/EmptyState.vue'
 
-const storesComposable = useStores()
-const { userStores, allStores, addResidentToStore, isStoreFull } = storesComposable
-const { residents, getResidentsNotInDreamJob, getResidentsForStore } = useResidents()
-const { completableMissions, markMissionCompleted } = useMissions(userStores, allStores)
+const storesStore = useStoresStore()
+const residentsStore = useResidentsStore()
+const missionsStore = useMissionsStore()
+const { userStores, allStores } = useUserStoresWithData()
+const { completableMissions } = useCompletableMissions()
+const toast = useToast()
 
 interface ResidentPlacement {
   resident: Resident
@@ -158,17 +160,21 @@ interface NewStoreOpportunity {
 
 const residentPlacements = computed<ResidentPlacement[]>(() => {
   const placements: ResidentPlacement[] = []
-  const residentsNotPlaced = getResidentsNotInDreamJob()
+  const residentsNotPlaced = residentsStore.getResidentsNotInDreamJob()
 
-  residentsNotPlaced.forEach(resident => {
+  residentsNotPlaced.forEach((resident: Resident) => {
     const store = allStores.value.find((s: Store) => s.id === resident.dreamJob)
-    if (!store) return
+    if (!store) {
+      return
+    }
 
     // Check if user has this store
-    const userStore = userStores.value.find(us => us.storeId === store.id)
-    if (!userStore) return
+    const userStore = userStores.value.find((us: { storeId: string }) => us.storeId === store.id)
+    if (!userStore) {
+      return
+    }
 
-    const isFull = isStoreFull(store.id)
+    const isFull = storesStore.isStoreFull(store.id)
     if (!isFull) {
       placements.push({
         resident,
@@ -185,14 +191,18 @@ const residentPlacements = computed<ResidentPlacement[]>(() => {
 const overcapacityWarnings = computed<OvercapacityWarning[]>(() => {
   const warnings: OvercapacityWarning[] = []
 
-  residents.value.forEach(resident => {
+  residentsStore.residents.forEach((resident: Resident) => {
     const store = allStores.value.find((s: Store) => s.id === resident.dreamJob)
-    if (!store) return
+    if (!store) {
+      return
+    }
 
-    const userStore = userStores.value.find(us => us.storeId === store.id)
-    if (!userStore) return
+    const userStore = userStores.value.find((us: { storeId: string }) => us.storeId === store.id)
+    if (!userStore) {
+      return
+    }
 
-    if (isStoreFull(store.id) && resident.currentStore !== store.id) {
+    if (storesStore.isStoreFull(store.id) && resident.currentStore !== store.id) {
       warnings.push({
         resident,
         storeId: store.id,
@@ -206,12 +216,14 @@ const overcapacityWarnings = computed<OvercapacityWarning[]>(() => {
 
 const newStoreOpportunities = computed<NewStoreOpportunity[]>(() => {
   const opportunities: NewStoreOpportunity[] = []
-  const builtStoreIds = new Set(userStores.value.map(us => us.storeId))
+  const builtStoreIds = new Set(storesStore.userStores.map((us: { storeId: string }) => us.storeId))
 
   allStores.value.forEach((store: Store) => {
-    if (builtStoreIds.has(store.id)) return // Store already built
+    if (builtStoreIds.has(store.id)) {
+      return // Store already built
+    }
 
-    const residentsForStore = getResidentsForStore(store.id)
+    const residentsForStore = residentsStore.getResidentsForStore(store.id)
     if (residentsForStore.length > 0) {
       opportunities.push({
         storeId: store.id,
@@ -234,10 +246,22 @@ const hasNoPendingChanges = computed(() => {
 })
 
 function handleCompleteMission(missionId: string) {
-  markMissionCompleted(missionId)
+  const success = missionsStore.markMissionCompleted(missionId)
+  if (success) {
+    toast.success('Mission completed!')
+  } else {
+    toast.error('Failed to complete mission')
+  }
 }
 
 function handlePlaceResident(residentId: string, storeId: string) {
-  addResidentToStore(storeId, residentId)
+  const result = storesStore.addResidentToStore(storeId, residentId)
+  if (result.success) {
+    const resident = residentsStore.residents.find((r: Resident) => r.id === residentId)
+    const store = allStores.value.find(s => s.id === storeId)
+    toast.success(`Placed ${resident?.name} in ${store?.name}`)
+  } else {
+    toast.error(result.error ?? 'Failed to place resident')
+  }
 }
 </script>

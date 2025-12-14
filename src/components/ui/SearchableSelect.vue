@@ -92,7 +92,7 @@ import {
   SelectValue,
   SelectViewport,
 } from 'radix-vue'
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue'
 import Input from './Input.vue'
 
 export type SearchableSelectItem = {
@@ -201,4 +201,11 @@ watch(
   },
   { flush: 'post' }
 )
+
+// Clean up timer on unmount to prevent memory leaks
+onUnmounted(() => {
+  if (debounceTimer) {
+    window.clearTimeout(debounceTimer)
+  }
+})
 </script>

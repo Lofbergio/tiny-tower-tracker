@@ -4,10 +4,16 @@
       <h1 class="mb-2 text-3xl font-bold">Dashboard</h1>
       <p class="text-muted-foreground">Track your tower's progress and manage your residents</p>
     </div>
+
+    <div class="mb-8">
+      <DataManagement />
+    </div>
+
     <PendingChanges />
   </div>
 </template>
 
 <script setup lang="ts">
+import DataManagement from '@/components/DataManagement.vue'
 import PendingChanges from '@/components/PendingChanges.vue'
 </script>

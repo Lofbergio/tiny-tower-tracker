@@ -3,7 +3,7 @@
     <div class="mb-6 flex items-center justify-between">
       <div>
         <h1 class="mb-1 text-3xl font-bold">Residents</h1>
-        <p class="text-sm text-muted-foreground">
+        <p class="text-muted-foreground text-sm">
           Manage your tower's residents and their dream jobs
         </p>
       </div>
@@ -15,7 +15,11 @@
           <div class="space-y-4">
             <div>
               <Label class="mb-2 block">Name</Label>
-              <Input v-model="newResidentName" placeholder="Enter resident name" />
+              <Input
+                v-model="newResidentName"
+                placeholder="Enter resident name"
+                @keydown.enter="handleAddResident"
+              />
             </div>
             <div>
               <Label class="mb-2 block">Dream Job</Label>
@@ -51,16 +55,28 @@
         v-for="resident in residents"
         :key="resident.id"
         :resident="resident"
-        :stores="allStores"
+        :stores="allStores ?? []"
         @remove-resident="handleRemoveResident(resident.id)"
       />
     </div>
+
+    <!-- Confirmation Dialog -->
+    <ConfirmDialog
+      :open="showConfirmDialog"
+      :title="confirmDialogData.title"
+      :message="confirmDialogData.message"
+      :variant="confirmDialogData.variant"
+      :confirm-text="confirmDialogData.confirmText"
+      @update:open="showConfirmDialog = $event"
+      @confirm="confirmDialogData.onConfirm"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import ResidentCard from '@/components/ResidentCard.vue'
 import Button from '@/components/ui/Button.vue'
+import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import Dialog from '@/components/ui/Dialog.vue'
 import DialogContent from '@/components/ui/DialogContent.vue'
 import DialogTitle from '@/components/ui/DialogTitle.vue'
@@ -68,35 +84,75 @@ import EmptyState from '@/components/ui/EmptyState.vue'
 import Input from '@/components/ui/Input.vue'
 import Label from '@/components/ui/Label.vue'
 import SearchableSelect from '@/components/ui/SearchableSelect.vue'
-import { useResidents } from '@/composables/useResidents'
-import { loadStores, useStores } from '@/composables/useStores'
-import { computed, onMounted, ref } from 'vue'
+import { useStoresQuery } from '@/queries'
+import { useResidentsStore } from '@/stores'
+import { useToast } from '@/utils/toast'
+import { computed, ref } from 'vue'
 
-const { residents, addResident, removeResident: removeResidentFn } = useResidents()
-const { allStores } = useStores()
+const residentsStore = useResidentsStore()
+const { residents } = residentsStore
+const { data: allStores } = useStoresQuery()
+const toast = useToast()
 
 const showAddDialog = ref(false)
 const newResidentName = ref('')
 const newResidentDreamJob = ref('')
+const showConfirmDialog = ref(false)
+const confirmDialogData = ref<{
+  title: string
+  message: string
+  variant: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
+  confirmText: string
+  onConfirm: () => void
+}>({
+  title: '',
+  message: '',
+  variant: 'default',
+  confirmText: 'Confirm',
+  onConfirm: () => {},
+})
 
 const storeItems = computed(() => {
+  if (!allStores.value) {
+    return []
+  }
   return allStores.value.map(store => ({ value: store.id, label: store.name }))
 })
 
 function handleAddResident() {
   if (newResidentName.value && newResidentDreamJob.value) {
-    addResident(newResidentName.value, newResidentDreamJob.value)
-    newResidentName.value = ''
-    newResidentDreamJob.value = ''
-    showAddDialog.value = false
+    const result = residentsStore.addResident(newResidentName.value, newResidentDreamJob.value)
+    if (result.success) {
+      toast.success(`Added ${newResidentName.value} to your tower`)
+      newResidentName.value = ''
+      newResidentDreamJob.value = ''
+      showAddDialog.value = false
+    } else {
+      toast.error(result.error ?? 'Failed to add resident')
+    }
   }
 }
 
 function handleRemoveResident(id: string) {
-  removeResidentFn(id)
-}
+  const resident = residents.find((r: { id: string }) => r.id === id)
+  if (!resident) {
+    return
+  }
 
-onMounted(async () => {
-  await loadStores()
-})
+  confirmDialogData.value = {
+    title: 'Remove Resident',
+    message: `Are you sure you want to remove ${resident.name}? This will also remove them from any stores they're assigned to.`,
+    variant: 'destructive',
+    confirmText: 'Remove',
+    onConfirm: () => {
+      const success = residentsStore.removeResident(id)
+      if (success) {
+        toast.success(`Removed ${resident.name}`)
+      } else {
+        toast.error('Failed to remove resident')
+      }
+    },
+  }
+  showConfirmDialog.value = true
+}
 </script>

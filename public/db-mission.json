@@ -1,0 +1,164 @@
+[
+  {
+    "id": "mission-1",
+    "name": "New Year's Day '13",
+    "description": "Bitizens are celebrating the new year! They need:",
+    "requirements": [
+      {"product": "Champagne", "quantity": 1350, "store": "Bar"},
+      {"product": "Party Hat", "quantity": 675, "store": "Hat Shop"}
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-2",
+    "name": "Independence Day '13",
+    "description": "Feeling patriotic? Bitizens need:",
+    "requirements": [
+      {"product": "Loaded Dog", "quantity": 2025, "store": "Hot Dog Joint"},
+      {"product": "Cowboy Hat", "quantity": 2025, "store": "Hat Shop"}
+    ],
+    "reward": 6
+  },
+  {
+    "id": "mission-3",
+    "name": "Aboriginal Day",
+    "description": "Bitizens are celebrating native cultures, they need:",
+    "requirements": [
+      {"product": "Arrows", "quantity": 6525, "store": "Archery Range"},
+      {"product": "Custom Robes", "quantity": 20500, "store": "Costume Shop"}
+    ],
+    "reward": 25
+  },
+  {
+    "id": "mission-4",
+    "name": "Moon Day",
+    "description": "A small step for bit-kind. Bitizens need:",
+    "requirements": [
+      {"product": "Rocket Ship", "quantity": 675, "store": "Toy Store"},
+      {"product": "Ice Cream Bar", "quantity": 400, "store": "Scoops"}
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-5",
+    "name": "Pioneer Day",
+    "description": "Bitizens are preparing to explore! They need:",
+    "requirements": [
+      {"product": "Tune Up", "quantity": 19350, "store": "Mechanic"},
+      {"product": "Camera", "quantity": 1350, "store": "Tech Store"}
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-6",
+    "name": "Book Lovers Day",
+    "description": "The bookworms in your tower need:",
+    "requirements": [
+      {"product": "Bookcase", "quantity": 14850, "store": "Wood Shop"},
+      {"product": "Hardback", "quantity": 1125, "store": "Book Store"}
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-7",
+    "name": "Summer Vacation '13",
+    "description": "Bitizens are going on summer vacation! They need:",
+    "requirements": [
+      {"product": "Custom Board", "quantity": 20500, "store": "Surf Shop"},
+      {"product": "Small Smoothie", "quantity": 675, "store": "Smoothie Shop"}
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-8",
+    "name": "Relaxation Day",
+    "description": "Bitizens are taking some time to relax, they need:",
+    "requirements": [
+      {"product": "Stone Massage", "quantity": 5400, "store": "Day Spa"},
+      {"product": "Vanilla Candle", "quantity": 675, "store": "Candle Shop"}
+    ],
+    "reward": 8
+  },
+  {
+    "id": "mission-9",
+    "name": "Aviation Day",
+    "description": "Bitizens are crazy about aviation! They need:",
+    "requirements": [
+      {"product": "Flight Booking", "quantity": 2700, "store": "Travel Agency"},
+      {"product": "Bar Nuts", "quantity": 45, "store": "Pub"}
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-10",
+    "name": "Senior Citizens Day",
+    "description": "Bitizens are showing support for their elders, they need:",
+    "requirements": [
+      {"product": "Bird Feeding", "quantity": 1350, "store": "Park"},
+      {"product": "Purse", "quantity": 1575, "store": "Women's Fashion"},
+      {"product": "Tie", "quantity": 675, "store": "Men's Fashion"}
+    ],
+    "reward": 4
+  },
+  {
+    "id": "mission-11",
+    "name": "Labor Day '13",
+    "description": "Bitizens are celebrating workers everywhere! They need:",
+    "requirements": [
+      {"product": "Leak Fix", "quantity": 9000, "store": "Plumber"},
+      {"product": "Inspection", "quantity": 13500, "store": "Fire Station"}
+    ],
+    "reward": 10
+  },
+  {
+    "id": "mission-12",
+    "name": "Programmers' Day",
+    "description": "Show your support for software developers by collecting:",
+    "requirements": [
+      {"product": "Laptop", "quantity": 2700, "store": "Tech Store"},
+      {"product": "Anti-Virus App", "quantity": 9000, "store": "Software Studio"}
+    ],
+    "reward": 11
+  },
+  {
+    "id": "mission-13",
+    "name": "Oktoberfest '13",
+    "description": "Bitizens are celebrating Oktoberfest! They need:",
+    "requirements": [
+      {"product": "Root Beer", "quantity": 450, "store": "Pub"},
+      {"product": "Cuckoo Clock", "quantity": 6750, "store": "Clockmaker"}
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-14",
+    "name": "Confucius Day",
+    "description": "A wise man said you need to collect the following:",
+    "requirements": [
+      {"product": "Black Belt", "quantity": 31500, "store": "Martial Arts"},
+      {"product": "Noodle Bowl", "quantity": 1125, "store": "Asian Cuisine"}
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-15",
+    "name": "World Vegetarian Day",
+    "description": "Bitizens are going meat-less for vegetarian day, they need:",
+    "requirements": [
+      {"product": "Soy Burger", "quantity": 1575, "store": "Vegan Food"},
+      {"product": "Hanging Plant", "quantity": 1710, "store": "Plant Nursery"}
+    ],
+    "reward": 4
+  },
+  {
+    "id": "mission-16",
+    "name": "Fire Prevention Day",
+    "description": "Bitizens are learning about fire safety! They need:",
+    "requirements": [
+      {"product": "Fire Drill", "quantity": 15750, "store": "Fire Station"},
+      {"product": "Print Ad", "quantity": 2025, "store": "Ad Agency"}
+    ],
+    "reward": 15
+  }
+]
+

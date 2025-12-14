@@ -142,8 +142,14 @@ export const useResidentsStore = defineStore('residents', () => {
 
   const residents = computed(() => appStore.data.residents)
 
-  function addResident(name: string, dreamJob: string): { success: boolean; error?: string } {
-    // Validate name
+  function createResident(
+    name: string,
+    dreamJob: string
+  ): {
+    success: boolean
+    id?: string
+    error?: string
+  } {
     const validation = validateResidentName(name)
     if (!validation.success) {
       return { success: false, error: validation.error }
@@ -166,7 +172,22 @@ export const useResidentsStore = defineStore('residents', () => {
       dreamJob,
     })
     appStore.saveDataDebounced()
+    return { success: true, id }
+  }
+
+  function addResident(name: string, dreamJob: string): { success: boolean; error?: string } {
+    const result = createResident(name, dreamJob)
+    if (!result.success) {
+      return { success: false, error: result.error }
+    }
     return { success: true }
+  }
+
+  function addResidentWithId(
+    name: string,
+    dreamJob: string
+  ): { success: boolean; id?: string; error?: string } {
+    return createResident(name, dreamJob)
   }
 
   function removeResident(residentId: string): boolean {
@@ -228,6 +249,7 @@ export const useResidentsStore = defineStore('residents', () => {
   return {
     residents,
     addResident,
+    addResidentWithId,
     removeResident,
     updateResident,
     getCurrentStore,

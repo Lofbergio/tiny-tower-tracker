@@ -8,6 +8,12 @@
 2. This file contains complete architecture documentation, data flow, business logic, and development patterns
 3. Understanding the project structure will prevent mistakes and ensure consistency
 
+## Agent Behavior (Don’t Miss This)
+
+- **Keep going by default.** Implement changes end-to-end (find all instances → implement → validate/build) without asking permission at each step.
+- **Do not ask “should I continue?”** If the next step is obvious, proceed.
+- **Only stop to ask questions when** the request is genuinely ambiguous or risky (data loss / breaking change).
+
 ## Quick Reference
 
 - **State Management:** Pinia stores in `src/stores/index.ts` (4 stores: app, residents, stores, missions)

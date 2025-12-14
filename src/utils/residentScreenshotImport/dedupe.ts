@@ -2,6 +2,10 @@ import { isUnemployedText, normalizeForMatch } from './textUtils'
 import type { ScreenshotResidentCandidate } from './types'
 
 export function dedupe(candidates: ScreenshotResidentCandidate[]): ScreenshotResidentCandidate[] {
+  function nameKeyFor(c: ScreenshotResidentCandidate): string {
+    return normalizeForMatch(c.name)
+  }
+
   function currentKeyFor(c: ScreenshotResidentCandidate): string {
     if (c.currentJobStoreId) return c.currentJobStoreId
     if (c.currentJobRaw) {
@@ -15,8 +19,28 @@ export function dedupe(candidates: ScreenshotResidentCandidate[]): ScreenshotRes
     return normalizeForMatch(c.matchedStoreName ?? c.dreamJobRaw)
   }
 
-  function baseKeyFor(c: ScreenshotResidentCandidate): string {
-    return `${normalizeForMatch(c.name)}|${dreamKeyFor(c)}`
+  function hasMeaningfulCurrent(c: ScreenshotResidentCandidate): boolean {
+    if (c.currentJobStoreId) return true
+    if (!c.currentJobRaw) return false
+    return !isUnemployedText(c.currentJobRaw)
+  }
+
+  function shouldMerge(a: ScreenshotResidentCandidate, b: ScreenshotResidentCandidate): boolean {
+    const aDream = dreamKeyFor(a)
+    const bDream = dreamKeyFor(b)
+    const aCurrent = currentKeyFor(a)
+    const bCurrent = currentKeyFor(b)
+
+    if (aDream && bDream && aDream === bDream) return true
+
+    // Same explicit current job match.
+    if (aCurrent && bCurrent && aCurrent === bCurrent) return true
+
+    // Cross-match: one extractor sometimes mis-assigns current job as dream job.
+    if (aDream && bCurrent && aDream === bCurrent) return true
+    if (aCurrent && bDream && aCurrent === bDream) return true
+
+    return false
   }
 
   function isBetterCandidate(
@@ -51,9 +75,26 @@ export function dedupe(candidates: ScreenshotResidentCandidate[]): ScreenshotRes
 
     base.selected = Boolean(base.selected || other.selected)
 
+    // Prefer a matched dream job (storeId) and higher confidence when merging.
+    if (!base.dreamJobStoreId && other.dreamJobStoreId) base.dreamJobStoreId = other.dreamJobStoreId
+    if (!base.dreamJobRaw && other.dreamJobRaw) base.dreamJobRaw = other.dreamJobRaw
+    if (!base.matchedStoreName && other.matchedStoreName)
+      base.matchedStoreName = other.matchedStoreName
+    if (
+      typeof base.matchConfidence !== 'number' ||
+      (typeof other.matchConfidence === 'number' && other.matchConfidence > base.matchConfidence)
+    ) {
+      base.matchConfidence = other.matchConfidence
+    }
+
+    // Prefer a meaningful current job over UNEMPLOYED/empty.
     if (!base.currentJobStoreId && other.currentJobStoreId)
       base.currentJobStoreId = other.currentJobStoreId
     if (!base.currentJobRaw && other.currentJobRaw) base.currentJobRaw = other.currentJobRaw
+    if (base.currentJobRaw && isUnemployedText(base.currentJobRaw) && hasMeaningfulCurrent(other)) {
+      base.currentJobRaw = other.currentJobRaw
+      if (other.currentJobStoreId) base.currentJobStoreId = other.currentJobStoreId
+    }
     if (base.currentMatchConfidence === undefined && other.currentMatchConfidence !== undefined) {
       base.currentMatchConfidence = other.currentMatchConfidence
     }
@@ -61,8 +102,15 @@ export function dedupe(candidates: ScreenshotResidentCandidate[]): ScreenshotRes
       base.matchedCurrentStoreName = other.matchedCurrentStoreName
     }
 
-    if ((base.issues?.length ?? 0) === 0 && (other.issues?.length ?? 0) > 0) {
-      base.issues = other.issues
+    // Keep issues minimal: if base has none, don't add more; otherwise union unique issues.
+    const baseIssues = base.issues ?? []
+    const otherIssues = other.issues ?? []
+    if (baseIssues.length === 0) {
+      // no-op
+    } else if (otherIssues.length > 0) {
+      const merged = new Set<string>(baseIssues)
+      for (const issue of otherIssues) merged.add(issue)
+      base.issues = Array.from(merged)
     }
 
     return base
@@ -71,17 +119,14 @@ export function dedupe(candidates: ScreenshotResidentCandidate[]): ScreenshotRes
   const grouped = new Map<string, ScreenshotResidentCandidate[]>()
 
   for (const c of candidates) {
-    const baseKey = baseKeyFor(c)
-    const list = grouped.get(baseKey) ?? []
-    const cCurrentKey = currentKeyFor(c)
+    const nameKey = nameKeyFor(c)
+    const list = grouped.get(nameKey) ?? []
 
     let merged = false
     for (let i = 0; i < list.length; i++) {
       const existing = list[i]
-      const eCurrentKey = currentKeyFor(existing)
 
-      const compatible = eCurrentKey === cCurrentKey || eCurrentKey === '' || cCurrentKey === ''
-      if (compatible) {
+      if (shouldMerge(existing, c)) {
         list[i] = mergeCandidates(existing, c)
         merged = true
         break
@@ -92,7 +137,7 @@ export function dedupe(candidates: ScreenshotResidentCandidate[]): ScreenshotRes
       list.push(c)
     }
 
-    grouped.set(baseKey, list)
+    grouped.set(nameKey, list)
   }
 
   return Array.from(grouped.values()).flat()

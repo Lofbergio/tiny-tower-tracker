@@ -1,5 +1,6 @@
 import { APP_CONSTANTS } from '@/constants'
 import type { Resident, UserData } from '@/types'
+import { formatResidentName } from '@/utils/residentName'
 import { checkLocalStorageQuota } from '@/utils/storage'
 import { validateResidentName, validateUserData } from '@/utils/validation'
 import { useDebounceFn } from '@vueuse/core'
@@ -31,6 +32,12 @@ export const useAppStore = defineStore('app', () => {
           data.residents = data.residents.map(r => {
             const { currentStore, ...resident } = r as Resident & { currentStore?: string }
             return resident
+          })
+
+          // Data migration: Normalize resident names (Title Case)
+          data.residents = data.residents.map(r => {
+            const formattedName = formatResidentName(r.name)
+            return formattedName === r.name ? r : { ...r, name: formattedName }
           })
 
           // Data migration: Convert old resident IDs to numeric IDs
@@ -155,6 +162,8 @@ export const useResidentsStore = defineStore('residents', () => {
       return { success: false, error: validation.error }
     }
 
+    const formattedName = formatResidentName(validation.data)
+
     if (!dreamJob || dreamJob.trim() === '') {
       return { success: false, error: 'Dream job is required' }
     }
@@ -168,7 +177,7 @@ export const useResidentsStore = defineStore('residents', () => {
 
     appStore.data.residents.push({
       id,
-      name: validation.data,
+      name: formattedName,
       dreamJob,
     })
     appStore.saveDataDebounced()
@@ -217,7 +226,7 @@ export const useResidentsStore = defineStore('residents', () => {
         if (!validation.success) {
           throw new Error(validation.error)
         }
-        updates.name = validation.data
+        updates.name = formatResidentName(validation.data)
       }
 
       Object.assign(resident, updates)

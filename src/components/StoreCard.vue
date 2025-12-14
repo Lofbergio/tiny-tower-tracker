@@ -1,6 +1,6 @@
 <template>
   <Card
-    class="overflow-hidden border-l-4 transition-all hover:shadow-md"
+    class="flex h-full flex-col overflow-hidden border-l-4 transition-all hover:shadow-md"
     :style="{ borderLeftColor: categoryColors.border }"
   >
     <div
@@ -22,7 +22,7 @@
         {{ store.category }}
       </p>
     </div>
-    <div class="p-4 pt-0 md:p-4 md:pt-0">
+    <div class="flex flex-1 flex-col p-4 pt-0 md:p-4 md:pt-0">
       <div v-if="residents.length > 0" class="space-y-2">
         <p class="text-sm font-medium">Residents</p>
         <div class="overflow-hidden rounded-md border bg-background/60">
@@ -52,20 +52,22 @@
       </div>
       <div v-else class="text-sm text-muted-foreground">No residents assigned</div>
 
-      <div v-if="capacity < 3" class="mt-3 space-y-2 md:mt-4">
-        <Button variant="outline" size="sm" class="w-full" @click="$emit('add-resident')">
-          Add Resident ({{ capacity }}/3)
+      <div class="mt-auto pt-3 md:pt-4">
+        <div v-if="capacity < 3" class="space-y-2">
+          <Button variant="outline" size="sm" class="w-full" @click="$emit('add-resident')">
+            Add Resident ({{ capacity }}/3)
+          </Button>
+        </div>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          class="mt-2 min-h-[44px] w-full text-destructive hover:text-destructive"
+          @click="$emit('remove-store')"
+        >
+          Remove Store
         </Button>
       </div>
-
-      <Button
-        variant="ghost"
-        size="sm"
-        class="mt-2 min-h-[44px] w-full text-destructive hover:text-destructive"
-        @click="$emit('remove-store')"
-      >
-        Remove Store
-      </Button>
     </div>
   </Card>
 </template>
@@ -75,6 +77,7 @@ import { useDarkMode } from '@/composables/useDarkMode'
 import type { Resident, Store, UserStore } from '@/types'
 import { getResidentAvatarUrl as getResidentAvatarUrlByName } from '@/utils/avatar'
 import { getCategoryColors } from '@/utils/categoryColors'
+import { formatResidentName } from '@/utils/residentName'
 import { computed } from 'vue'
 import StoreIcon from './StoreIcon.vue'
 import Badge from './ui/Badge.vue'
@@ -103,7 +106,7 @@ const categoryColors = computed(() => getCategoryColors(store.value.category, is
 
 function getResidentName(residentId: string) {
   const resident = props.residents.find(r => r.id === residentId)
-  return resident?.name || 'Unknown'
+  return resident ? formatResidentName(resident.name) : 'Unknown'
 }
 
 function getResidentAvatarUrl(residentId: string) {

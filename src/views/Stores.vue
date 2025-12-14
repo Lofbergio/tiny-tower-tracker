@@ -227,6 +227,7 @@ import { useUserStoresWithData } from '@/queries'
 import { useResidentsStore, useStoresStore } from '@/stores'
 import type { Resident, Store, UserStore } from '@/types'
 import { getCategoryColors } from '@/utils/categoryColors'
+import { formatResidentName } from '@/utils/residentName'
 import { useToast } from '@/utils/toast'
 import { computed, ref } from 'vue'
 
@@ -344,7 +345,7 @@ function handleAddResidentToStore(storeId: string) {
 
   const result = storesStore.addResidentToStore(storeId, residentToAdd.id)
   if (result.success) {
-    toast.success(`Added ${residentToAdd.name} to ${store?.name}`)
+    toast.success(`Added ${formatResidentName(residentToAdd.name)} to ${store?.name}`)
   } else {
     toast.error(result.error ?? 'Failed to add resident')
   }
@@ -358,13 +359,13 @@ function handleRemoveResident(storeId: string, residentId: string) {
 
   confirm({
     title: 'Remove Resident',
-    message: `Are you sure you want to remove ${resident.name} from this store?`,
+    message: `Are you sure you want to remove ${formatResidentName(resident.name)} from this store?`,
     variant: 'destructive',
     confirmText: 'Remove',
     onConfirm: () => {
       const success = storesStore.removeResidentFromStore(storeId, residentId)
       if (success) {
-        toast.success(`Removed ${resident.name} from store`)
+        toast.success(`Removed ${formatResidentName(resident.name)} from store`)
       } else {
         toast.error('Failed to remove resident')
       }

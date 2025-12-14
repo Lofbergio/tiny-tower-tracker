@@ -5,6 +5,24 @@ interface CategoryColors {
   bg: string
 }
 
+function hexToRgba(hex: string, alpha: number): string {
+  const raw = hex.replace('#', '')
+  const full =
+    raw.length === 3
+      ? raw
+          .split('')
+          .map(c => c + c)
+          .join('')
+      : raw
+  const r = Number.parseInt(full.slice(0, 2), 16)
+  const g = Number.parseInt(full.slice(2, 4), 16)
+  const b = Number.parseInt(full.slice(4, 6), 16)
+  if ([r, g, b].some(n => Number.isNaN(n))) {
+    return hex
+  }
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
 const CATEGORY_COLORS: Record<string, { light: CategoryColors; dark: CategoryColors }> = {
   food: {
     light: { primary: '#EF4444', light: '#FEE2E2', border: '#EF4444', bg: '#FEF2F2' },
@@ -38,11 +56,26 @@ export function getCategoryColors(category: string, isDark: boolean): CategoryCo
 
   for (const [key, colors] of Object.entries(CATEGORY_COLORS)) {
     if (cat.includes(key)) {
-      return colors[theme]
+      const selected = colors[theme]
+      if (!isDark) return selected
+
+      return {
+        ...selected,
+        // Use a softer tinted background in dark mode for legibility.
+        bg: hexToRgba(selected.primary, 0.16),
+        light: hexToRgba(selected.primary, 0.24),
+      }
     }
   }
 
-  return CATEGORY_COLORS.default[theme]
+  const selected = CATEGORY_COLORS.default[theme]
+  if (!isDark) return selected
+
+  return {
+    ...selected,
+    bg: hexToRgba(selected.primary, 0.14),
+    light: hexToRgba(selected.primary, 0.2),
+  }
 }
 
 export function getCategoryEmoji(category: string): string {

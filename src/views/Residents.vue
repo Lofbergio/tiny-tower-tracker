@@ -138,6 +138,7 @@ import { APP_CONSTANTS } from '@/constants'
 import { useStoresQuery, useUserStoresWithData } from '@/queries'
 import { useResidentsStore, useStoresStore } from '@/stores'
 import type { Resident, Store, UserStore } from '@/types'
+import { formatResidentName } from '@/utils/residentName'
 import { useToast } from '@/utils/toast'
 import { computed, ref } from 'vue'
 
@@ -187,7 +188,9 @@ function handleAddResident() {
     const result = residentsStore.addResident(newResidentName.value, newResidentDreamJob.value)
     if (result.success) {
       const dreamJobStore = allStores.value?.find(s => s.id === newResidentDreamJob.value)
-      toast.success(`✓ Added ${newResidentName.value} (wants ${dreamJobStore?.name})`)
+      toast.success(
+        `✓ Added ${formatResidentName(newResidentName.value)} (wants ${dreamJobStore?.name})`
+      )
       newResidentName.value = ''
       newResidentDreamJob.value = ''
       showAddDialog.value = false
@@ -212,7 +215,9 @@ function handlePlaceInDreamJob(residentId: string) {
   const result = storesStore.addResidentToStore(resident.dreamJob, residentId)
   if (result.success) {
     const store = allStores.value?.find(s => s.id === resident.dreamJob)
-    toast.success(`✨ Placed ${resident.name} in their dream job: ${store?.name}`)
+    toast.success(
+      `✨ Placed ${formatResidentName(resident.name)} in their dream job: ${store?.name}`
+    )
   } else {
     toast.error(result.error ?? 'Failed to place resident')
   }
@@ -245,7 +250,7 @@ function handleAssignToStore(residentId: string) {
   const result = storesStore.addResidentToStore(targetStore.storeId, residentId)
   if (result.success) {
     const store = allStores.value?.find(s => s.id === targetStore.storeId)
-    toast.success(`📍 Placed ${resident.name} in ${store?.name}`)
+    toast.success(`📍 Placed ${formatResidentName(resident.name)} in ${store?.name}`)
   } else {
     toast.error(result.error ?? 'Failed to assign resident')
   }

@@ -7,14 +7,14 @@
       <div class="flex items-center gap-3">
         <img
           :src="avatarUrl"
-          :alt="resident.name"
+          :alt="displayName"
           class="h-12 w-12 shrink-0 rounded-full border-2"
           :class="statusBorderColor.replace('border-l-4', 'border')"
         />
         <h3
           class="flex-1 text-lg font-semibold leading-tight md:text-2xl md:leading-none md:tracking-tight"
         >
-          {{ resident.name }}
+          {{ displayName }}
         </h3>
       </div>
     </div>
@@ -84,6 +84,7 @@
 <script setup lang="ts">
 import type { Resident, Store } from '@/types'
 import { getResidentAvatarUrl } from '@/utils/avatar'
+import { formatResidentName } from '@/utils/residentName'
 import { computed } from 'vue'
 import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
@@ -124,9 +125,11 @@ const statusBorderColor = computed(() => {
   return 'border-yellow-500 dark:border-yellow-600' // Needs placement
 })
 
+const displayName = computed(() => formatResidentName(props.resident.name))
+
 // Generate avatar using DiceBear API
 const avatarUrl = computed(() => {
-  return getResidentAvatarUrl(props.resident.name)
+  return getResidentAvatarUrl(displayName.value)
 })
 
 function getDreamJobName() {

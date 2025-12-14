@@ -88,11 +88,17 @@
       v-if="residents.length === 0"
       title="No Residents Yet"
       description="Add residents to your tower and assign them to their dream jobs!"
+      :icon="ResidentsEmptyIcon"
     >
       <Button @click="showAddDialog = true">Add Your First Resident</Button>
     </EmptyState>
 
-    <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <TransitionGroup
+      v-else
+      tag="div"
+      name="list"
+      class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+    >
       <ResidentCard
         v-for="resident in residents"
         :key="resident.id"
@@ -104,7 +110,7 @@
         @place-in-dream-job="handlePlaceInDreamJob(resident.id)"
         @assign-to-store="handleAssignToStore(resident.id)"
       />
-    </div>
+    </TransitionGroup>
 
     <!-- Confirmation Dialog -->
     <ConfirmDialog
@@ -124,6 +130,7 @@ import PageHeader from '@/components/PageHeader.vue'
 import ResidentCard from '@/components/ResidentCard.vue'
 import ResidentScreenshotImportDialog from '@/components/ResidentScreenshotImportDialog.vue'
 import TowerIllustration from '@/components/TowerIllustration.vue'
+import ResidentsEmptyIcon from '@/components/illustrations/ResidentsEmptyIcon.vue'
 import Button from '@/components/ui/Button.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import Dialog from '@/components/ui/Dialog.vue'

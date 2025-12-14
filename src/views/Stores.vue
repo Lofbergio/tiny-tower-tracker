@@ -26,11 +26,15 @@
         </h2>
         <Badge variant="default">{{ availableStores.length }} available</Badge>
       </div>
-      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+      <TransitionGroup
+        tag="div"
+        name="list"
+        class="relative grid gap-3 md:grid-cols-2 lg:grid-cols-3"
+      >
         <Card
           v-for="store in availableStores.slice(0, 6)"
           :key="store.id"
-          class="group cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.99]"
+          class="pressable group cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg"
           :style="{ borderLeftColor: categoryColors(store.category).border }"
           @click="handleAddStore(store.id)"
         >
@@ -51,7 +55,7 @@
             </div>
           </div>
         </Card>
-      </div>
+      </TransitionGroup>
       <Button
         v-if="availableStores.length > 6"
         variant="outline"
@@ -67,16 +71,21 @@
       <EmptyState
         title="No Stores Yet"
         description="Build stores in your tower and assign residents to work in them! Click any store below to add it."
+        :icon="StoresEmptyIcon"
       />
       <div class="mt-6">
         <h2 class="mb-3 flex items-center gap-2 text-lg font-semibold">
           <span>Available Stores</span>
         </h2>
-        <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        <TransitionGroup
+          tag="div"
+          name="list"
+          class="relative grid gap-3 md:grid-cols-2 lg:grid-cols-3"
+        >
           <Card
             v-for="store in availableStores.slice(0, 9)"
             :key="store.id"
-            class="group cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.99]"
+            class="pressable group cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg"
             :style="{ borderLeftColor: categoryColors(store.category).border }"
             @click="handleAddStore(store.id)"
           >
@@ -97,7 +106,7 @@
               </div>
             </div>
           </Card>
-        </div>
+        </TransitionGroup>
         <Button
           v-if="availableStores.length > 9"
           variant="outline"
@@ -119,7 +128,12 @@
       </div>
     </div>
 
-    <div v-if="userStoresWithData.length > 0" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <TransitionGroup
+      v-if="userStoresWithData.length > 0"
+      tag="div"
+      name="list"
+      class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+    >
       <StoreCard
         v-for="userStore in userStoresWithData"
         :key="userStore.storeId"
@@ -129,7 +143,7 @@
         @remove-resident="handleRemoveResident(userStore.storeId, $event)"
         @add-resident="handleAddResidentToStore(userStore.storeId)"
       />
-    </div>
+    </TransitionGroup>
 
     <!-- Full Store List Dialog (only shown when clicking "View All") -->
     <Dialog :open="showAddDialog" @update:open="handleDialogOpenChange">
@@ -170,7 +184,7 @@
           <Card
             v-for="store in filteredStores"
             :key="store.id"
-            class="cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-md active:scale-[0.99]"
+            class="pressable cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-md"
             :style="{ borderLeftColor: categoryColors(store.category).border }"
             @click="handleAddStore(store.id)"
           >
@@ -212,6 +226,7 @@ import PageHeader from '@/components/PageHeader.vue'
 import StoreCard from '@/components/StoreCard.vue'
 import StoreIcon from '@/components/StoreIcon.vue'
 import TowerIllustration from '@/components/TowerIllustration.vue'
+import StoresEmptyIcon from '@/components/illustrations/StoresEmptyIcon.vue'
 import Badge from '@/components/ui/Badge.vue'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'

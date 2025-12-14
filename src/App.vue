@@ -45,14 +45,11 @@
                   >
                     <span aria-hidden="true" class="mr-1">{{ navRoute.icon }}</span>
                     {{ navRoute.name }}
-                    <span
+                    <CountBadge
                       v-if="getPendingCount(navRoute.path) > 0"
+                      :count="getPendingCount(navRoute.path)"
                       class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground"
-                    >
-                      {{
-                        getPendingCount(navRoute.path) > 9 ? '9+' : getPendingCount(navRoute.path)
-                      }}
-                    </span>
+                    />
                   </Button>
                 </div>
               </div>
@@ -69,12 +66,11 @@
               >
                 <span aria-hidden="true" class="mr-2">{{ menuRoute.icon }}</span>
                 {{ menuRoute.name }}
-                <span
+                <CountBadge
                   v-if="getPendingCount(menuRoute.path) > 0"
+                  :count="getPendingCount(menuRoute.path)"
                   class="absolute right-2 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground"
-                >
-                  {{ getPendingCount(menuRoute.path) > 9 ? '9+' : getPendingCount(menuRoute.path) }}
-                </span>
+                />
               </Button>
             </div>
           </div>
@@ -113,7 +109,11 @@
               <p class="text-muted-foreground">Loading your tower...</p>
             </div>
           </div>
-          <RouterView v-else />
+          <RouterView v-else v-slot="{ Component }">
+            <Transition name="page" mode="out-in">
+              <component :is="Component" :key="route.fullPath" />
+            </Transition>
+          </RouterView>
         </main>
 
         <!-- Mobile Bottom Navigation -->
@@ -125,7 +125,7 @@
               v-for="mobileRoute in routes"
               :key="mobileRoute.path"
               :class="[
-                'relative flex min-h-[60px] flex-col items-center justify-center rounded-md p-3 text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95',
+                'pressable relative flex min-h-[60px] flex-col items-center justify-center rounded-md p-3 text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 currentRoute === mobileRoute.path
                   ? 'bg-primary text-primary-foreground'
                   : 'text-muted-foreground active:bg-accent',
@@ -136,14 +136,11 @@
             >
               <span aria-hidden="true" class="text-base leading-none">{{ mobileRoute.icon }}</span>
               <span>{{ mobileRoute.name }}</span>
-              <span
+              <CountBadge
                 v-if="getPendingCount(mobileRoute.path) > 0"
+                :count="getPendingCount(mobileRoute.path)"
                 class="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground"
-              >
-                {{
-                  getPendingCount(mobileRoute.path) > 9 ? '9+' : getPendingCount(mobileRoute.path)
-                }}
-              </span>
+              />
             </button>
           </div>
         </div>
@@ -160,6 +157,7 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ErrorBoundary from './components/ErrorBoundary.vue'
 import Button from './components/ui/Button.vue'
+import CountBadge from './components/ui/CountBadge.vue'
 import DarkModeToggle from './components/ui/DarkModeToggle.vue'
 import EmptyState from './components/ui/EmptyState.vue'
 import Toast from './components/ui/Toast.vue'

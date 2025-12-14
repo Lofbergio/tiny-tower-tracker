@@ -76,10 +76,16 @@
           v-if="pendingMissions.length === 0"
           title="No Pending Missions"
           description="All your missions are completed! Scroll down to see available missions you can add."
+          :icon="MissionsEmptyIcon"
         >
           <Button variant="outline" @click="activeTab = 'all'">View All Missions</Button>
         </EmptyState>
-        <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <TransitionGroup
+          v-else
+          tag="div"
+          name="list"
+          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+        >
           <MissionCard
             v-for="userMission in pendingMissions"
             :key="userMission.missionId"
@@ -89,15 +95,21 @@
             @reopen="handleReopenMission(userMission.missionId)"
             @remove="handleRemoveMission(userMission.missionId)"
           />
-        </div>
+        </TransitionGroup>
       </TabsContent>
       <TabsContent value="completed">
         <EmptyState
           v-if="completedMissions.length === 0"
           title="No Completed Missions"
           description="Complete missions to see them here. Keep building your tower!"
+          :icon="MissionsEmptyIcon"
         />
-        <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <TransitionGroup
+          v-else
+          tag="div"
+          name="list"
+          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+        >
           <MissionCard
             v-for="userMission in completedMissions"
             :key="userMission.missionId"
@@ -107,15 +119,21 @@
             @reopen="handleReopenMission(userMission.missionId)"
             @remove="handleRemoveMission(userMission.missionId)"
           />
-        </div>
+        </TransitionGroup>
       </TabsContent>
       <TabsContent value="all">
         <EmptyState
           v-if="userMissions.length === 0"
           title="No Missions Yet"
           description="Start tracking your Tiny Tower missions! Click the available missions below to get started."
+          :icon="MissionsEmptyIcon"
         />
-        <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <TransitionGroup
+          v-else
+          tag="div"
+          name="list"
+          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+        >
           <MissionCard
             v-for="userMission in userMissions"
             :key="userMission.missionId"
@@ -125,7 +143,7 @@
             @reopen="handleReopenMission(userMission.missionId)"
             @remove="handleRemoveMission(userMission.missionId)"
           />
-        </div>
+        </TransitionGroup>
       </TabsContent>
     </Tabs>
 
@@ -140,11 +158,15 @@
           {{ sortedCompletableMissions.length }}
         </Badge>
       </div>
-      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+      <TransitionGroup
+        tag="div"
+        name="list"
+        class="relative grid gap-3 md:grid-cols-2 lg:grid-cols-3"
+      >
         <Card
           v-for="mission in sortedCompletableMissions"
           :key="mission.id"
-          class="group relative cursor-pointer touch-manipulation overflow-hidden border-l-4 border-green-500 transition-all hover:scale-[1.02] hover:shadow-lg active:scale-[0.99] dark:border-green-600"
+          class="pressable group relative cursor-pointer touch-manipulation overflow-hidden border-l-4 border-green-500 transition-all hover:scale-[1.02] hover:shadow-lg dark:border-green-600"
           @click="handleAddMission(mission.id)"
         >
           <div
@@ -178,7 +200,7 @@
             </div>
           </div>
         </Card>
-      </div>
+      </TransitionGroup>
     </div>
 
     <div v-if="sortedNonCompletableMissions.length > 0" class="mb-8">
@@ -189,11 +211,15 @@
         </h2>
         <Badge variant="outline">{{ sortedNonCompletableMissions.length }}</Badge>
       </div>
-      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+      <TransitionGroup
+        tag="div"
+        name="list"
+        class="relative grid gap-3 md:grid-cols-2 lg:grid-cols-3"
+      >
         <Card
           v-for="mission in sortedNonCompletableMissions"
           :key="mission.id"
-          class="group relative cursor-pointer touch-manipulation overflow-hidden border-l-4 border-gray-400 opacity-70 transition-all hover:opacity-90 active:opacity-95 dark:border-gray-600"
+          class="pressable group relative cursor-pointer touch-manipulation overflow-hidden border-l-4 border-gray-400 opacity-70 transition-all hover:opacity-90 active:opacity-95 dark:border-gray-600"
           @click="handleAddMission(mission.id)"
         >
           <div class="relative flex flex-col space-y-1 p-3 md:p-4">
@@ -230,13 +256,14 @@
             </div>
           </div>
         </Card>
-      </div>
+      </TransitionGroup>
     </div>
 
     <EmptyState
       v-if="availableMissions.length === 0 && userMissions.length === 0"
       title="No Available Missions"
       description="All missions have been added! Complete your pending missions or add more stores to unlock new ones."
+      :icon="MissionsEmptyIcon"
     />
 
     <!-- Confirmation Dialog -->
@@ -256,6 +283,7 @@
 import MissionCard from '@/components/MissionCard.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import TowerIllustration from '@/components/TowerIllustration.vue'
+import MissionsEmptyIcon from '@/components/illustrations/MissionsEmptyIcon.vue'
 import Badge from '@/components/ui/Badge.vue'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'

@@ -1,12 +1,1 @@
-node_modules
-dist
-build
-coverage
-*.min.js
-*.min.css
-*.config.js
-*.config.ts
-*.config.cjs
-public
-.git
-
+ 

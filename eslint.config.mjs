@@ -14,12 +14,19 @@ export default [
     ignores: [
       'dist',
       'node_modules',
+      'build',
+      'coverage',
+      '*.min.js',
+      '*.min.css',
       '*.config.js',
       '*.config.ts',
       '*.config.cjs',
       '*.config.mjs',
       '.yarn',
       'yarn.lock',
+      '.git',
+      '.eslintcache',
+      'public/**/*.json', // Data files, not code
     ],
   },
 

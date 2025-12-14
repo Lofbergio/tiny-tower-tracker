@@ -1,7 +1,10 @@
 <template>
   <div class="container mx-auto p-4 pb-20 md:pb-4">
-    <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold">Stores</h1>
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h1 class="mb-1 text-3xl font-bold">Stores</h1>
+        <p class="text-muted-foreground text-sm">Build and manage stores in your tower</p>
+      </div>
       <Dialog :open="showAddDialog" @update:open="showAddDialog = $event">
         <DialogHeader>
           <DialogTitle>Add Store</DialogTitle>
@@ -9,16 +12,11 @@
         <DialogContent>
           <div class="space-y-4">
             <div>
-              <label class="text-sm font-medium mb-2 block">Select Store</label>
-              <Select v-model="selectedStoreId">
-                <option value="">Choose a store...</option>
-                <option
-                  v-for="store in availableStores"
-                  :key="store.id"
-                  :value="store.id"
-                >
+              <Label class="mb-2 block">Select Store</Label>
+              <Select v-model="selectedStoreId" placeholder="Choose a store...">
+                <SelectItem v-for="store in availableStores" :key="store.id" :value="store.id">
                   {{ store.name }} ({{ store.category }})
-                </option>
+                </SelectItem>
               </Select>
             </div>
           </div>
@@ -31,9 +29,13 @@
       <Button @click="showAddDialog = true">Add Store</Button>
     </div>
 
-    <div v-if="userStores.length === 0" class="text-center py-12">
-      <p class="text-muted-foreground">No stores added yet.</p>
-    </div>
+    <EmptyState
+      v-if="userStores.length === 0"
+      title="No Stores Yet"
+      description="Build stores in your tower and assign residents to work in them!"
+    >
+      <Button @click="showAddDialog = true">Add Your First Store</Button>
+    </EmptyState>
 
     <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <StoreCard
@@ -49,17 +51,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import StoreCard from '@/components/StoreCard.vue'
 import Button from '@/components/ui/Button.vue'
 import Dialog from '@/components/ui/Dialog.vue'
-import DialogHeader from '@/components/ui/DialogHeader.vue'
-import DialogTitle from '@/components/ui/DialogTitle.vue'
 import DialogContent from '@/components/ui/DialogContent.vue'
 import DialogFooter from '@/components/ui/DialogFooter.vue'
+import DialogHeader from '@/components/ui/DialogHeader.vue'
+import DialogTitle from '@/components/ui/DialogTitle.vue'
+import EmptyState from '@/components/ui/EmptyState.vue'
+import Label from '@/components/ui/Label.vue'
 import Select from '@/components/ui/Select.vue'
-import StoreCard from '@/components/StoreCard.vue'
-import { useStores, loadStores } from '@/composables/useStores'
+import SelectItem from '@/components/ui/SelectItem.vue'
 import { useResidents } from '@/composables/useResidents'
+import { loadStores, useStores } from '@/composables/useStores'
+import { computed, onMounted, ref } from 'vue'
 
 const { userStores, allStores, addStore, removeStore, removeResidentFromStore } = useStores()
 const { residents } = useResidents()
@@ -92,4 +97,3 @@ onMounted(async () => {
   await loadStores()
 })
 </script>
-

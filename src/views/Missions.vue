@@ -1,7 +1,10 @@
 <template>
   <div class="container mx-auto p-4 pb-20 md:pb-4">
-    <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold">Missions</h1>
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h1 class="mb-1 text-3xl font-bold">Missions</h1>
+        <p class="text-muted-foreground text-sm">Track and complete your Tiny Tower missions</p>
+      </div>
       <Dialog :open="showAddDialog" @update:open="showAddDialog = $event">
         <DialogHeader>
           <DialogTitle>Add Mission</DialogTitle>
@@ -9,16 +12,15 @@
         <DialogContent>
           <div class="space-y-4">
             <div>
-              <label class="text-sm font-medium mb-2 block">Select Mission</label>
-              <Select v-model="selectedMissionId">
-                <option value="">Choose a mission...</option>
-                <option
+              <Label class="mb-2 block">Select Mission</Label>
+              <Select v-model="selectedMissionId" placeholder="Choose a mission...">
+                <SelectItem
                   v-for="mission in availableMissions"
                   :key="mission.id"
                   :value="mission.id"
                 >
                   {{ mission.name }}
-                </option>
+                </SelectItem>
               </Select>
             </div>
           </div>
@@ -33,52 +35,89 @@
 
     <Tabs v-model="activeTab" class="mb-6">
       <TabsList>
-        <TabsTrigger :is-active="activeTab === 'pending'" @click="activeTab = 'pending'">
-          Pending ({{ pendingMissions.length }})
-        </TabsTrigger>
-        <TabsTrigger :is-active="activeTab === 'completed'" @click="activeTab = 'completed'">
-          Completed ({{ completedMissions.length }})
-        </TabsTrigger>
-        <TabsTrigger :is-active="activeTab === 'all'" @click="activeTab = 'all'">
-          All ({{ userMissions.length }})
-        </TabsTrigger>
+        <TabsTrigger value="pending"> Pending ({{ pendingMissions.length }}) </TabsTrigger>
+        <TabsTrigger value="completed"> Completed ({{ completedMissions.length }}) </TabsTrigger>
+        <TabsTrigger value="all"> All ({{ userMissions.length }}) </TabsTrigger>
       </TabsList>
+      <TabsContent value="pending">
+        <EmptyState
+          v-if="pendingMissions.length === 0"
+          title="No Pending Missions"
+          description="All your missions are completed! Add new missions to track your progress."
+        />
+        <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <MissionCard
+            v-for="userMission in pendingMissions"
+            :key="userMission.missionId"
+            :user-mission="userMission"
+            :is-completable="isMissionCompletable(userMission.missionId)"
+            @complete="markMissionCompleted(userMission.missionId)"
+            @reopen="markMissionPending(userMission.missionId)"
+            @remove="removeMission(userMission.missionId)"
+          />
+        </div>
+      </TabsContent>
+      <TabsContent value="completed">
+        <EmptyState
+          v-if="completedMissions.length === 0"
+          title="No Completed Missions"
+          description="Complete missions to see them here. Keep building your tower!"
+        />
+        <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <MissionCard
+            v-for="userMission in completedMissions"
+            :key="userMission.missionId"
+            :user-mission="userMission"
+            :is-completable="isMissionCompletable(userMission.missionId)"
+            @complete="markMissionCompleted(userMission.missionId)"
+            @reopen="markMissionPending(userMission.missionId)"
+            @remove="removeMission(userMission.missionId)"
+          />
+        </div>
+      </TabsContent>
+      <TabsContent value="all">
+        <EmptyState
+          v-if="userMissions.length === 0"
+          title="No Missions Yet"
+          description="Start tracking your Tiny Tower missions! Click 'Add Mission' to get started."
+        >
+          <Button @click="showAddDialog = true">Add Your First Mission</Button>
+        </EmptyState>
+        <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <MissionCard
+            v-for="userMission in userMissions"
+            :key="userMission.missionId"
+            :user-mission="userMission"
+            :is-completable="isMissionCompletable(userMission.missionId)"
+            @complete="markMissionCompleted(userMission.missionId)"
+            @reopen="markMissionPending(userMission.missionId)"
+            @remove="removeMission(userMission.missionId)"
+          />
+        </div>
+      </TabsContent>
     </Tabs>
-
-    <div v-if="displayedMissions.length === 0" class="text-center py-12">
-      <p class="text-muted-foreground">No missions found.</p>
-    </div>
-
-    <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <MissionCard
-        v-for="userMission in displayedMissions"
-        :key="userMission.missionId"
-        :user-mission="userMission"
-        :is-completable="isMissionCompletable(userMission.missionId)"
-        @complete="markMissionCompleted(userMission.missionId)"
-        @reopen="markMissionPending(userMission.missionId)"
-        @remove="removeMission(userMission.missionId)"
-      />
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import MissionCard from '@/components/MissionCard.vue'
 import Button from '@/components/ui/Button.vue'
-import Card from '@/components/ui/Card.vue'
 import Dialog from '@/components/ui/Dialog.vue'
-import DialogHeader from '@/components/ui/DialogHeader.vue'
-import DialogTitle from '@/components/ui/DialogTitle.vue'
 import DialogContent from '@/components/ui/DialogContent.vue'
 import DialogFooter from '@/components/ui/DialogFooter.vue'
+import DialogHeader from '@/components/ui/DialogHeader.vue'
+import DialogTitle from '@/components/ui/DialogTitle.vue'
+import EmptyState from '@/components/ui/EmptyState.vue'
+import Label from '@/components/ui/Label.vue'
 import Select from '@/components/ui/Select.vue'
+import SelectItem from '@/components/ui/SelectItem.vue'
 import Tabs from '@/components/ui/Tabs.vue'
+import TabsContent from '@/components/ui/TabsContent.vue'
 import TabsList from '@/components/ui/TabsList.vue'
 import TabsTrigger from '@/components/ui/TabsTrigger.vue'
-import MissionCard from '@/components/MissionCard.vue'
-import { useMissions, loadMissions } from '@/composables/useMissions'
+import { loadMissions, useMissions } from '@/composables/useMissions'
 import { useStores } from '@/composables/useStores'
+import { computed, onMounted, ref } from 'vue'
 
 const { userStores, allStores } = useStores()
 const {
@@ -97,12 +136,6 @@ const activeTab = ref<'pending' | 'completed' | 'all'>('pending')
 const showAddDialog = ref(false)
 const selectedMissionId = ref('')
 
-const displayedMissions = computed(() => {
-  if (activeTab.value === 'pending') return pendingMissions.value
-  if (activeTab.value === 'completed') return completedMissions.value
-  return userMissions.value
-})
-
 const availableMissions = computed(() => {
   const userMissionIds = new Set(userMissions.value.map(um => um.missionId))
   return allMissions.value.filter(m => !userMissionIds.has(m.id))
@@ -120,4 +153,3 @@ onMounted(async () => {
   await loadMissions()
 })
 </script>
-

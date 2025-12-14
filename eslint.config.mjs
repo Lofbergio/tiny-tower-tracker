@@ -31,6 +31,7 @@ export default [
   },
 
   // Vue files configuration
+  ...vue.configs['flat/recommended'],
   {
     files: ['**/*.vue'],
     languageOptions: {
@@ -51,15 +52,9 @@ export default [
       },
     },
     plugins: {
-      vue,
       '@typescript-eslint': typescript,
     },
-    processor: vue.processors['.vue'],
     rules: {
-      ...vue.configs['vue3-essential'].rules,
-      ...vue.configs['vue3-strongly-recommended'].rules,
-      ...vue.configs['vue3-recommended'].rules,
-
       // Vue specific rules
       'vue/multi-word-component-names': 'off',
       'vue/no-v-html': 'warn',

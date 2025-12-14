@@ -1,10 +1,5 @@
 <template>
-  <div :class="cn('mt-4', $attrs.class)">
+  <div class="mt-4">
     <slot />
   </div>
 </template>
-
-<script setup lang="ts">
-import { cn } from '@/utils/cn'
-</script>
-

@@ -2,23 +2,21 @@
   <div class="space-y-6">
     <!-- Mission Suggestions -->
     <div v-if="completableMissions.length > 0">
-      <h3 class="text-lg font-semibold mb-3">Missions Ready to Complete</h3>
+      <h3 class="mb-3 text-lg font-semibold">Missions Ready to Complete</h3>
       <div class="space-y-3">
         <Card
           v-for="mission in completableMissions"
           :key="mission.id"
-          class="bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800"
+          class="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20"
         >
           <CardContent class="pt-6">
             <div class="flex items-start justify-between">
               <div class="flex-1">
-                <h4 class="font-semibold mb-1">{{ mission.name }}</h4>
-                <p class="text-sm text-muted-foreground mb-2">{{ mission.description }}</p>
+                <h4 class="mb-1 font-semibold">{{ mission.name }}</h4>
+                <p class="text-muted-foreground mb-2 text-sm">{{ mission.description }}</p>
                 <p class="text-sm">Reward: {{ mission.reward }} Bux</p>
               </div>
-              <Button @click="handleCompleteMission(mission.id)">
-                Mark Done
-              </Button>
+              <Button @click="handleCompleteMission(mission.id)"> Mark Done </Button>
             </div>
           </CardContent>
         </Card>
@@ -27,21 +25,24 @@
 
     <!-- Resident Placement Suggestions -->
     <div v-if="residentPlacements.length > 0">
-      <h3 class="text-lg font-semibold mb-3">Resident Placements Needed</h3>
+      <h3 class="mb-3 text-lg font-semibold">Resident Placements Needed</h3>
       <div class="space-y-3">
         <Card
           v-for="placement in residentPlacements"
           :key="placement.resident.id"
-          class="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800"
+          class="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20"
         >
           <CardContent class="pt-6">
             <div class="flex items-start justify-between">
               <div class="flex-1">
-                <h4 class="font-semibold mb-1">{{ placement.resident.name }}</h4>
-                <p class="text-sm text-muted-foreground">
+                <h4 class="mb-1 font-semibold">{{ placement.resident.name }}</h4>
+                <p class="text-muted-foreground text-sm">
                   Should be placed in <strong>{{ placement.storeName }}</strong> (dream job)
                 </p>
-                <p v-if="placement.isFull" class="text-sm text-yellow-600 dark:text-yellow-400 mt-1">
+                <p
+                  v-if="placement.isFull"
+                  class="mt-1 text-sm text-yellow-600 dark:text-yellow-400"
+                >
                   ⚠️ Store is full (3/3). You may need to evict a resident.
                 </p>
               </div>
@@ -59,21 +60,22 @@
 
     <!-- Overcapacity Warnings -->
     <div v-if="overcapacityWarnings.length > 0">
-      <h3 class="text-lg font-semibold mb-3">Overcapacity Warnings</h3>
+      <h3 class="mb-3 text-lg font-semibold">Overcapacity Warnings</h3>
       <div class="space-y-3">
         <Card
           v-for="warning in overcapacityWarnings"
           :key="warning.resident.id"
-          class="bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800"
+          class="border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20"
         >
           <CardContent class="pt-6">
             <div class="flex items-start justify-between">
               <div class="flex-1">
-                <h4 class="font-semibold mb-1">{{ warning.resident.name }}</h4>
-                <p class="text-sm text-muted-foreground">
-                  Dream job is <strong>{{ warning.storeName }}</strong>, but store is full (3/3)
+                <h4 class="mb-1 font-semibold">{{ warning.resident.name }}</h4>
+                <p class="text-muted-foreground text-sm">
+                  Dream job is <strong>{{ warning.storeName }}</strong
+                  >, but store is full (3/3)
                 </p>
-                <p class="text-sm text-muted-foreground mt-1">
+                <p class="text-muted-foreground mt-1 text-sm">
                   Consider evicting a resident from this store
                 </p>
               </div>
@@ -85,21 +87,21 @@
 
     <!-- New Store Opportunities -->
     <div v-if="newStoreOpportunities.length > 0">
-      <h3 class="text-lg font-semibold mb-3">New Store Opportunities</h3>
+      <h3 class="mb-3 text-lg font-semibold">New Store Opportunities</h3>
       <div class="space-y-3">
         <Card
           v-for="opportunity in newStoreOpportunities"
           :key="opportunity.storeId"
-          class="bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800"
+          class="border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-900/20"
         >
           <CardContent class="pt-6">
             <div class="flex items-start justify-between">
               <div class="flex-1">
-                <h4 class="font-semibold mb-1">{{ opportunity.storeName }}</h4>
-                <p class="text-sm text-muted-foreground">
+                <h4 class="mb-1 font-semibold">{{ opportunity.storeName }}</h4>
+                <p class="text-muted-foreground text-sm">
                   {{ opportunity.residents.length }} resident(s) have this as their dream job:
                 </p>
-                <ul class="text-sm mt-1 space-y-1">
+                <ul class="mt-1 space-y-1 text-sm">
                   <li v-for="resident in opportunity.residents" :key="resident.id">
                     • {{ resident.name }}
                   </li>
@@ -112,21 +114,24 @@
     </div>
 
     <!-- Empty State -->
-    <div v-if="hasNoPendingChanges" class="text-center py-12">
-      <p class="text-muted-foreground">No pending changes. Everything is up to date!</p>
-    </div>
+    <EmptyState
+      v-if="hasNoPendingChanges"
+      title="All Set!"
+      description="No pending changes. Everything is up to date and your tower is running smoothly!"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import { useMissions } from '@/composables/useMissions'
+import { useResidents } from '@/composables/useResidents'
+import { useStores } from '@/composables/useStores'
+import type { Resident, Store } from '@/types'
 import { computed } from 'vue'
+import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
 import CardContent from './ui/CardContent.vue'
-import Button from './ui/Button.vue'
-import { useStores } from '@/composables/useStores'
-import { useResidents } from '@/composables/useResidents'
-import { useMissions } from '@/composables/useMissions'
-import type { Resident, Store } from '@/types'
+import EmptyState from './ui/EmptyState.vue'
 
 const storesComposable = useStores()
 const { userStores, allStores, addResidentToStore, isStoreFull } = storesComposable
@@ -237,4 +242,3 @@ function handlePlaceResident(residentId: string, storeId: string) {
   addResidentToStore(storeId, residentId)
 }
 </script>
-

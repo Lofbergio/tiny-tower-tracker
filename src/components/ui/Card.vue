@@ -1,10 +1,7 @@
 <template>
-  <div :class="cn('rounded-lg border bg-card text-card-foreground shadow-sm', $attrs.class)">
+  <div
+    class="bg-card text-card-foreground hover:border-primary/20 rounded-lg border shadow-sm transition-all hover:shadow-md"
+  >
     <slot />
   </div>
 </template>
-
-<script setup lang="ts">
-import { cn } from '@/utils/cn'
-</script>
-

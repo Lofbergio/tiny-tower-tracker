@@ -1,10 +1,5 @@
 <template>
-  <div :class="cn('p-6 pt-0', $attrs.class)">
+  <div class="p-6 pt-0">
     <slot />
   </div>
 </template>
-
-<script setup lang="ts">
-import { cn } from '@/utils/cn'
-</script>
-

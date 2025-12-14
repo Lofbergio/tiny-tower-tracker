@@ -1,10 +1,5 @@
 <template>
-  <h2 :class="cn('text-lg font-semibold leading-none tracking-tight', $attrs.class)">
+  <h2 class="text-lg font-semibold leading-none tracking-tight">
     <slot />
   </h2>
 </template>
-
-<script setup lang="ts">
-import { cn } from '@/utils/cn'
-</script>
-

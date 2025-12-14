@@ -1,6 +1,9 @@
 <template>
   <div class="container mx-auto p-4 pb-20 md:pb-4">
-    <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
+    <div class="mb-8">
+      <h1 class="mb-2 text-3xl font-bold">Dashboard</h1>
+      <p class="text-muted-foreground">Track your tower's progress and manage your residents</p>
+    </div>
     <PendingChanges />
   </div>
 </template>

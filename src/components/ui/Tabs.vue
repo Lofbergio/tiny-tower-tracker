@@ -1,10 +1,21 @@
 <template>
-  <div :class="cn('w-full', $attrs.class)">
+  <TabsRoot
+    :model-value="modelValue"
+    @update:model-value="$emit('update:modelValue', $event)"
+    class="w-full"
+  >
     <slot />
-  </div>
+  </TabsRoot>
 </template>
 
 <script setup lang="ts">
-import { cn } from '@/utils/cn'
-</script>
+import { TabsRoot } from 'radix-vue'
 
+defineProps<{
+  modelValue?: string
+}>()
+
+defineEmits<{
+  'update:modelValue': [value: string]
+}>()
+</script>

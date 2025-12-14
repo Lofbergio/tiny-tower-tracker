@@ -15,10 +15,7 @@
     "vue-router": "^4.3.0",
     "@vueuse/core": "^10.11.0",
     "@radix-icons/vue": "^1.0.0",
-    "radix-vue": "^1.9.0",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^2.2.2"
+    "radix-vue": "^1.9.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",

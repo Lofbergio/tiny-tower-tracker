@@ -1,22 +1,19 @@
 <template>
-  <div :class="cn(
-    'inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground',
-    orientation === 'vertical' && 'flex-col h-auto',
-    $attrs.class
-  )">
+  <TabsList
+    :orientation="orientation"
+    :class="[
+      'bg-muted text-muted-foreground inline-flex h-10 items-center justify-center rounded-md p-1',
+      orientation === 'vertical' && 'h-auto flex-col',
+    ]"
+  >
     <slot />
-  </div>
+  </TabsList>
 </template>
 
 <script setup lang="ts">
-import { cn } from '@/utils/cn'
+import { TabsList } from 'radix-vue'
 
-interface Props {
+defineProps<{
   orientation?: 'horizontal' | 'vertical'
-}
-
-withDefaults(defineProps<Props>(), {
-  orientation: 'horizontal',
-})
+}>()
 </script>
-

@@ -6,7 +6,7 @@
     @update:model-value="handleValueChange"
   >
     <SelectTrigger
-      class="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+      class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
     >
       <SelectValue :placeholder="placeholder" />
       <SelectIcon class="h-4 w-4 opacity-50">
@@ -20,7 +20,7 @@
         :side-offset="6"
         update-position-strategy="optimized"
         :avoid-collisions="false"
-        class="bg-popover text-popover-foreground relative w-[var(--radix-select-trigger-width)] min-w-[12rem] overflow-hidden rounded-md border shadow-md"
+        class="relative w-[var(--radix-select-trigger-width)] min-w-[12rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md"
       >
         <div class="border-b p-2">
           <Input
@@ -31,7 +31,7 @@
             @keydown.stop
             @keydown.enter.prevent
           />
-          <p class="text-muted-foreground mt-2 text-xs">
+          <p class="mt-2 text-xs text-muted-foreground">
             <template v-if="isSearchRequired && query.trim().length < minQueryLength">
               Type {{ minQueryLength }}+ character<span v-if="minQueryLength > 1">s</span> to search
               ({{ items.length }} options)
@@ -45,7 +45,7 @@
 
         <SelectViewport class="max-h-72 p-1">
           <template v-if="isSearchRequired && query.trim().length < minQueryLength">
-            <div class="text-muted-foreground px-2 py-6 text-center text-sm">
+            <div class="px-2 py-6 text-center text-sm text-muted-foreground">
               Start typing to see results
             </div>
           </template>
@@ -55,7 +55,7 @@
               :key="item.value"
               :value="item.value"
               :disabled="item.disabled"
-              class="focus:bg-accent focus:text-accent-foreground relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+              class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
             >
               <SelectItemText>
                 {{ item.label }}
@@ -69,7 +69,7 @@
                 ? filteredItems.length === 0
                 : false
             "
-            class="text-muted-foreground px-2 py-6 text-center text-sm"
+            class="px-2 py-6 text-center text-sm text-muted-foreground"
           >
             No matches
           </div>

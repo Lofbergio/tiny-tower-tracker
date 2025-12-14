@@ -22,14 +22,14 @@
       <div class="space-y-1.5 md:space-y-2">
         <div>
           <p class="text-xs font-medium md:text-sm">Dream Job:</p>
-          <p class="text-muted-foreground text-xs md:text-sm">{{ getDreamJobName() }}</p>
+          <p class="text-xs text-muted-foreground md:text-sm">{{ getDreamJobName() }}</p>
         </div>
         <div v-if="currentStore">
           <p class="text-xs font-medium md:text-sm">Current Store:</p>
-          <p class="text-muted-foreground text-xs md:text-sm">{{ getCurrentStoreName() }}</p>
+          <p class="text-xs text-muted-foreground md:text-sm">{{ getCurrentStoreName() }}</p>
         </div>
         <div v-else>
-          <p class="text-muted-foreground text-xs md:text-sm">Not placed in any store</p>
+          <p class="text-xs text-muted-foreground md:text-sm">Not placed in any store</p>
         </div>
         <div
           v-if="needsPlacement && canPlaceInDreamJob"
@@ -71,7 +71,7 @@
         <Button
           variant="ghost"
           size="sm"
-          class="text-destructive hover:text-destructive w-full"
+          class="w-full text-destructive hover:text-destructive"
           @click="$emit('remove-resident')"
         >
           Remove Resident

@@ -109,11 +109,15 @@ export function useUserMissionsWithData() {
   })
 
   const pendingMissions = computed(() => {
-    return userMissionsWithData.value.filter((um: UserMission & { mission: Mission }) => um.status === 'pending')
+    return userMissionsWithData.value.filter(
+      (um: UserMission & { mission: Mission }) => um.status === 'pending'
+    )
   })
 
   const completedMissions = computed(() => {
-    return userMissionsWithData.value.filter((um: UserMission & { mission: Mission }) => um.status === 'completed')
+    return userMissionsWithData.value.filter(
+      (um: UserMission & { mission: Mission }) => um.status === 'completed'
+    )
   })
 
   return {

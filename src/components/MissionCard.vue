@@ -29,7 +29,7 @@
           💰 {{ userMission.mission.reward }}
         </Badge>
       </div>
-      <p class="text-muted-foreground line-clamp-1 text-xs md:line-clamp-2">
+      <p class="line-clamp-1 text-xs text-muted-foreground md:line-clamp-2">
         {{ userMission.mission.description }}
       </p>
     </div>

@@ -1,14 +1,10 @@
 import type { Store } from '@/types'
-import type { ScreenshotResidentCandidate, TesseractLine } from '../types'
 import { AUTO_SELECT_MIN_CONFIDENCE } from '../constants'
 import { groupLinesIntoRows, splitRowIntoColumns } from '../layout'
 import { pickBestName } from '../namePicking'
 import { findEmbeddedStoresInText, pickBestStoreMatch } from '../storeMatching'
-import {
-  isUnemployedText,
-  looksLikeHeaderOrNoise,
-  normalizeForMatch,
-} from '../textUtils'
+import { isUnemployedText, looksLikeHeaderOrNoise, normalizeForMatch } from '../textUtils'
+import type { ScreenshotResidentCandidate, TesseractLine } from '../types'
 
 export function extractCandidatesThreeColumn(params: {
   lines: TesseractLine[]
@@ -62,8 +58,12 @@ export function extractCandidatesThreeColumn(params: {
 
     const middleTexts = colTexts.length === 3 ? (colTexts[1] ?? []) : []
     const rightTexts = colTexts.length === 3 ? (colTexts[2] ?? []) : []
-    const currentFromMiddle = middleTexts.length ? pickBestStoreMatch(middleTexts, stores) : { confidence: 0 }
-    const dreamFromRight = rightTexts.length ? pickBestStoreMatch(rightTexts, stores) : { confidence: 0 }
+    const currentFromMiddle = middleTexts.length
+      ? pickBestStoreMatch(middleTexts, stores)
+      : { confidence: 0 }
+    const dreamFromRight = rightTexts.length
+      ? pickBestStoreMatch(rightTexts, stores)
+      : { confidence: 0 }
 
     let currentMatch =
       currentFromNameCol.confidence >= 0.75
@@ -92,7 +92,11 @@ export function extractCandidatesThreeColumn(params: {
       }
     }
 
-    if (embedded.length >= 2 && !hasUnemployed && (!currentMatch.storeId || currentMatch.confidence < 0.75)) {
+    if (
+      embedded.length >= 2 &&
+      !hasUnemployed &&
+      (!currentMatch.storeId || currentMatch.confidence < 0.75)
+    ) {
       const current = embedded[0]
       currentMatch = {
         raw: current.store.name,
@@ -110,7 +114,11 @@ export function extractCandidatesThreeColumn(params: {
       issues.push('Could not confidently match dream job to a known store')
     }
 
-    if ((currentJobRaw ?? currentMatch.raw) && !currentMatch.storeId && !isUnemployedText(currentJobRaw ?? currentMatch.raw ?? '')) {
+    if (
+      (currentJobRaw ?? currentMatch.raw) &&
+      !currentMatch.storeId &&
+      !isUnemployedText(currentJobRaw ?? currentMatch.raw ?? '')
+    ) {
       issues.push('Could not confidently match current job to a known store')
     }
 
@@ -125,7 +133,10 @@ export function extractCandidatesThreeColumn(params: {
       matchedStoreName: fallbackDream.storeName,
       currentMatchConfidence: currentMatch.confidence,
       matchConfidence: fallbackDream.confidence,
-      selected: Boolean(namePick.name) && Boolean(fallbackDream.storeId) && fallbackDream.confidence >= AUTO_SELECT_MIN_CONFIDENCE,
+      selected:
+        Boolean(namePick.name) &&
+        Boolean(fallbackDream.storeId) &&
+        fallbackDream.confidence >= AUTO_SELECT_MIN_CONFIDENCE,
       issues,
       sourceFileName,
     })

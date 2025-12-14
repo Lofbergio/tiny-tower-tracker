@@ -104,7 +104,9 @@
         >
           <div class="font-medium text-foreground">Paste / drop screenshots</div>
           <div class="mt-1 sm:hidden">Tap to choose screenshots.</div>
-          <div class="mt-1 hidden sm:block">Paste an image (Ctrl+V), drag & drop here, or click to choose.</div>
+          <div class="mt-1 hidden sm:block">
+            Paste an image (Ctrl+V), drag & drop here, or click to choose.
+          </div>
         </div>
 
         <div class="min-h-5 text-sm text-muted-foreground">
@@ -170,13 +172,21 @@
         >
           <div v-if="importCandidates.length > 0" class="space-y-3">
             <div class="rounded-md bg-muted p-3">
-              <div class="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between">
+              <div
+                class="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between"
+              >
                 <div>
                   Found <span class="font-medium">{{ importCandidates.length }}</span> residents.
-                  Selected <span class="font-medium">{{ selectedImportCount }}</span>.
+                  Selected <span class="font-medium">{{ selectedImportCount }}</span
+                  >.
                 </div>
                 <div class="flex flex-col gap-2 sm:flex-row">
-                  <Button variant="outline" size="sm" class="w-full sm:w-auto" @click="selectAllMatched">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    class="w-full sm:w-auto"
+                    @click="selectAllMatched"
+                  >
                     Select matched
                   </Button>
                   <Button variant="outline" size="sm" class="w-full sm:w-auto" @click="selectNone">
@@ -225,7 +235,9 @@
                     </div>
                     <div class="text-sm">
                       <span class="text-muted-foreground">Dream job:</span>
-                      <span class="ml-1 font-medium">{{ c.matchedStoreName ?? c.dreamJobRaw }}</span>
+                      <span class="ml-1 font-medium">{{
+                        c.matchedStoreName ?? c.dreamJobRaw
+                      }}</span>
                     </div>
                     <div v-if="c.currentJobRaw || c.currentJobStoreId" class="text-sm">
                       <span class="text-muted-foreground">Current job:</span>
@@ -381,7 +393,9 @@ function appendScreenshotFiles(files: File[]) {
   const incoming = files.filter(f => f.type.startsWith('image/'))
   if (incoming.length === 0) return
 
-  const existingKeys = new Set(screenshotFiles.value.map(f => `${f.name}|${f.size}|${f.lastModified}`))
+  const existingKeys = new Set(
+    screenshotFiles.value.map(f => `${f.name}|${f.size}|${f.lastModified}`)
+  )
   const unique = incoming.filter(f => !existingKeys.has(`${f.name}|${f.size}|${f.lastModified}`))
   if (unique.length === 0) return
 
@@ -408,7 +422,9 @@ function handlePaste(event: ClipboardEvent) {
   if (imageFiles.length === 0) return
   event.preventDefault()
   appendScreenshotFiles(imageFiles)
-  toast.success(`Added ${imageFiles.length} pasted image${imageFiles.length === 1 ? '' : 's'} to import`)
+  toast.success(
+    `Added ${imageFiles.length} pasted image${imageFiles.length === 1 ? '' : 's'} to import`
+  )
 }
 
 function handleScreenshotFiles(event: Event) {
@@ -637,11 +653,13 @@ function buildScreenshotImportDetailLines(selected: ScreenshotResidentCandidate[
 
   for (const c of limited) {
     const name = c.name || c.nameRaw || 'Unknown'
-    const dream = c.dreamJobStoreId ? getStoreName(c.dreamJobStoreId) : (c.matchedStoreName ?? c.dreamJobRaw)
+    const dream = c.dreamJobStoreId
+      ? getStoreName(c.dreamJobStoreId)
+      : (c.matchedStoreName ?? c.dreamJobRaw)
     const dreamText = dream ? `Dream: ${dream}` : 'Dream: (unknown)'
 
     if (!c.currentJobStoreId) {
-      lines.push(`- ${name} → ${dreamText} | Current: (not detected)`) 
+      lines.push(`- ${name} → ${dreamText} | Current: (not detected)`)
       continue
     }
 
@@ -662,7 +680,9 @@ function buildScreenshotImportDetailLines(selected: ScreenshotResidentCandidate[
     }
 
     const addNote = willAddStore ? ' + add store' : ''
-    lines.push(`- ${name} → ${dreamText} | Current: ${currentStoreName} (${placementNote}${addNote})`)
+    lines.push(
+      `- ${name} → ${dreamText} | Current: ${currentStoreName} (${placementNote}${addNote})`
+    )
   }
 
   if (selected.length > maxLines) {

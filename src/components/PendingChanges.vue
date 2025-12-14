@@ -16,7 +16,7 @@
             <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ mission.name }}</h4>
-                <p class="text-muted-foreground mb-2 text-sm">{{ mission.description }}</p>
+                <p class="mb-2 text-sm text-muted-foreground">{{ mission.description }}</p>
                 <p class="text-sm">Reward: {{ mission.reward }} Bux</p>
               </div>
               <Button class="w-full sm:w-auto" @click="handleCompleteMission(mission.id)">
@@ -44,7 +44,7 @@
             <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ placement.resident.name }}</h4>
-                <p class="text-muted-foreground text-sm">
+                <p class="text-sm text-muted-foreground">
                   Should be placed in <strong>{{ placement.storeName }}</strong> (dream job)
                 </p>
                 <p
@@ -83,11 +83,11 @@
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ warning.resident.name }}</h4>
-                <p class="text-muted-foreground text-sm">
+                <p class="text-sm text-muted-foreground">
                   Dream job is <strong>{{ warning.storeName }}</strong
                   >, but store is full (3/3)
                 </p>
-                <p class="text-muted-foreground mt-1 text-sm">
+                <p class="mt-1 text-sm text-muted-foreground">
                   Consider evicting a resident from this store
                 </p>
               </div>
@@ -113,7 +113,7 @@
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ opportunity.storeName }}</h4>
-                <p class="text-muted-foreground text-sm">
+                <p class="text-sm text-muted-foreground">
                   {{ opportunity.residents.length }} resident(s) have this as their dream job:
                 </p>
                 <ul class="mt-1 space-y-1 text-sm">

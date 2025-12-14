@@ -1,19 +1,19 @@
 <template>
-  <div v-if="error" class="bg-background flex min-h-screen items-center justify-center p-4">
+  <div v-if="error" class="flex min-h-screen items-center justify-center bg-background p-4">
     <Card class="w-full max-w-md">
       <div class="flex flex-col space-y-1.5 p-6">
-        <h3 class="text-destructive text-2xl font-semibold leading-none tracking-tight">
+        <h3 class="text-2xl font-semibold leading-none tracking-tight text-destructive">
           Something went wrong
         </h3>
       </div>
       <div class="space-y-4 p-6 pt-0">
-        <p class="text-muted-foreground text-sm">
+        <p class="text-sm text-muted-foreground">
           The application encountered an unexpected error. Your data should be safe, but you may
           need to refresh the page.
         </p>
-        <details class="bg-muted rounded-md p-3">
+        <details class="rounded-md bg-muted p-3">
           <summary class="cursor-pointer text-sm font-medium">Error details</summary>
-          <pre class="text-muted-foreground mt-2 overflow-auto text-xs">{{ error.message }}</pre>
+          <pre class="mt-2 overflow-auto text-xs text-muted-foreground">{{ error.message }}</pre>
         </details>
         <div class="flex flex-col gap-2 sm:flex-row">
           <Button class="flex-1" @click="handleReset">Reload Application</Button>

@@ -5,13 +5,13 @@
         <span>💾</span>
         Data Management
       </h3>
-      <p class="text-muted-foreground text-sm">
+      <p class="text-sm text-muted-foreground">
         Export your data for backup or import from a previous backup
       </p>
     </div>
     <div class="space-y-4 p-6 pt-0">
       <!-- Storage Info -->
-      <div class="bg-muted rounded-md p-3">
+      <div class="rounded-md bg-muted p-3">
         <div class="flex items-center justify-between text-sm">
           <span class="text-muted-foreground">Storage Used:</span>
           <span class="font-medium">{{ storageInfo.percentUsed.toFixed(1) }}%</span>
@@ -25,13 +25,13 @@
       </div>
 
       <!-- Last Saved -->
-      <div v-if="appStore.lastSaved" class="text-muted-foreground text-sm">
+      <div v-if="appStore.lastSaved" class="text-sm text-muted-foreground">
         Last saved: {{ formatDate(appStore.lastSaved) }}
       </div>
 
       <!-- Actions -->
       <div class="grid gap-3 sm:grid-cols-2">
-        <Button variant="outline" class="w-full min-h-[48px]" @click="handleExport">
+        <Button variant="outline" class="min-h-[48px] w-full" @click="handleExport">
           <svg
             class="mr-2 h-4 w-4"
             fill="none"
@@ -48,7 +48,7 @@
           </svg>
           Export Data
         </Button>
-        <Button variant="outline" class="w-full min-h-[48px]" @click="triggerImport">
+        <Button variant="outline" class="min-h-[48px] w-full" @click="triggerImport">
           <svg
             class="mr-2 h-4 w-4"
             fill="none"
@@ -68,10 +68,10 @@
       </div>
 
       <div class="border-t pt-4">
-        <Button variant="destructive" class="w-full min-h-[48px]" @click="handleClearAll">
+        <Button variant="destructive" class="min-h-[48px] w-full" @click="handleClearAll">
           Clear All Data
         </Button>
-        <p class="text-muted-foreground mt-2 text-xs">
+        <p class="mt-2 text-xs text-muted-foreground">
           Warning: This will permanently delete all your stores, residents, and missions.
         </p>
       </div>
@@ -103,10 +103,10 @@
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { useAppStore } from '@/stores'
 import {
-    checkLocalStorageQuota,
-    clearAllData,
-    exportUserData,
-    importUserData,
+  checkLocalStorageQuota,
+  clearAllData,
+  exportUserData,
+  importUserData,
 } from '@/utils/storage'
 import { useToast } from '@/utils/toast'
 import { computed, ref } from 'vue'

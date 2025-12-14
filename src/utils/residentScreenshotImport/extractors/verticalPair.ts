@@ -1,5 +1,4 @@
 import type { Store } from '@/types'
-import type { ScreenshotResidentCandidate, TesseractLine } from '../types'
 import { AUTO_SELECT_MIN_CONFIDENCE } from '../constants'
 import { matchStore } from '../storeMatching'
 import {
@@ -9,6 +8,7 @@ import {
   looksLikeHeaderOrNoise,
   sanitizeResidentName,
 } from '../textUtils'
+import type { ScreenshotResidentCandidate, TesseractLine } from '../types'
 
 export function extractCandidatesVerticalPair(params: {
   lines: TesseractLine[]
@@ -52,7 +52,8 @@ export function extractCandidatesVerticalPair(params: {
 
     if (verticalGap > 80) {
       const extracted = extractResidentNameFromOcrLine(raw, stores)
-      pendingName = extracted && isLikelyName(extracted) ? { text: extracted, y0: line.bbox.y0 } : undefined
+      pendingName =
+        extracted && isLikelyName(extracted) ? { text: extracted, y0: line.bbox.y0 } : undefined
       continue
     }
 
@@ -82,7 +83,8 @@ export function extractCandidatesVerticalPair(params: {
       dreamJobStoreId: match.storeId,
       matchedStoreName: match.storeName,
       matchConfidence: match.confidence,
-      selected: Boolean(name) && Boolean(match.storeId) && match.confidence >= AUTO_SELECT_MIN_CONFIDENCE,
+      selected:
+        Boolean(name) && Boolean(match.storeId) && match.confidence >= AUTO_SELECT_MIN_CONFIDENCE,
       issues,
       sourceFileName,
     })

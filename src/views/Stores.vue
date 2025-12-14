@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto p-4 pb-24 md:pb-4">
-    <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="mb-6">
       <div class="flex-1">
         <h1 class="mb-1 flex items-center gap-2 text-2xl font-bold md:text-3xl">
           <span class="text-3xl md:text-4xl">🏪</span>
@@ -14,43 +14,101 @@
           🍔 Food • 🛎️ Service • 🎮 Recreation • 🛍️ Retail • 🎨 Creative
         </p>
       </div>
-      <Dialog :open="showAddDialog" @update:open="showAddDialog = $event">
-        <DialogContent>
-          <div class="flex flex-col space-y-1.5 text-center sm:text-left">
-            <DialogTitle>Add Store</DialogTitle>
-          </div>
-          <div class="space-y-4">
-            <div>
-              <Label class="mb-2 block">Select Store</Label>
-              <SearchableSelect
-                v-model="selectedStoreId"
-                :items="availableStoreItems"
-                placeholder="Choose a store..."
-                search-placeholder="Search stores…"
-              />
+    </div>
+
+    <!-- Available Stores Section -->
+    <div v-if="availableStores.length > 0 && userStoresWithData.length > 0" class="mb-8">
+      <div class="mb-3 flex items-center justify-between">
+        <h2 class="flex items-center gap-2 text-lg font-semibold">
+          <span class="text-xl">➕</span>
+          <span>Add More Stores</span>
+        </h2>
+        <Badge variant="default">{{ availableStores.length }} available</Badge>
+      </div>
+      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        <Card
+          v-for="store in availableStores.slice(0, 6)"
+          :key="store.id"
+          class="group cursor-pointer overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg"
+          :class="getCategoryBorderColor(store.category)"
+          @click="handleAddStore(store.id)"
+        >
+          <div class="relative flex flex-col space-y-1 p-3 md:p-4">
+            <div class="flex items-center justify-between gap-2">
+              <h3 class="flex items-center gap-2 text-base font-semibold leading-tight md:text-lg">
+                <span class="text-xl md:text-2xl">{{ getCategoryEmoji(store.category) }}</span>
+                <span>{{ store.name }}</span>
+              </h3>
             </div>
+            <p class="text-muted-foreground line-clamp-1 text-xs">{{ store.category }}</p>
           </div>
-          <div class="mt-4 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
-            <Button variant="outline" @click="showAddDialog = false">Cancel</Button>
-            <Button :disabled="!selectedStoreId" @click="handleAddStore">Add</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-      <Button class="w-full sm:w-auto" @click="showAddDialog = true">
-        <span class="sm:hidden">Add</span>
-        <span class="hidden sm:inline">Add Store</span>
+        </Card>
+      </div>
+      <Button
+        v-if="availableStores.length > 6"
+        variant="outline"
+        class="mt-3 w-full"
+        @click="showAddDialog = true"
+      >
+        View All {{ availableStores.length }} Stores
       </Button>
     </div>
 
-    <EmptyState
-      v-if="userStoresWithData.length === 0"
-      title="🏗️ No Stores Yet"
-      description="Build stores in your tower and assign residents to work in them!"
-    >
-      <Button @click="showAddDialog = true">🚀 Add Your First Store</Button>
-    </EmptyState>
+    <!-- First Time Experience - Show Available Stores -->
+    <div v-if="userStoresWithData.length === 0 && availableStores.length > 0" class="mb-8">
+      <EmptyState
+        title="🏗️ No Stores Yet"
+        description="Build stores in your tower and assign residents to work in them! Click any store below to add it."
+      />
+      <div class="mt-6">
+        <h2 class="mb-3 flex items-center gap-2 text-lg font-semibold">
+          <span class="text-xl">🏪</span>
+          <span>Available Stores</span>
+        </h2>
+        <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <Card
+            v-for="store in availableStores.slice(0, 9)"
+            :key="store.id"
+            class="group cursor-pointer overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg"
+            :class="getCategoryBorderColor(store.category)"
+            @click="handleAddStore(store.id)"
+          >
+            <div class="relative flex flex-col space-y-1 p-3 md:p-4">
+              <div class="flex items-center justify-between gap-2">
+                <h3
+                  class="flex items-center gap-2 text-base font-semibold leading-tight md:text-lg"
+                >
+                  <span class="text-xl md:text-2xl">{{ getCategoryEmoji(store.category) }}</span>
+                  <span>{{ store.name }}</span>
+                </h3>
+              </div>
+              <p class="text-muted-foreground line-clamp-1 text-xs">{{ store.category }}</p>
+            </div>
+          </Card>
+        </div>
+        <Button
+          v-if="availableStores.length > 9"
+          variant="outline"
+          class="mt-3 w-full"
+          @click="showAddDialog = true"
+        >
+          View All {{ availableStores.length }} Stores
+        </Button>
+      </div>
+    </div>
 
-    <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <!-- Your Stores Section -->
+    <div v-if="userStoresWithData.length > 0" class="mb-6">
+      <div class="mb-3 flex items-center justify-between">
+        <h2 class="flex items-center gap-2 text-lg font-semibold">
+          <span class="text-xl">🏢</span>
+          <span>Your Stores</span>
+        </h2>
+        <Badge variant="secondary">{{ userStoresWithData.length }}</Badge>
+      </div>
+    </div>
+
+    <div v-if="userStoresWithData.length > 0" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <StoreCard
         v-for="userStore in userStoresWithData"
         :key="userStore.storeId"
@@ -60,6 +118,35 @@
         @remove-resident="handleRemoveResident(userStore.storeId, $event)"
       />
     </div>
+
+    <!-- Full Store List Dialog (only shown when clicking "View All") -->
+    <Dialog :open="showAddDialog" @update:open="showAddDialog = $event">
+      <DialogContent>
+        <div class="flex flex-col space-y-1.5 text-center sm:text-left">
+          <DialogTitle>All Available Stores</DialogTitle>
+        </div>
+        <div class="max-h-[60vh] space-y-2 overflow-y-auto pr-2">
+          <Card
+            v-for="store in availableStores"
+            :key="store.id"
+            class="cursor-pointer overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-md"
+            :class="getCategoryBorderColor(store.category)"
+            @click="handleAddStore(store.id)"
+          >
+            <div class="flex items-center gap-2 p-3">
+              <span class="text-2xl">{{ getCategoryEmoji(store.category) }}</span>
+              <div class="flex-1">
+                <h3 class="font-semibold leading-tight">{{ store.name }}</h3>
+                <p class="text-muted-foreground text-xs">{{ store.category }}</p>
+              </div>
+            </div>
+          </Card>
+        </div>
+        <div class="mt-4">
+          <Button variant="outline" class="w-full" @click="showAddDialog = false">Close</Button>
+        </div>
+      </DialogContent>
+    </Dialog>
 
     <!-- Confirmation Dialog -->
     <ConfirmDialog
@@ -76,14 +163,14 @@
 
 <script setup lang="ts">
 import StoreCard from '@/components/StoreCard.vue'
+import Badge from '@/components/ui/Badge.vue'
 import Button from '@/components/ui/Button.vue'
+import Card from '@/components/ui/Card.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import Dialog from '@/components/ui/Dialog.vue'
 import DialogContent from '@/components/ui/DialogContent.vue'
 import DialogTitle from '@/components/ui/DialogTitle.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
-import Label from '@/components/ui/Label.vue'
-import SearchableSelect from '@/components/ui/SearchableSelect.vue'
 import { useUserStoresWithData } from '@/queries'
 import { useResidentsStore, useStoresStore } from '@/stores'
 import { useToast } from '@/utils/toast'
@@ -96,7 +183,6 @@ const { residents } = residentsStore
 const toast = useToast()
 
 const showAddDialog = ref(false)
-const selectedStoreId = ref('')
 const showConfirmDialog = ref(false)
 const confirmDialogData = ref<{
   title: string
@@ -117,27 +203,34 @@ const availableStores = computed(() => {
   return allStores.value.filter(s => !builtStoreIds.has(s.id))
 })
 
-const availableStoreItems = computed(() => {
-  return availableStores.value.map(store => ({
-    value: store.id,
-    label: `${store.name} (${store.category})`,
-  }))
-})
+function getCategoryEmoji(category: string): string {
+  const cat = category.toLowerCase()
+  if (cat.includes('food')) return '🍔'
+  if (cat.includes('service')) return '🛎️'
+  if (cat.includes('recreation')) return '🎮'
+  if (cat.includes('retail')) return '🛍️'
+  if (cat.includes('creative')) return '🎨'
+  return '🏪'
+}
 
-function handleAddStore() {
-  if (selectedStoreId.value) {
-    const success = storesStore.addStore(selectedStoreId.value)
-    if (success) {
-      const store = allStores.value.find(s => s.id === selectedStoreId.value)
-      toast.success(`✓ Added ${store?.name} (${store?.category})`, 4000)
-      selectedStoreId.value = ''
-      // Delay closing to let user see the selection
-      setTimeout(() => {
-        showAddDialog.value = false
-      }, 400)
-    } else {
-      toast.error('Store already exists')
-    }
+function getCategoryBorderColor(category: string): string {
+  const cat = category.toLowerCase()
+  if (cat.includes('food')) return 'border-orange-500 dark:border-orange-600'
+  if (cat.includes('service')) return 'border-blue-500 dark:border-blue-600'
+  if (cat.includes('recreation')) return 'border-purple-500 dark:border-purple-600'
+  if (cat.includes('retail')) return 'border-pink-500 dark:border-pink-600'
+  if (cat.includes('creative')) return 'border-yellow-500 dark:border-yellow-600'
+  return 'border-gray-500 dark:border-gray-600'
+}
+
+function handleAddStore(storeId: string) {
+  const success = storesStore.addStore(storeId)
+  if (success) {
+    const store = allStores.value.find(s => s.id === storeId)
+    toast.success(`✓ Added ${store?.name} (${store?.category})`, 4000)
+    showAddDialog.value = false
+  } else {
+    toast.error('Store already exists')
   }
 }
 

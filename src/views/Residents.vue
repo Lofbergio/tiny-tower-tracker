@@ -14,35 +14,51 @@
           Manage residents and place them in their dream jobs ✨
         </p>
       </div>
-      <Dialog :open="showAddDialog" @update:open="showAddDialog = $event">
-        <DialogContent>
+      <Dialog :open="showAddDialog" @update:open="handleDialogOpenChange">
+        <DialogContent class="max-w-md">
           <div class="flex flex-col space-y-1.5 text-center sm:text-left">
-            <DialogTitle>Add Resident</DialogTitle>
+            <DialogTitle class="flex items-center gap-2">
+              <span class="text-2xl">👤</span>
+              <span>Add New Resident</span>
+            </DialogTitle>
           </div>
           <div class="space-y-4">
             <div>
-              <Label class="mb-2 block">Name</Label>
+              <Label class="mb-2 flex items-center gap-1 text-sm font-medium">
+                <span>Name</span>
+                <span class="text-destructive">*</span>
+              </Label>
               <Input
+                ref="nameInput"
                 v-model="newResidentName"
-                placeholder="Enter resident name"
-                @keydown.enter="handleAddResident"
+                placeholder="e.g., John Smith"
+                @keydown.enter="focusDreamJobSelect"
               />
             </div>
             <div>
-              <Label class="mb-2 block">Dream Job</Label>
+              <Label class="mb-2 flex items-center gap-1 text-sm font-medium">
+                <span>Dream Job</span>
+                <span class="text-destructive">*</span>
+              </Label>
               <SearchableSelect
                 v-model="newResidentDreamJob"
                 :items="storeItems"
-                placeholder="Choose a store..."
+                placeholder="Choose their dream job..."
                 search-placeholder="Search stores…"
               />
+              <p class="text-muted-foreground mt-1 text-xs">The store they want to work in</p>
             </div>
           </div>
-          <div class="mt-4 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
-            <Button variant="outline" @click="showAddDialog = false">Cancel</Button>
-            <Button :disabled="!newResidentName || !newResidentDreamJob" @click="handleAddResident">
-              Add
+          <div class="mt-6 flex flex-col gap-2">
+            <Button
+              :disabled="!newResidentName || !newResidentDreamJob"
+              class="w-full"
+              @click="handleAddResident"
+            >
+              <span v-if="!newResidentName || !newResidentDreamJob">✨ Add Resident</span>
+              <span v-else>✨ Add {{ newResidentName }}</span>
             </Button>
+            <Button variant="ghost" class="w-full" @click="showAddDialog = false">Cancel</Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -108,6 +124,7 @@ const showAddDialog = ref(false)
 const newResidentName = ref('')
 const newResidentDreamJob = ref('')
 const showConfirmDialog = ref(false)
+const nameInput = ref<{ focus?: () => void } | null>(null)
 const confirmDialogData = ref<{
   title: string
   message: string
@@ -129,6 +146,26 @@ const storeItems = computed(() => {
   return allStores.value.map(store => ({ value: store.id, label: store.name }))
 })
 
+function handleDialogOpenChange(isOpen: boolean) {
+  showAddDialog.value = isOpen
+  if (isOpen) {
+    // Auto-focus name input when dialog opens (but not on mobile)
+    setTimeout(() => {
+      if (window.innerWidth >= 768) {
+        nameInput.value?.focus?.()
+      }
+    }, 100)
+  }
+}
+
+function focusDreamJobSelect() {
+  // If name is filled and user presses enter, we could add logic here
+  // For now, just prevent form submission
+  if (newResidentName.value && newResidentDreamJob.value) {
+    handleAddResident()
+  }
+}
+
 function handleAddResident() {
   if (newResidentName.value && newResidentDreamJob.value) {
     const result = residentsStore.addResident(newResidentName.value, newResidentDreamJob.value)
@@ -137,10 +174,7 @@ function handleAddResident() {
       toast.success(`✓ Added ${newResidentName.value} (wants ${dreamJobStore?.name})`, 4000)
       newResidentName.value = ''
       newResidentDreamJob.value = ''
-      // Delay closing to let user see what was added
-      setTimeout(() => {
-        showAddDialog.value = false
-      }, 400)
+      showAddDialog.value = false
     } else {
       toast.error(result.error ?? 'Failed to add resident')
     }

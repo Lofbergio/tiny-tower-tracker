@@ -71,8 +71,10 @@
         <EmptyState
           v-if="pendingMissions.length === 0"
           title="🎉 No Pending Missions"
-          description="All your missions are completed! Add new missions to track your progress."
-        />
+          description="All your missions are completed! Scroll down to see available missions you can add."
+        >
+          <Button variant="outline" @click="activeTab = 'all'">View All Missions</Button>
+        </EmptyState>
         <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <MissionCard
             v-for="userMission in pendingMissions"

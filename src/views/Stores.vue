@@ -134,6 +134,7 @@
         :residents="residents"
         @remove-store="handleRemoveStore(userStore.storeId)"
         @remove-resident="handleRemoveResident(userStore.storeId, $event)"
+        @add-resident="handleAddResidentToStore(userStore.storeId)"
       />
     </div>
 
@@ -263,6 +264,35 @@ function handleRemoveStore(storeId: string) {
     },
   }
   showConfirmDialog.value = true
+}
+
+function handleAddResidentToStore(storeId: string) {
+  // Find available residents (not in this store, ideally with this as dream job)
+  const store = allStores.value.find(s => s.id === storeId)
+  const availableResidents = residents.filter((r: { id: string; currentStore?: string }) => {
+    const inThisStore = userStoresWithData.value
+      .find((us: { storeId: string }) => us.storeId === storeId)
+      ?.residents.includes(r.id)
+    return !inThisStore
+  })
+
+  if (availableResidents.length === 0) {
+    toast.info('No available residents to assign')
+    return
+  }
+
+  // Prefer residents with this as dream job
+  const dreamJobResidents = availableResidents.filter(
+    (r: { dreamJob: string }) => r.dreamJob === storeId
+  )
+  const residentToAdd = dreamJobResidents.length > 0 ? dreamJobResidents[0] : availableResidents[0]
+
+  const result = storesStore.addResidentToStore(storeId, residentToAdd.id)
+  if (result.success) {
+    toast.success(`Added ${residentToAdd.name} to ${store?.name}`)
+  } else {
+    toast.error(result.error ?? 'Failed to add resident')
+  }
 }
 
 function handleRemoveResident(storeId: string, residentId: string) {

@@ -39,10 +39,17 @@
         </div>
       </div>
       <div v-else class="text-muted-foreground text-xs md:text-sm">No residents assigned</div>
+
+      <div v-if="capacity < 3" class="mt-3 space-y-2 md:mt-4">
+        <Button variant="outline" size="sm" class="w-full" @click="$emit('add-resident')">
+          ➕ Add Resident ({{ capacity }}/3)
+        </Button>
+      </div>
+
       <Button
-        variant="destructive"
+        variant="ghost"
         size="sm"
-        class="mt-3 w-full md:mt-4"
+        class="text-destructive hover:text-destructive mt-2 w-full"
         @click="$emit('remove-store')"
       >
         Remove Store
@@ -70,6 +77,7 @@ const props = defineProps<Props>()
 defineEmits<{
   'remove-store': []
   'remove-resident': [residentId: string]
+  'add-resident': []
 }>()
 
 const store = computed(() => props.userStore.store)

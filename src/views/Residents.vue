@@ -82,7 +82,10 @@
         :key="resident.id"
         :resident="resident"
         :stores="allStores ?? []"
+        :dream-job-store-full="isDreamJobStoreFull(resident.dreamJob)"
         @remove-resident="handleRemoveResident(resident.id)"
+        @place-in-dream-job="handlePlaceInDreamJob(resident.id)"
+        @assign-to-store="handleAssignToStore(resident.id)"
       />
     </div>
 
@@ -110,14 +113,16 @@ import EmptyState from '@/components/ui/EmptyState.vue'
 import Input from '@/components/ui/Input.vue'
 import Label from '@/components/ui/Label.vue'
 import SearchableSelect from '@/components/ui/SearchableSelect.vue'
-import { useStoresQuery } from '@/queries'
-import { useResidentsStore } from '@/stores'
+import { useStoresQuery, useUserStoresWithData } from '@/queries'
+import { useResidentsStore, useStoresStore } from '@/stores'
 import { useToast } from '@/utils/toast'
 import { computed, ref } from 'vue'
 
 const residentsStore = useResidentsStore()
+const storesStore = useStoresStore()
 const { residents } = residentsStore
 const { data: allStores } = useStoresQuery()
+const { userStores } = useUserStoresWithData()
 const toast = useToast()
 
 const showAddDialog = ref(false)
@@ -178,6 +183,61 @@ function handleAddResident() {
     } else {
       toast.error(result.error ?? 'Failed to add resident')
     }
+  }
+}
+
+function isDreamJobStoreFull(dreamJobStoreId: string): boolean {
+  const userStore = userStores.value.find(
+    (us: { storeId: string }) => us.storeId === dreamJobStoreId
+  )
+  if (!userStore) return false
+  return storesStore.isStoreFull(dreamJobStoreId)
+}
+
+function handlePlaceInDreamJob(residentId: string) {
+  const resident = residents.find((r: { id: string }) => r.id === residentId)
+  if (!resident) return
+
+  const result = storesStore.addResidentToStore(resident.dreamJob, residentId)
+  if (result.success) {
+    const store = allStores.value?.find(s => s.id === resident.dreamJob)
+    toast.success(`✨ Placed ${resident.name} in their dream job: ${store?.name}`)
+  } else {
+    toast.error(result.error ?? 'Failed to place resident')
+  }
+}
+
+function handleAssignToStore(residentId: string) {
+  const resident = residents.find((r: { id: string }) => r.id === residentId)
+  if (!resident) return
+
+  // Find stores that have space and this resident wants to work at
+  const availableStores = userStores.value.filter(
+    (us: { storeId: string; residents: string[] }) => {
+      const store = allStores.value?.find(s => s.id === us.storeId)
+      const hasSpace = us.residents.length < 3
+      const isDreamJob = us.storeId === resident.dreamJob
+      return hasSpace && store && (isDreamJob || !resident.currentStore)
+    }
+  )
+
+  if (availableStores.length === 0) {
+    toast.info('No available stores with space')
+    return
+  }
+
+  // Prefer dream job store
+  const dreamJobStore = availableStores.find(
+    (us: { storeId: string }) => us.storeId === resident.dreamJob
+  )
+  const targetStore = dreamJobStore || availableStores[0]
+
+  const result = storesStore.addResidentToStore(targetStore.storeId, residentId)
+  if (result.success) {
+    const store = allStores.value?.find(s => s.id === targetStore.storeId)
+    toast.success(`📍 Placed ${resident.name} in ${store?.name}`)
+  } else {
+    toast.error(result.error ?? 'Failed to assign resident')
   }
 }
 

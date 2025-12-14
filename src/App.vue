@@ -27,9 +27,18 @@
                     v-for="navRoute in routes"
                     :key="navRoute.path"
                     :variant="currentRoute === navRoute.path ? 'default' : 'ghost'"
+                    class="relative"
                     @click="$router.push(navRoute.path)"
                   >
                     {{ navRoute.name }}
+                    <span
+                      v-if="getPendingCount(navRoute.path) > 0"
+                      class="bg-destructive text-destructive-foreground absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold"
+                    >
+                      {{
+                        getPendingCount(navRoute.path) > 9 ? '9+' : getPendingCount(navRoute.path)
+                      }}
+                    </span>
                   </Button>
                 </div>
               </div>
@@ -71,7 +80,7 @@
               v-for="mobileRoute in routes"
               :key="mobileRoute.path"
               :class="[
-                'flex min-h-[60px] flex-col items-center justify-center rounded-md p-3 text-xs font-medium transition-colors',
+                'relative flex min-h-[60px] flex-col items-center justify-center rounded-md p-3 text-xs font-medium transition-colors',
                 currentRoute === mobileRoute.path
                   ? 'bg-primary text-primary-foreground'
                   : 'text-muted-foreground active:bg-accent',
@@ -81,6 +90,14 @@
               @click="$router.push(mobileRoute.path)"
             >
               <span>{{ mobileRoute.name }}</span>
+              <span
+                v-if="getPendingCount(mobileRoute.path) > 0"
+                class="bg-destructive text-destructive-foreground absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold"
+              >
+                {{
+                  getPendingCount(mobileRoute.path) > 9 ? '9+' : getPendingCount(mobileRoute.path)
+                }}
+              </span>
             </button>
           </div>
         </div>
@@ -99,7 +116,14 @@ import ErrorBoundary from './components/ErrorBoundary.vue'
 import Button from './components/ui/Button.vue'
 import DarkModeToggle from './components/ui/DarkModeToggle.vue'
 import Toast from './components/ui/Toast.vue'
-import { useMissionsQuery, useStoresQuery } from './queries'
+import {
+  useCompletableMissions,
+  useMissionsQuery,
+  useStoresQuery,
+  useUserMissionsWithData,
+  useUserStoresWithData,
+} from './queries'
+import { useResidentsStore } from './stores'
 
 const router = useRouter()
 const route = useRoute()
@@ -111,6 +135,12 @@ const { isLoading: missionsLoading } = useMissionsQuery()
 
 const isLoading = computed(() => storesLoading.value || missionsLoading.value)
 
+// Get pending counts for navigation badges
+const { pendingMissions } = useUserMissionsWithData()
+const { completableMissions } = useCompletableMissions()
+const residentsStore = useResidentsStore()
+const { userStores } = useUserStoresWithData()
+
 const routes = [
   { path: '/', name: 'Dashboard' },
   { path: '/missions', name: 'Missions' },
@@ -119,6 +149,21 @@ const routes = [
 ]
 
 const currentRoute = computed(() => route.path)
+
+function getPendingCount(path: string): number {
+  if (path === '/missions') {
+    return pendingMissions.value.length
+  }
+  if (path === '/residents') {
+    return residentsStore.getResidentsNotInDreamJob().length
+  }
+  if (path === '/') {
+    // Dashboard: completable missions + residents needing placement
+    const residentsNeedingPlacement = residentsStore.getResidentsNotInDreamJob().length
+    return completableMissions.value.length + residentsNeedingPlacement
+  }
+  return 0
+}
 
 function handleNavClick(path: string) {
   router.push(path)

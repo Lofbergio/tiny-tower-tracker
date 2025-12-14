@@ -32,22 +32,51 @@
           <p class="text-muted-foreground text-xs md:text-sm">Not placed in any store</p>
         </div>
         <div
-          v-if="needsPlacement"
+          v-if="needsPlacement && canPlaceInDreamJob"
           class="rounded bg-yellow-50 p-1.5 dark:bg-yellow-900/20 md:rounded-md md:p-2"
         >
           <p class="text-xs font-medium text-yellow-800 dark:text-yellow-200 md:text-sm">
             Needs placement in dream job store
           </p>
         </div>
+        <div
+          v-else-if="needsPlacement && !canPlaceInDreamJob"
+          class="rounded bg-orange-50 p-1.5 dark:bg-orange-900/20 md:rounded-md md:p-2"
+        >
+          <p class="text-xs font-medium text-orange-800 dark:text-orange-200 md:text-sm">
+            ⚠️ Dream job store is full (3/3)
+          </p>
+        </div>
       </div>
-      <Button
-        variant="destructive"
-        size="sm"
-        class="mt-3 w-full md:mt-4"
-        @click="$emit('remove-resident')"
-      >
-        Remove Resident
-      </Button>
+
+      <div class="mt-3 space-y-2 md:mt-4">
+        <Button
+          v-if="needsPlacement && canPlaceInDreamJob"
+          variant="default"
+          size="sm"
+          class="w-full"
+          @click="$emit('place-in-dream-job')"
+        >
+          ✨ Place in Dream Job
+        </Button>
+        <Button
+          v-else-if="!resident.currentStore"
+          variant="outline"
+          size="sm"
+          class="w-full"
+          @click="$emit('assign-to-store')"
+        >
+          📍 Assign to Store
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          class="text-destructive hover:text-destructive w-full"
+          @click="$emit('remove-resident')"
+        >
+          Remove Resident
+        </Button>
+      </div>
     </div>
   </Card>
 </template>
@@ -61,16 +90,25 @@ import Card from './ui/Card.vue'
 interface Props {
   resident: Resident
   stores: Store[]
+  dreamJobStoreFull?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  dreamJobStoreFull: false,
+})
 
 defineEmits<{
   'remove-resident': []
+  'place-in-dream-job': []
+  'assign-to-store': []
 }>()
 
 const needsPlacement = computed(() => {
   return !props.resident.currentStore || props.resident.currentStore !== props.resident.dreamJob
+})
+
+const canPlaceInDreamJob = computed(() => {
+  return needsPlacement.value && !props.dreamJobStoreFull
 })
 
 const statusBorderColor = computed(() => {

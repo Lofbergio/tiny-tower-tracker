@@ -28,7 +28,6 @@ export interface Resident {
   id: string
   name: string
   dreamJob: string
-  currentStore?: string
 }
 
 export interface UserMission {

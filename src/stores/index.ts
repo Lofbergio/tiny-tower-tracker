@@ -25,7 +25,44 @@ export const useAppStore = defineStore('app', () => {
         const validation = validateUserData(parsed)
 
         if (validation.success) {
-          return validation.data
+          const data = validation.data
+
+          // Data migration: Remove currentStore field from residents (if it exists)
+          data.residents = data.residents.map(r => {
+            const { currentStore, ...resident } = r as Resident & { currentStore?: string }
+            return resident
+          })
+
+          // Data migration: Convert old resident IDs to numeric IDs
+          const idMap = new Map<string, string>()
+          data.residents = data.residents.map((r, index) => {
+            // If ID is not numeric, convert it
+            if (isNaN(Number(r.id))) {
+              const newId = String(index + 1)
+              idMap.set(r.id, newId)
+              return { ...r, id: newId }
+            }
+            return r
+          })
+
+          // Update store residents with new IDs
+          if (idMap.size > 0) {
+            data.stores = data.stores.map(us => ({
+              ...us,
+              residents: us.residents.map(residentId => idMap.get(residentId) ?? residentId),
+            }))
+          }
+
+          // Clean up completed missions older than 30 days
+          const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000
+          data.missions = data.missions.filter(m => {
+            if (m.status === 'completed') {
+              return m.addedAt > thirtyDaysAgo
+            }
+            return true
+          })
+
+          return data
         } else {
           console.error('Data validation failed:', validation.error)
           // Try to recover by using default data
@@ -116,7 +153,13 @@ export const useResidentsStore = defineStore('residents', () => {
       return { success: false, error: 'Dream job is required' }
     }
 
-    const id = `resident-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
+    // Generate numeric ID (find max ID and add 1)
+    const maxId = appStore.data.residents.reduce((max, r) => {
+      const numId = Number(r.id)
+      return !isNaN(numId) && numId > max ? numId : max
+    }, 0)
+    const id = String(maxId + 1)
+
     appStore.data.residents.push({
       id,
       name: validation.data,
@@ -129,18 +172,13 @@ export const useResidentsStore = defineStore('residents', () => {
   function removeResident(residentId: string): boolean {
     const index = appStore.data.residents.findIndex(r => r.id === residentId)
     if (index !== -1) {
-      const resident = appStore.data.residents[index]
-
-      // Remove from store if placed
-      if (resident.currentStore) {
-        const userStore = appStore.data.stores.find(us => us.storeId === resident.currentStore)
-        if (userStore) {
-          const storeIndex = userStore.residents.indexOf(residentId)
-          if (storeIndex !== -1) {
-            userStore.residents.splice(storeIndex, 1)
-          }
+      // Remove from any store
+      appStore.data.stores.forEach(userStore => {
+        const storeIndex = userStore.residents.indexOf(residentId)
+        if (storeIndex !== -1) {
+          userStore.residents.splice(storeIndex, 1)
         }
-      }
+      })
 
       appStore.data.residents.splice(index, 1)
       appStore.saveDataDebounced()
@@ -168,12 +206,18 @@ export const useResidentsStore = defineStore('residents', () => {
     return false
   }
 
+  function getCurrentStore(residentId: string): string | undefined {
+    const userStore = appStore.data.stores.find(us => us.residents.includes(residentId))
+    return userStore?.storeId
+  }
+
   function getResidentsNotInDreamJob() {
     return appStore.data.residents.filter(r => {
-      if (!r.currentStore) {
+      const currentStore = getCurrentStore(r.id)
+      if (!currentStore) {
         return true
       }
-      return r.currentStore !== r.dreamJob
+      return currentStore !== r.dreamJob
     })
   }
 
@@ -186,6 +230,7 @@ export const useResidentsStore = defineStore('residents', () => {
     addResident,
     removeResident,
     updateResident,
+    getCurrentStore,
     getResidentsNotInDreamJob,
     getResidentsForStore,
   }
@@ -211,14 +256,6 @@ export const useStoresStore = defineStore('stores', () => {
   function removeStore(storeId: string): boolean {
     const index = appStore.data.stores.findIndex(us => us.storeId === storeId)
     if (index !== -1) {
-      // Remove residents from this store
-      const store = appStore.data.stores[index]
-      store.residents.forEach(residentId => {
-        const resident = appStore.data.residents.find(r => r.id === residentId)
-        if (resident) {
-          resident.currentStore = undefined
-        }
-      })
       appStore.data.stores.splice(index, 1)
       appStore.saveDataDebounced()
       return true
@@ -242,21 +279,14 @@ export const useStoresStore = defineStore('stores', () => {
     }
 
     // Remove resident from previous store if any
-    const resident = appStore.data.residents.find(r => r.id === residentId)
-    if (resident?.currentStore) {
-      const prevStore = appStore.data.stores.find(us => us.storeId === resident.currentStore)
-      if (prevStore) {
-        const prevIndex = prevStore.residents.indexOf(residentId)
-        if (prevIndex !== -1) {
-          prevStore.residents.splice(prevIndex, 1)
-        }
+    appStore.data.stores.forEach(us => {
+      const index = us.residents.indexOf(residentId)
+      if (index !== -1) {
+        us.residents.splice(index, 1)
       }
-    }
+    })
 
     userStore.residents.push(residentId)
-    if (resident) {
-      resident.currentStore = storeId
-    }
     appStore.saveDataDebounced()
     return { success: true }
   }
@@ -270,10 +300,6 @@ export const useStoresStore = defineStore('stores', () => {
     const index = userStore.residents.indexOf(residentId)
     if (index !== -1) {
       userStore.residents.splice(index, 1)
-      const resident = appStore.data.residents.find(r => r.id === residentId)
-      if (resident) {
-        resident.currentStore = undefined
-      }
       appStore.saveDataDebounced()
       return true
     }

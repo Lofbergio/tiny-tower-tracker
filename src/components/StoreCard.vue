@@ -59,6 +59,7 @@
 </template>
 
 <script setup lang="ts">
+import { useDarkMode } from '@/composables/useDarkMode'
 import type { Resident, Store, UserStore } from '@/types'
 import { getCategoryColors } from '@/utils/categoryColors'
 import { computed } from 'vue'
@@ -80,11 +81,12 @@ defineEmits<{
   'add-resident': []
 }>()
 
+const { isDark } = useDarkMode()
 const store = computed(() => props.userStore.store)
 const residents = computed(() => props.userStore.residents)
 const capacity = computed(() => residents.value.length)
 
-const categoryColors = computed(() => getCategoryColors(store.value.category))
+const categoryColors = computed(() => getCategoryColors(store.value.category, isDark.value))
 
 function getResidentName(residentId: string) {
   const resident = props.residents.find(r => r.id === residentId)

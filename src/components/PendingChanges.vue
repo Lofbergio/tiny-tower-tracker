@@ -217,7 +217,8 @@ const overcapacityWarnings = computed<OvercapacityWarning[]>(() => {
       return
     }
 
-    if (storesStore.isStoreFull(store.id) && resident.currentStore !== store.id) {
+    const currentStore = residentsStore.getCurrentStore(resident.id)
+    if (storesStore.isStoreFull(store.id) && currentStore !== store.id) {
       warnings.push({
         resident,
         storeId: store.id,

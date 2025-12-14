@@ -1,55 +1,48 @@
-import { useDarkMode } from '@/composables/useDarkMode'
+interface CategoryColors {
+  primary: string
+  light: string
+  border: string
+  bg: string
+}
 
-export function getCategoryColors(category: string) {
-  const { isDark } = useDarkMode()
+const CATEGORY_COLORS: Record<string, { light: CategoryColors; dark: CategoryColors }> = {
+  food: {
+    light: { primary: '#EF4444', light: '#FEE2E2', border: '#EF4444', bg: '#FEF2F2' },
+    dark: { primary: '#DC2626', light: '#991B1B', border: '#DC2626', bg: '#7F1D1D' },
+  },
+  service: {
+    light: { primary: '#3B82F6', light: '#DBEAFE', border: '#3B82F6', bg: '#EFF6FF' },
+    dark: { primary: '#2563EB', light: '#1E40AF', border: '#2563EB', bg: '#1E3A8A' },
+  },
+  recreation: {
+    light: { primary: '#A78BFA', light: '#EDE9FE', border: '#A78BFA', bg: '#F5F3FF' },
+    dark: { primary: '#7C3AED', light: '#5B21B6', border: '#7C3AED', bg: '#4C1D95' },
+  },
+  retail: {
+    light: { primary: '#EC4899', light: '#FCE7F3', border: '#EC4899', bg: '#FDF2F8' },
+    dark: { primary: '#DB2777', light: '#9F1239', border: '#DB2777', bg: '#831843' },
+  },
+  creative: {
+    light: { primary: '#F59E0B', light: '#FEF3C7', border: '#F59E0B', bg: '#FFFBEB' },
+    dark: { primary: '#D97706', light: '#92400E', border: '#D97706', bg: '#78350F' },
+  },
+  default: {
+    light: { primary: '#9CA3AF', light: '#F3F4F6', border: '#9CA3AF', bg: '#F9FAFB' },
+    dark: { primary: '#6B7280', light: '#374151', border: '#6B7280', bg: '#1F2937' },
+  },
+}
+
+export function getCategoryColors(category: string, isDark: boolean): CategoryColors {
   const cat = category.toLowerCase()
+  const theme = isDark ? 'dark' : 'light'
 
-  if (cat.includes('food')) {
-    return {
-      primary: isDark.value ? '#DC2626' : '#EF4444',
-      light: isDark.value ? '#991B1B' : '#FEE2E2',
-      border: isDark.value ? '#DC2626' : '#EF4444',
-      bg: isDark.value ? '#7F1D1D' : '#FEF2F2',
+  for (const [key, colors] of Object.entries(CATEGORY_COLORS)) {
+    if (cat.includes(key)) {
+      return colors[theme]
     }
   }
-  if (cat.includes('service')) {
-    return {
-      primary: isDark.value ? '#2563EB' : '#3B82F6',
-      light: isDark.value ? '#1E40AF' : '#DBEAFE',
-      border: isDark.value ? '#2563EB' : '#3B82F6',
-      bg: isDark.value ? '#1E3A8A' : '#EFF6FF',
-    }
-  }
-  if (cat.includes('recreation')) {
-    return {
-      primary: isDark.value ? '#7C3AED' : '#A78BFA',
-      light: isDark.value ? '#5B21B6' : '#EDE9FE',
-      border: isDark.value ? '#7C3AED' : '#A78BFA',
-      bg: isDark.value ? '#4C1D95' : '#F5F3FF',
-    }
-  }
-  if (cat.includes('retail')) {
-    return {
-      primary: isDark.value ? '#DB2777' : '#EC4899',
-      light: isDark.value ? '#9F1239' : '#FCE7F3',
-      border: isDark.value ? '#DB2777' : '#EC4899',
-      bg: isDark.value ? '#831843' : '#FDF2F8',
-    }
-  }
-  if (cat.includes('creative')) {
-    return {
-      primary: isDark.value ? '#D97706' : '#F59E0B',
-      light: isDark.value ? '#92400E' : '#FEF3C7',
-      border: isDark.value ? '#D97706' : '#F59E0B',
-      bg: isDark.value ? '#78350F' : '#FFFBEB',
-    }
-  }
-  return {
-    primary: isDark.value ? '#6B7280' : '#9CA3AF',
-    light: isDark.value ? '#374151' : '#F3F4F6',
-    border: isDark.value ? '#6B7280' : '#9CA3AF',
-    bg: isDark.value ? '#1F2937' : '#F9FAFB',
-  }
+
+  return CATEGORY_COLORS.default[theme]
 }
 
 export function getCategoryEmoji(category: string): string {

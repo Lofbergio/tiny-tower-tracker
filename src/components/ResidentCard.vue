@@ -24,7 +24,7 @@
           <p class="text-xs font-medium md:text-sm">Dream Job:</p>
           <p class="text-muted-foreground text-xs md:text-sm">{{ getDreamJobName() }}</p>
         </div>
-        <div v-if="resident.currentStore">
+        <div v-if="currentStore">
           <p class="text-xs font-medium md:text-sm">Current Store:</p>
           <p class="text-muted-foreground text-xs md:text-sm">{{ getCurrentStoreName() }}</p>
         </div>
@@ -60,7 +60,7 @@
           ✨ Place in Dream Job
         </Button>
         <Button
-          v-else-if="!resident.currentStore"
+          v-else-if="!currentStore"
           variant="outline"
           size="sm"
           class="w-full"
@@ -90,10 +90,12 @@ import Card from './ui/Card.vue'
 interface Props {
   resident: Resident
   stores: Store[]
+  currentStore?: string
   dreamJobStoreFull?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  currentStore: undefined,
   dreamJobStoreFull: false,
 })
 
@@ -104,7 +106,7 @@ defineEmits<{
 }>()
 
 const needsPlacement = computed(() => {
-  return !props.resident.currentStore || props.resident.currentStore !== props.resident.dreamJob
+  return !props.currentStore || props.currentStore !== props.resident.dreamJob
 })
 
 const canPlaceInDreamJob = computed(() => {
@@ -112,10 +114,10 @@ const canPlaceInDreamJob = computed(() => {
 })
 
 const statusBorderColor = computed(() => {
-  if (!props.resident.currentStore) {
+  if (!props.currentStore) {
     return 'border-gray-400 dark:border-gray-600' // Unassigned
   }
-  if (props.resident.currentStore === props.resident.dreamJob) {
+  if (props.currentStore === props.resident.dreamJob) {
     return 'border-green-500 dark:border-green-600' // In dream job
   }
   return 'border-yellow-500 dark:border-yellow-600' // Needs placement
@@ -133,7 +135,7 @@ function getDreamJobName() {
 }
 
 function getCurrentStoreName() {
-  const store = props.stores.find(s => s.id === props.resident.currentStore)
-  return store?.name || props.resident.currentStore
+  const store = props.stores.find(s => s.id === props.currentStore)
+  return store?.name || props.currentStore
 }
 </script>

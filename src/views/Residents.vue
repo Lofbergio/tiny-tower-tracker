@@ -82,6 +82,7 @@
         :key="resident.id"
         :resident="resident"
         :stores="allStores ?? []"
+        :current-store="residentsStore.getCurrentStore(resident.id)"
         :dream-job-store-full="isDreamJobStoreFull(resident.dreamJob)"
         @remove-resident="handleRemoveResident(resident.id)"
         @place-in-dream-job="handlePlaceInDreamJob(resident.id)"
@@ -132,7 +133,7 @@ const { showConfirmDialog, confirmDialogData, confirm } = useConfirmDialog()
 const showAddDialog = ref(false)
 const newResidentName = ref('')
 const newResidentDreamJob = ref('')
-const nameInput = ref<{ focus?: () => void } | null>(null)
+const nameInput = ref<HTMLInputElement | null>(null)
 
 const storeItems = computed(() => {
   if (!allStores.value) {
@@ -147,7 +148,7 @@ function handleDialogOpenChange(isOpen: boolean) {
     // Auto-focus name input when dialog opens (but not on mobile)
     setTimeout(() => {
       if (window.innerWidth >= 768) {
-        nameInput.value?.focus?.()
+        nameInput.value?.focus()
       }
     }, 100)
   }
@@ -202,12 +203,13 @@ function handleAssignToStore(residentId: string) {
   if (!resident) return
 
   // Find stores that have space and this resident wants to work at
+  const currentStore = residentsStore.getCurrentStore(residentId)
   const availableStores = userStores.value.filter(
     (us: UserStore & { store: Store }) => {
       const store = allStores.value?.find(s => s.id === us.storeId)
       const hasSpace = us.residents.length < APP_CONSTANTS.MAX_STORE_CAPACITY
       const isDreamJob = us.storeId === resident.dreamJob
-      return hasSpace && store && (isDreamJob || !resident.currentStore)
+      return hasSpace && store && (isDreamJob || !currentStore)
     }
   )
 

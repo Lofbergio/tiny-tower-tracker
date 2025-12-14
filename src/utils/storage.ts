@@ -67,8 +67,7 @@ export function checkLocalStorageQuota(): { available: boolean; percentUsed: num
     }
 
     // Most browsers have ~5-10MB limit, we'll use 5MB as conservative estimate
-    const estimatedLimit = 5 * 1024 * 1024
-    const percentUsed = (total / estimatedLimit) * 100
+    const percentUsed = (total / APP_CONSTANTS.LOCAL_STORAGE_ESTIMATED_LIMIT) * 100
 
     return {
       available: percentUsed < 90,

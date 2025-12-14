@@ -19,6 +19,9 @@ export const APP_CONSTANTS = {
   TOAST_DURATION: 3000,
   DEBOUNCE_DELAY: 500,
 
+  // Storage limits
+  LOCAL_STORAGE_ESTIMATED_LIMIT: 5 * 1024 * 1024, // 5MB
+
   // Query keys
   QUERY_KEYS: {
     STORES: 'stores',

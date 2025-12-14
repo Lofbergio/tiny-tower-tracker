@@ -30,12 +30,12 @@
           v-for="store in availableStores.slice(0, 6)"
           :key="store.id"
           class="group cursor-pointer overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg"
-          :style="{ borderLeftColor: getCategoryColors(store.category).border }"
+          :style="{ borderLeftColor: categoryColors(store.category).border }"
           @click="handleAddStore(store.id)"
         >
           <div
             class="relative flex flex-col space-y-1 p-3 md:p-4"
-            :style="{ backgroundColor: getCategoryColors(store.category).bg }"
+            :style="{ backgroundColor: categoryColors(store.category).bg }"
           >
             <div class="flex items-center gap-3">
               <StoreIcon :category="store.category" :size="40" class="shrink-0" />
@@ -45,7 +45,7 @@
                 </h3>
                 <p
                   class="line-clamp-1 text-xs font-medium"
-                  :style="{ color: getCategoryColors(store.category).primary }"
+                  :style="{ color: categoryColors(store.category).primary }"
                 >
                   {{ store.category }}
                 </p>
@@ -80,12 +80,12 @@
             v-for="store in availableStores.slice(0, 9)"
             :key="store.id"
             class="group cursor-pointer overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg"
-            :style="{ borderLeftColor: getCategoryColors(store.category).border }"
+            :style="{ borderLeftColor: categoryColors(store.category).border }"
             @click="handleAddStore(store.id)"
           >
             <div
               class="relative flex flex-col space-y-1 p-3 md:p-4"
-              :style="{ backgroundColor: getCategoryColors(store.category).bg }"
+              :style="{ backgroundColor: categoryColors(store.category).bg }"
             >
               <div class="flex items-center gap-3">
                 <StoreIcon :category="store.category" :size="40" class="shrink-0" />
@@ -95,7 +95,7 @@
                   </h3>
                   <p
                     class="line-clamp-1 text-xs font-medium"
-                    :style="{ color: getCategoryColors(store.category).primary }"
+                    :style="{ color: categoryColors(store.category).primary }"
                   >
                     {{ store.category }}
                   </p>
@@ -149,19 +149,19 @@
             v-for="store in availableStores"
             :key="store.id"
             class="cursor-pointer overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-md"
-            :style="{ borderLeftColor: getCategoryColors(store.category).border }"
+            :style="{ borderLeftColor: categoryColors(store.category).border }"
             @click="handleAddStore(store.id)"
           >
             <div
               class="flex items-center gap-3 p-3"
-              :style="{ backgroundColor: getCategoryColors(store.category).bg }"
+              :style="{ backgroundColor: categoryColors(store.category).bg }"
             >
               <StoreIcon :category="store.category" :size="32" class="shrink-0" />
               <div class="min-w-0 flex-1">
                 <h3 class="font-semibold leading-tight">{{ store.name }}</h3>
                 <p
                   class="text-xs font-medium"
-                  :style="{ color: getCategoryColors(store.category).primary }"
+                  :style="{ color: categoryColors(store.category).primary }"
                 >
                   {{ store.category }}
                 </p>
@@ -200,6 +200,7 @@ import DialogContent from '@/components/ui/DialogContent.vue'
 import DialogTitle from '@/components/ui/DialogTitle.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
+import { useDarkMode } from '@/composables/useDarkMode'
 import { useUserStoresWithData } from '@/queries'
 import { useResidentsStore, useStoresStore } from '@/stores'
 import type { Resident, Store, UserStore } from '@/types'
@@ -213,8 +214,11 @@ const { userStores: userStoresWithData, allStores } = useUserStoresWithData()
 const { residents } = residentsStore
 const toast = useToast()
 const { showConfirmDialog, confirmDialogData, confirm } = useConfirmDialog()
+const { isDark } = useDarkMode()
 
 const showAddDialog = ref(false)
+
+const categoryColors = computed(() => (category: string) => getCategoryColors(category, isDark.value))
 
 const availableStores = computed(() => {
   const builtStoreIds = new Set(storesStore.userStores.map((us: UserStore) => us.storeId))

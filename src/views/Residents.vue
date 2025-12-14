@@ -176,7 +176,7 @@ function handleAddResident() {
     const result = residentsStore.addResident(newResidentName.value, newResidentDreamJob.value)
     if (result.success) {
       const dreamJobStore = allStores.value?.find(s => s.id === newResidentDreamJob.value)
-      toast.success(`✓ Added ${newResidentName.value} (wants ${dreamJobStore?.name})`, 4000)
+      toast.success(`✓ Added ${newResidentName.value} (wants ${dreamJobStore?.name})`)
       newResidentName.value = ''
       newResidentDreamJob.value = ''
       showAddDialog.value = false

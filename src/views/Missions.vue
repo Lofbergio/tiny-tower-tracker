@@ -354,7 +354,7 @@ function handleAddMission(missionId: string) {
   const success = missionsStore.addMission(missionId)
   if (success) {
     const mission = allMissions.value.find(m => m.id === missionId)
-    toast.success(`✓ Added ${mission?.name} (${mission?.reward} Bux)`, 4000)
+    toast.success(`✓ Added ${mission?.name} (${mission?.reward} Bux)`)
   } else {
     toast.error('Mission already added')
   }

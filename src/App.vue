@@ -121,7 +121,6 @@ import {
   useMissionsQuery,
   useStoresQuery,
   useUserMissionsWithData,
-  useUserStoresWithData,
 } from './queries'
 import { useResidentsStore } from './stores'
 
@@ -139,7 +138,6 @@ const isLoading = computed(() => storesLoading.value || missionsLoading.value)
 const { pendingMissions } = useUserMissionsWithData()
 const { completableMissions } = useCompletableMissions()
 const residentsStore = useResidentsStore()
-const { userStores } = useUserStoresWithData()
 
 const routes = [
   { path: '/', name: 'Dashboard' },

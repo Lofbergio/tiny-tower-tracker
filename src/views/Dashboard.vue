@@ -61,9 +61,7 @@ import Button from '@/components/ui/Button.vue'
 import { useUserMissionsWithData, useUserStoresWithData } from '@/queries'
 import { useResidentsStore } from '@/stores'
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
 
-const router = useRouter()
 const { userStores } = useUserStoresWithData()
 const { userMissions } = useUserMissionsWithData()
 const residentsStore = useResidentsStore()

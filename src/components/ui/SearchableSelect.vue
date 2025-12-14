@@ -131,7 +131,7 @@ const emit = defineEmits<{
 const query = ref('')
 const debouncedQuery = ref('')
 const open = ref(false)
-const searchInput = ref<{ focus?: () => void } | null>(null)
+const searchInput = ref<{ focus?: () => void; blur?: () => void } | null>(null)
 
 let debounceTimer: number | undefined
 watch(

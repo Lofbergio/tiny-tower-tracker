@@ -236,7 +236,7 @@ function handleAddStore(storeId: string) {
   const success = storesStore.addStore(storeId)
   if (success) {
     const store = allStores.value.find(s => s.id === storeId)
-    toast.success(`✓ Added ${store?.name} (${store?.category})`, 4000)
+    toast.success(`✓ Added ${store?.name} (${store?.category})`)
     showAddDialog.value = false
   } else {
     toast.error('Store already exists')

@@ -64,23 +64,23 @@
 
         <!-- Mobile Bottom Navigation -->
         <div
-          class="bg-background/80 fixed bottom-0 left-0 right-0 border-t backdrop-blur-sm md:hidden"
+          class="bg-background/95 fixed bottom-0 left-0 right-0 border-t backdrop-blur-sm md:hidden"
         >
           <div class="grid grid-cols-4 gap-1 p-2">
             <button
               v-for="mobileRoute in routes"
               :key="mobileRoute.path"
               :class="[
-                'flex min-h-[56px] flex-col items-center justify-center rounded-md p-3 text-xs transition-colors active:scale-95',
+                'flex min-h-[60px] flex-col items-center justify-center rounded-md p-3 text-xs font-medium transition-colors',
                 currentRoute === mobileRoute.path
                   ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:bg-accent',
+                  : 'text-muted-foreground active:bg-accent',
               ]"
               :aria-label="`Navigate to ${mobileRoute.name}`"
               :aria-current="currentRoute === mobileRoute.path ? 'page' : undefined"
               @click="$router.push(mobileRoute.path)"
             >
-              <span class="font-medium">{{ mobileRoute.name }}</span>
+              <span>{{ mobileRoute.name }}</span>
             </button>
           </div>
         </div>

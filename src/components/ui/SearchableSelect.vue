@@ -2,11 +2,11 @@
   <SelectRoot
     :open="open"
     :model-value="modelValue"
-    @update:open="open = $event"
-    @update:model-value="$emit('update:modelValue', $event)"
+    @update:open="handleOpenChange"
+    @update:model-value="handleValueChange"
   >
     <SelectTrigger
-      class="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      class="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
     >
       <SelectValue :placeholder="placeholder" />
       <SelectIcon class="h-4 w-4 opacity-50">
@@ -124,7 +124,7 @@ const props = withDefaults(
   }
 )
 
-defineEmits<{
+const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
@@ -190,6 +190,18 @@ const visibleItems = computed(() => {
 // Detect if we're on a mobile device
 const isMobile = () => {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+}
+
+function handleOpenChange(isOpen: boolean) {
+  open.value = isOpen
+}
+
+function handleValueChange(value: string) {
+  emit('update:modelValue', value)
+  // On mobile, blur the input after selection to close keyboard
+  if (isMobile()) {
+    searchInput.value?.blur?.()
+  }
 }
 
 watch(

@@ -4,35 +4,53 @@
       <div class="mb-1 flex items-center gap-2">
         <h1 class="flex items-center gap-2 text-2xl font-bold md:text-3xl">
           <span class="text-3xl md:text-4xl">🎯</span>
-          Missions
+          <span
+            class="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent dark:from-green-400 dark:to-blue-400"
+          >
+            Missions
+          </span>
         </h1>
       </div>
-      <p class="text-muted-foreground text-sm md:text-base">
-        Track and complete your Tiny Tower missions
-      </p>
+      <p class="text-muted-foreground text-sm md:text-base">Complete missions and earn Bux 💰✨</p>
     </div>
 
     <!-- Quick Stats Banner -->
     <div v-if="stats.totalPending > 0 || stats.completableAvailable > 0" class="mb-6">
-      <Card class="bg-primary/5">
+      <Card
+        class="border-primary/20 from-primary/5 via-primary/10 to-primary/5 overflow-hidden bg-gradient-to-br"
+      >
         <div class="p-4">
           <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div>
-              <p class="text-muted-foreground text-xs">Pending</p>
+            <div class="rounded-lg bg-white/50 p-3 dark:bg-black/20">
+              <p class="text-muted-foreground mb-1 flex items-center gap-1 text-xs">
+                <span>📋</span>
+                <span>Pending</span>
+              </p>
               <p class="text-2xl font-bold">{{ stats.totalPending }}</p>
             </div>
-            <div>
-              <p class="text-muted-foreground text-xs">Ready to Complete</p>
+            <div class="rounded-lg bg-green-50/80 p-3 dark:bg-green-950/20">
+              <p class="text-muted-foreground mb-1 flex items-center gap-1 text-xs">
+                <span>✅</span>
+                <span>Ready</span>
+              </p>
               <p class="text-2xl font-bold text-green-600 dark:text-green-400">
                 {{ stats.readyToComplete }}
               </p>
             </div>
-            <div>
-              <p class="text-muted-foreground text-xs">Potential Bux</p>
-              <p class="text-2xl font-bold">{{ stats.pendingBux.toLocaleString() }}</p>
+            <div class="rounded-lg bg-yellow-50/80 p-3 dark:bg-yellow-950/20">
+              <p class="text-muted-foreground mb-1 flex items-center gap-1 text-xs">
+                <span>💰</span>
+                <span>Potential Bux</span>
+              </p>
+              <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+                {{ stats.pendingBux.toLocaleString() }}
+              </p>
             </div>
-            <div>
-              <p class="text-muted-foreground text-xs">Available to Add</p>
+            <div class="rounded-lg bg-blue-50/80 p-3 dark:bg-blue-950/20">
+              <p class="text-muted-foreground mb-1 flex items-center gap-1 text-xs">
+                <span>🎁</span>
+                <span>Available</span>
+              </p>
               <p class="text-2xl font-bold text-blue-600 dark:text-blue-400">
                 {{ stats.completableAvailable }}
               </p>
@@ -52,7 +70,7 @@
       <TabsContent value="pending">
         <EmptyState
           v-if="pendingMissions.length === 0"
-          title="No Pending Missions"
+          title="🎉 No Pending Missions"
           description="All your missions are completed! Add new missions to track your progress."
         />
         <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -70,7 +88,7 @@
       <TabsContent value="completed">
         <EmptyState
           v-if="completedMissions.length === 0"
-          title="No Completed Missions"
+          title="🎯 No Completed Missions"
           description="Complete missions to see them here. Keep building your tower!"
         />
         <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -88,8 +106,8 @@
       <TabsContent value="all">
         <EmptyState
           v-if="userMissions.length === 0"
-          title="No Missions Yet"
-          description="Start tracking your Tiny Tower missions! Click 'Add Mission' to get started."
+          title="🚀 No Missions Yet"
+          description="Start tracking your Tiny Tower missions! Click the available missions below to get started."
         />
         <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <MissionCard
@@ -108,26 +126,38 @@
     <!-- Available Missions Section -->
     <div v-if="sortedCompletableMissions.length > 0" class="mb-8">
       <div class="mb-3 flex items-center justify-between">
-        <h2 class="text-lg font-semibold">Missions You Can Complete</h2>
-        <Badge variant="default">{{ sortedCompletableMissions.length }}</Badge>
+        <h2 class="flex items-center gap-2 text-lg font-semibold">
+          <span class="text-xl">🎯</span>
+          <span>Ready to Start</span>
+        </h2>
+        <Badge variant="default" class="bg-green-600 dark:bg-green-700">
+          {{ sortedCompletableMissions.length }}
+        </Badge>
       </div>
       <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
         <Card
           v-for="mission in sortedCompletableMissions"
           :key="mission.id"
-          class="hover:bg-accent/50 cursor-pointer transition-colors"
+          class="group relative cursor-pointer overflow-hidden border-l-4 border-green-500 transition-all hover:scale-[1.02] hover:shadow-lg dark:border-green-600"
           @click="handleAddMission(mission.id)"
         >
-          <div class="flex flex-col space-y-1 p-4">
+          <div
+            class="absolute right-0 top-0 h-24 w-24 -translate-y-8 translate-x-8 rounded-full bg-green-500/10 transition-transform group-hover:scale-150"
+          />
+          <div class="relative flex flex-col space-y-1 p-3 md:p-4">
             <div class="flex items-center justify-between gap-2">
-              <h3 class="text-lg font-semibold leading-tight">
+              <h3 class="text-base font-semibold leading-tight md:text-lg">
                 {{ mission.name }}
               </h3>
-              <Badge variant="default" class="shrink-0">{{ mission.reward }} Bux</Badge>
+              <Badge variant="default" class="shrink-0 bg-green-600 text-xs dark:bg-green-700">
+                💰 {{ mission.reward }}
+              </Badge>
             </div>
-            <p class="text-muted-foreground line-clamp-2 text-xs">{{ mission.description }}</p>
+            <p class="text-muted-foreground line-clamp-1 text-xs md:line-clamp-2">
+              {{ mission.description }}
+            </p>
           </div>
-          <div class="p-4 pt-0">
+          <div class="p-3 pt-0 md:p-4 md:pt-0">
             <div class="space-y-1">
               <ul class="space-y-0.5 text-xs">
                 <li
@@ -147,26 +177,31 @@
 
     <div v-if="sortedNonCompletableMissions.length > 0" class="mb-8">
       <div class="mb-3 flex items-center justify-between">
-        <h2 class="text-muted-foreground text-lg font-semibold">Other Available Missions</h2>
+        <h2 class="text-muted-foreground flex items-center gap-2 text-lg font-semibold">
+          <span class="text-xl">🔒</span>
+          <span>Need More Stores</span>
+        </h2>
         <Badge variant="outline">{{ sortedNonCompletableMissions.length }}</Badge>
       </div>
       <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
         <Card
           v-for="mission in sortedNonCompletableMissions"
           :key="mission.id"
-          class="hover:bg-accent/50 cursor-pointer opacity-60 transition-colors"
+          class="group relative cursor-pointer overflow-hidden border-l-4 border-gray-400 opacity-70 transition-all hover:opacity-90 dark:border-gray-600"
           @click="handleAddMission(mission.id)"
         >
-          <div class="flex flex-col space-y-1 p-4">
+          <div class="relative flex flex-col space-y-1 p-3 md:p-4">
             <div class="flex items-center justify-between gap-2">
-              <h3 class="text-lg font-semibold leading-tight">
+              <h3 class="text-base font-semibold leading-tight md:text-lg">
                 {{ mission.name }}
               </h3>
-              <Badge variant="outline" class="shrink-0">{{ mission.reward }} Bux</Badge>
+              <Badge variant="outline" class="shrink-0 text-xs">💰 {{ mission.reward }}</Badge>
             </div>
-            <p class="text-muted-foreground line-clamp-2 text-xs">{{ mission.description }}</p>
+            <p class="text-muted-foreground line-clamp-1 text-xs md:line-clamp-2">
+              {{ mission.description }}
+            </p>
           </div>
-          <div class="p-4 pt-0">
+          <div class="p-3 pt-0 md:p-4 md:pt-0">
             <div class="space-y-2">
               <ul class="space-y-0.5 text-xs">
                 <li
@@ -180,7 +215,7 @@
               </ul>
               <div
                 v-if="getMissingStores(mission).length > 0"
-                class="rounded bg-yellow-50 p-2 dark:bg-yellow-900/20"
+                class="rounded bg-yellow-50 p-1.5 dark:bg-yellow-900/20 md:p-2"
               >
                 <p class="text-xs font-medium text-yellow-800 dark:text-yellow-200">
                   Need: {{ getMissingStores(mission).join(', ') }}
@@ -194,7 +229,7 @@
 
     <EmptyState
       v-if="availableMissions.length === 0 && userMissions.length === 0"
-      title="No Available Missions"
+      title="🏗️ No Available Missions"
       description="All missions have been added! Complete your pending missions or add more stores to unlock new ones."
     />
 
@@ -316,8 +351,8 @@ function getMissingStores(mission: Mission): string[] {
 function handleAddMission(missionId: string) {
   const success = missionsStore.addMission(missionId)
   if (success) {
-    const missionName = allMissions.value.find(m => m.id === missionId)?.name
-    toast.success(`Added mission: ${missionName}`)
+    const mission = allMissions.value.find(m => m.id === missionId)
+    toast.success(`✓ Added ${mission?.name} (${mission?.reward} Bux)`, 4000)
   } else {
     toast.error('Mission already added')
   }

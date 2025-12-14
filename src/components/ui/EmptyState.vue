@@ -1,6 +1,11 @@
 <template>
-  <div class="flex flex-col items-center justify-center py-16 text-center">
-    <div v-if="icon" class="bg-muted mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+  <div
+    class="border-muted/50 bg-muted/10 hover:border-muted flex flex-col items-center justify-center rounded-lg border-2 border-dashed py-12 text-center transition-colors"
+  >
+    <div
+      v-if="icon"
+      class="bg-muted mb-4 flex h-16 w-16 animate-pulse items-center justify-center rounded-full"
+    >
       <component :is="icon" class="text-muted-foreground h-8 w-8" />
     </div>
     <div v-else-if="!hideIllustration" class="mb-4">

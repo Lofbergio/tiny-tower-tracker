@@ -4,10 +4,14 @@
       <div class="flex-1">
         <h1 class="mb-1 flex items-center gap-2 text-2xl font-bold md:text-3xl">
           <span class="text-3xl md:text-4xl">👥</span>
-          Residents
+          <span
+            class="bg-gradient-to-r from-pink-600 to-orange-600 bg-clip-text text-transparent dark:from-pink-400 dark:to-orange-400"
+          >
+            Residents
+          </span>
         </h1>
         <p class="text-muted-foreground text-sm md:text-base">
-          Manage your tower's residents and their dream jobs
+          Manage residents and place them in their dream jobs ✨
         </p>
       </div>
       <Dialog :open="showAddDialog" @update:open="showAddDialog = $event">
@@ -50,10 +54,10 @@
 
     <EmptyState
       v-if="residents.length === 0"
-      title="No Residents Yet"
+      title="👋 No Residents Yet"
       description="Add residents to your tower and assign them to their dream jobs!"
     >
-      <Button @click="showAddDialog = true">Add Your First Resident</Button>
+      <Button @click="showAddDialog = true">✨ Add Your First Resident</Button>
     </EmptyState>
 
     <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -129,10 +133,14 @@ function handleAddResident() {
   if (newResidentName.value && newResidentDreamJob.value) {
     const result = residentsStore.addResident(newResidentName.value, newResidentDreamJob.value)
     if (result.success) {
-      toast.success(`Added ${newResidentName.value} to your tower`)
+      const dreamJobStore = allStores.value?.find(s => s.id === newResidentDreamJob.value)
+      toast.success(`✓ Added ${newResidentName.value} (wants ${dreamJobStore?.name})`, 4000)
       newResidentName.value = ''
       newResidentDreamJob.value = ''
-      showAddDialog.value = false
+      // Delay closing to let user see what was added
+      setTimeout(() => {
+        showAddDialog.value = false
+      }, 400)
     } else {
       toast.error(result.error ?? 'Failed to add resident')
     }

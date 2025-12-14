@@ -1,28 +1,44 @@
 <template>
-  <Card>
-    <div class="flex flex-col space-y-1.5 p-6">
-      <h3 class="text-2xl font-semibold leading-none tracking-tight">{{ resident.name }}</h3>
+  <Card
+    class="overflow-hidden border-l-4 transition-all hover:shadow-md"
+    :class="statusBorderColor"
+  >
+    <div class="flex flex-col space-y-1 p-3 md:space-y-1.5 md:p-6">
+      <h3
+        class="flex items-center gap-2 text-lg font-semibold leading-tight md:text-2xl md:leading-none md:tracking-tight"
+      >
+        <span class="text-xl md:text-2xl">👤</span>
+        <span>{{ resident.name }}</span>
+      </h3>
     </div>
-    <div class="p-6 pt-0">
-      <div class="space-y-2">
+    <div class="p-3 pt-0 md:p-6 md:pt-0">
+      <div class="space-y-1.5 md:space-y-2">
         <div>
-          <p class="text-sm font-medium">Dream Job:</p>
-          <p class="text-sm text-muted-foreground">{{ getDreamJobName() }}</p>
+          <p class="text-xs font-medium md:text-sm">Dream Job:</p>
+          <p class="text-muted-foreground text-xs md:text-sm">{{ getDreamJobName() }}</p>
         </div>
         <div v-if="resident.currentStore">
-          <p class="text-sm font-medium">Current Store:</p>
-          <p class="text-sm text-muted-foreground">{{ getCurrentStoreName() }}</p>
+          <p class="text-xs font-medium md:text-sm">Current Store:</p>
+          <p class="text-muted-foreground text-xs md:text-sm">{{ getCurrentStoreName() }}</p>
         </div>
         <div v-else>
-          <p class="text-sm text-muted-foreground">Not placed in any store</p>
+          <p class="text-muted-foreground text-xs md:text-sm">Not placed in any store</p>
         </div>
-        <div v-if="needsPlacement" class="rounded-md bg-yellow-50 p-2 dark:bg-yellow-900/20">
-          <p class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+        <div
+          v-if="needsPlacement"
+          class="rounded bg-yellow-50 p-1.5 dark:bg-yellow-900/20 md:rounded-md md:p-2"
+        >
+          <p class="text-xs font-medium text-yellow-800 dark:text-yellow-200 md:text-sm">
             Needs placement in dream job store
           </p>
         </div>
       </div>
-      <Button variant="destructive" size="sm" class="mt-4 w-full" @click="$emit('remove-resident')">
+      <Button
+        variant="destructive"
+        size="sm"
+        class="mt-3 w-full md:mt-4"
+        @click="$emit('remove-resident')"
+      >
         Remove Resident
       </Button>
     </div>
@@ -48,6 +64,16 @@ defineEmits<{
 
 const needsPlacement = computed(() => {
   return !props.resident.currentStore || props.resident.currentStore !== props.resident.dreamJob
+})
+
+const statusBorderColor = computed(() => {
+  if (!props.resident.currentStore) {
+    return 'border-gray-400 dark:border-gray-600' // Unassigned
+  }
+  if (props.resident.currentStore === props.resident.dreamJob) {
+    return 'border-green-500 dark:border-green-600' // In dream job
+  }
+  return 'border-yellow-500 dark:border-yellow-600' // Needs placement
 })
 
 function getDreamJobName() {

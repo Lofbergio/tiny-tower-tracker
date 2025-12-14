@@ -4,10 +4,14 @@
       <div class="flex-1">
         <h1 class="mb-1 flex items-center gap-2 text-2xl font-bold md:text-3xl">
           <span class="text-3xl md:text-4xl">🏪</span>
-          Stores
+          <span
+            class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
+          >
+            Stores
+          </span>
         </h1>
         <p class="text-muted-foreground text-sm md:text-base">
-          Build and manage stores in your tower
+          🍔 Food • 🛎️ Service • 🎮 Recreation • 🛍️ Retail • 🎨 Creative
         </p>
       </div>
       <Dialog :open="showAddDialog" @update:open="showAddDialog = $event">
@@ -40,10 +44,10 @@
 
     <EmptyState
       v-if="userStoresWithData.length === 0"
-      title="No Stores Yet"
+      title="🏗️ No Stores Yet"
       description="Build stores in your tower and assign residents to work in them!"
     >
-      <Button @click="showAddDialog = true">Add Your First Store</Button>
+      <Button @click="showAddDialog = true">🚀 Add Your First Store</Button>
     </EmptyState>
 
     <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -124,10 +128,13 @@ function handleAddStore() {
   if (selectedStoreId.value) {
     const success = storesStore.addStore(selectedStoreId.value)
     if (success) {
-      const storeName = allStores.value.find(s => s.id === selectedStoreId.value)?.name
-      toast.success(`Added ${storeName} to your tower`)
+      const store = allStores.value.find(s => s.id === selectedStoreId.value)
+      toast.success(`✓ Added ${store?.name} (${store?.category})`, 4000)
       selectedStoreId.value = ''
-      showAddDialog.value = false
+      // Delay closing to let user see the selection
+      setTimeout(() => {
+        showAddDialog.value = false
+      }, 400)
     } else {
       toast.error('Store already exists')
     }

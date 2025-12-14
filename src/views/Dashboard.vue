@@ -3,15 +3,23 @@
     <div class="mb-6 flex items-start justify-between md:mb-8">
       <div class="flex-1">
         <h1 class="mb-2 flex items-center gap-2 text-2xl font-bold md:text-3xl">
-          <span class="text-3xl md:text-4xl">📊</span>
-          Dashboard
+          <span class="text-3xl md:text-4xl">🏢</span>
+          <span
+            class="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent dark:from-purple-400 dark:to-pink-400"
+          >
+            Dashboard
+          </span>
         </h1>
         <p class="text-muted-foreground text-sm md:text-base">
-          Track your tower's progress and manage your residents
+          Welcome to your tower! 🎉 Track progress and manage everything here
         </p>
       </div>
       <div class="hidden md:block">
-        <TowerIllustration :width="120" :height="180" class="opacity-50" />
+        <TowerIllustration
+          :width="120"
+          :height="180"
+          class="opacity-70 transition-opacity hover:opacity-100"
+        />
       </div>
     </div>
 

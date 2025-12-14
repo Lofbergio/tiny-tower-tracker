@@ -100,6 +100,7 @@
 </template>
 
 <script setup lang="ts">
+import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { useAppStore } from '@/stores'
 import {
     checkLocalStorageQuota,
@@ -115,21 +116,8 @@ import ConfirmDialog from './ui/ConfirmDialog.vue'
 
 const appStore = useAppStore()
 const toast = useToast()
+const { showConfirmDialog, confirmDialogData, confirm } = useConfirmDialog()
 const fileInput = ref<HTMLInputElement | null>(null)
-const showConfirmDialog = ref(false)
-const confirmDialogData = ref<{
-  title: string
-  message: string
-  variant: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
-  confirmText: string
-  onConfirm: () => void
-}>({
-  title: '',
-  message: '',
-  variant: 'default',
-  confirmText: 'Confirm',
-  onConfirm: () => {},
-})
 
 const storageInfo = computed(() => checkLocalStorageQuota())
 
@@ -165,7 +153,7 @@ async function handleImport(event: Event) {
   try {
     const data = await importUserData(file)
 
-    confirmDialogData.value = {
+    confirm({
       title: 'Import Data',
       message:
         'This will replace all your current data with the imported data. Are you sure you want to continue?',
@@ -180,8 +168,7 @@ async function handleImport(event: Event) {
           toast.error('Failed to import data')
         }
       },
-    }
-    showConfirmDialog.value = true
+    })
   } catch (error) {
     console.error('Import failed:', error)
     const message = error instanceof Error ? error.message : 'Failed to import data'
@@ -195,7 +182,7 @@ async function handleImport(event: Event) {
 }
 
 function handleClearAll() {
-  confirmDialogData.value = {
+  confirm({
     title: 'Clear All Data',
     message:
       'Are you ABSOLUTELY sure you want to delete all your data? This action cannot be undone. Consider exporting your data first.',
@@ -211,7 +198,6 @@ function handleClearAll() {
         toast.error('Failed to clear data')
       }
     },
-  }
-  showConfirmDialog.value = true
+  })
 }
 </script>

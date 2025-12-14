@@ -113,8 +113,11 @@ import EmptyState from '@/components/ui/EmptyState.vue'
 import Input from '@/components/ui/Input.vue'
 import Label from '@/components/ui/Label.vue'
 import SearchableSelect from '@/components/ui/SearchableSelect.vue'
+import { useConfirmDialog } from '@/composables/useConfirmDialog'
+import { APP_CONSTANTS } from '@/constants'
 import { useStoresQuery, useUserStoresWithData } from '@/queries'
 import { useResidentsStore, useStoresStore } from '@/stores'
+import type { Resident, Store, UserStore } from '@/types'
 import { useToast } from '@/utils/toast'
 import { computed, ref } from 'vue'
 
@@ -124,25 +127,12 @@ const { residents } = residentsStore
 const { data: allStores } = useStoresQuery()
 const { userStores } = useUserStoresWithData()
 const toast = useToast()
+const { showConfirmDialog, confirmDialogData, confirm } = useConfirmDialog()
 
 const showAddDialog = ref(false)
 const newResidentName = ref('')
 const newResidentDreamJob = ref('')
-const showConfirmDialog = ref(false)
 const nameInput = ref<{ focus?: () => void } | null>(null)
-const confirmDialogData = ref<{
-  title: string
-  message: string
-  variant: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
-  confirmText: string
-  onConfirm: () => void
-}>({
-  title: '',
-  message: '',
-  variant: 'default',
-  confirmText: 'Confirm',
-  onConfirm: () => {},
-})
 
 const storeItems = computed(() => {
   if (!allStores.value) {
@@ -188,14 +178,14 @@ function handleAddResident() {
 
 function isDreamJobStoreFull(dreamJobStoreId: string): boolean {
   const userStore = userStores.value.find(
-    (us: { storeId: string }) => us.storeId === dreamJobStoreId
+    (us: UserStore & { store: Store }) => us.storeId === dreamJobStoreId
   )
   if (!userStore) return false
   return storesStore.isStoreFull(dreamJobStoreId)
 }
 
 function handlePlaceInDreamJob(residentId: string) {
-  const resident = residents.find((r: { id: string }) => r.id === residentId)
+  const resident = residents.find((r: Resident) => r.id === residentId)
   if (!resident) return
 
   const result = storesStore.addResidentToStore(resident.dreamJob, residentId)
@@ -208,14 +198,14 @@ function handlePlaceInDreamJob(residentId: string) {
 }
 
 function handleAssignToStore(residentId: string) {
-  const resident = residents.find((r: { id: string }) => r.id === residentId)
+  const resident = residents.find((r: Resident) => r.id === residentId)
   if (!resident) return
 
   // Find stores that have space and this resident wants to work at
   const availableStores = userStores.value.filter(
-    (us: { storeId: string; residents: string[] }) => {
+    (us: UserStore & { store: Store }) => {
       const store = allStores.value?.find(s => s.id === us.storeId)
-      const hasSpace = us.residents.length < 3
+      const hasSpace = us.residents.length < APP_CONSTANTS.MAX_STORE_CAPACITY
       const isDreamJob = us.storeId === resident.dreamJob
       return hasSpace && store && (isDreamJob || !resident.currentStore)
     }
@@ -228,7 +218,7 @@ function handleAssignToStore(residentId: string) {
 
   // Prefer dream job store
   const dreamJobStore = availableStores.find(
-    (us: { storeId: string }) => us.storeId === resident.dreamJob
+    (us: UserStore & { store: Store }) => us.storeId === resident.dreamJob
   )
   const targetStore = dreamJobStore || availableStores[0]
 
@@ -247,7 +237,7 @@ function handleRemoveResident(id: string) {
     return
   }
 
-  confirmDialogData.value = {
+  confirm({
     title: 'Remove Resident',
     message: `Are you sure you want to remove ${resident.name}? This will also remove them from any stores they're assigned to.`,
     variant: 'destructive',
@@ -260,7 +250,6 @@ function handleRemoveResident(id: string) {
         toast.error('Failed to remove resident')
       }
     },
-  }
-  showConfirmDialog.value = true
+  })
 }
 </script>

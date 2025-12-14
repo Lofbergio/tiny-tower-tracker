@@ -199,8 +199,10 @@ import Dialog from '@/components/ui/Dialog.vue'
 import DialogContent from '@/components/ui/DialogContent.vue'
 import DialogTitle from '@/components/ui/DialogTitle.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
+import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { useUserStoresWithData } from '@/queries'
 import { useResidentsStore, useStoresStore } from '@/stores'
+import type { Resident, Store, UserStore } from '@/types'
 import { getCategoryColors } from '@/utils/categoryColors'
 import { useToast } from '@/utils/toast'
 import { computed, ref } from 'vue'
@@ -210,25 +212,12 @@ const residentsStore = useResidentsStore()
 const { userStores: userStoresWithData, allStores } = useUserStoresWithData()
 const { residents } = residentsStore
 const toast = useToast()
+const { showConfirmDialog, confirmDialogData, confirm } = useConfirmDialog()
 
 const showAddDialog = ref(false)
-const showConfirmDialog = ref(false)
-const confirmDialogData = ref<{
-  title: string
-  message: string
-  variant: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
-  confirmText: string
-  onConfirm: () => void
-}>({
-  title: '',
-  message: '',
-  variant: 'default',
-  confirmText: 'Confirm',
-  onConfirm: () => {},
-})
 
 const availableStores = computed(() => {
-  const builtStoreIds = new Set(storesStore.userStores.map((us: { storeId: string }) => us.storeId))
+  const builtStoreIds = new Set(storesStore.userStores.map((us: UserStore) => us.storeId))
   return allStores.value.filter(s => !builtStoreIds.has(s.id))
 })
 
@@ -244,12 +233,12 @@ function handleAddStore(storeId: string) {
 }
 
 function handleRemoveStore(storeId: string) {
-  const store = userStoresWithData.value.find((us: { storeId: string }) => us.storeId === storeId)
+  const store = userStoresWithData.value.find((us: UserStore & { store: Store }) => us.storeId === storeId)
   if (!store) {
     return
   }
 
-  confirmDialogData.value = {
+  confirm({
     title: 'Remove Store',
     message: `Are you sure you want to remove ${store.store.name}? This will also remove all residents from this store.`,
     variant: 'destructive',
@@ -262,16 +251,15 @@ function handleRemoveStore(storeId: string) {
         toast.error('Failed to remove store')
       }
     },
-  }
-  showConfirmDialog.value = true
+  })
 }
 
 function handleAddResidentToStore(storeId: string) {
   // Find available residents (not in this store, ideally with this as dream job)
   const store = allStores.value.find(s => s.id === storeId)
-  const availableResidents = residents.filter((r: { id: string; currentStore?: string }) => {
+  const availableResidents = residents.filter((r: Resident) => {
     const inThisStore = userStoresWithData.value
-      .find((us: { storeId: string }) => us.storeId === storeId)
+      .find((us: UserStore & { store: Store }) => us.storeId === storeId)
       ?.residents.includes(r.id)
     return !inThisStore
   })
@@ -283,7 +271,7 @@ function handleAddResidentToStore(storeId: string) {
 
   // Prefer residents with this as dream job
   const dreamJobResidents = availableResidents.filter(
-    (r: { dreamJob: string }) => r.dreamJob === storeId
+    (r: Resident) => r.dreamJob === storeId
   )
   const residentToAdd = dreamJobResidents.length > 0 ? dreamJobResidents[0] : availableResidents[0]
 
@@ -296,12 +284,12 @@ function handleAddResidentToStore(storeId: string) {
 }
 
 function handleRemoveResident(storeId: string, residentId: string) {
-  const resident = residents.find((r: { id: string }) => r.id === residentId)
+  const resident = residents.find((r: Resident) => r.id === residentId)
   if (!resident) {
     return
   }
 
-  confirmDialogData.value = {
+  confirm({
     title: 'Remove Resident',
     message: `Are you sure you want to remove ${resident.name} from this store?`,
     variant: 'destructive',
@@ -314,7 +302,6 @@ function handleRemoveResident(storeId: string, residentId: string) {
         toast.error('Failed to remove resident')
       }
     },
-  }
-  showConfirmDialog.value = true
+  })
 }
 </script>

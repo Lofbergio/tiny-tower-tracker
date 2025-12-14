@@ -1,24 +1,42 @@
 import { APP_CONSTANTS } from '@/constants'
 import { useMissionsStore, useStoresStore } from '@/stores'
-import type { Mission, Store, UserStore } from '@/types'
+import type { Mission, Store, UserMission, UserStore } from '@/types'
 import { canCompleteMission, getCompletableMissions } from '@/utils/missionMatcher'
 import { useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'
 
 async function fetchStores(): Promise<Store[]> {
-  const response = await fetch(APP_CONSTANTS.STORES_DATA_URL)
-  if (!response.ok) {
-    throw new Error('Failed to load stores')
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+
+  try {
+    const response = await fetch(APP_CONSTANTS.STORES_DATA_URL, {
+      signal: controller.signal,
+    })
+    if (!response.ok) {
+      throw new Error('Failed to load stores')
+    }
+    return response.json()
+  } finally {
+    clearTimeout(timeout)
   }
-  return response.json()
 }
 
 async function fetchMissions(): Promise<Mission[]> {
-  const response = await fetch(APP_CONSTANTS.MISSIONS_DATA_URL)
-  if (!response.ok) {
-    throw new Error('Failed to load missions')
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+
+  try {
+    const response = await fetch(APP_CONSTANTS.MISSIONS_DATA_URL, {
+      signal: controller.signal,
+    })
+    if (!response.ok) {
+      throw new Error('Failed to load missions')
+    }
+    return response.json()
+  } finally {
+    clearTimeout(timeout)
   }
-  return response.json()
 }
 
 export function useStoresQuery() {
@@ -49,7 +67,7 @@ export function useUserStoresWithData() {
     }
 
     return storesStore.userStores
-      .map((us: { storeId: string; residents: string[] }) => {
+      .map((us: UserStore) => {
         const store = allStores.value.find(s => s.id === us.storeId)
         return store
           ? {
@@ -78,7 +96,7 @@ export function useUserMissionsWithData() {
     }
 
     return missionsStore.userMissions
-      .map((um: { missionId: string; status: 'pending' | 'completed'; addedAt: number }) => {
+      .map((um: UserMission) => {
         const mission = allMissions.value.find((m: Mission) => m.id === um.missionId)
         return mission
           ? {
@@ -87,15 +105,15 @@ export function useUserMissionsWithData() {
             }
           : null
       })
-      .filter((m): m is (typeof missionsStore.userMissions)[0] & { mission: Mission } => m !== null)
+      .filter((m): m is UserMission & { mission: Mission } => m !== null)
   })
 
   const pendingMissions = computed(() => {
-    return userMissionsWithData.value.filter((um: { status: string }) => um.status === 'pending')
+    return userMissionsWithData.value.filter((um: UserMission & { mission: Mission }) => um.status === 'pending')
   })
 
   const completedMissions = computed(() => {
-    return userMissionsWithData.value.filter((um: { status: string }) => um.status === 'completed')
+    return userMissionsWithData.value.filter((um: UserMission & { mission: Mission }) => um.status === 'completed')
   })
 
   return {
@@ -110,27 +128,26 @@ export function useUserMissionsWithData() {
 export function useCompletableMissions() {
   const { userStores, allStores } = useUserStoresWithData()
   const { pendingMissions } = useUserMissionsWithData()
+  const { data: allMissionsData } = useMissionsQuery()
 
   const completableMissions = computed(() => {
     if (userStores.value.length === 0 || allStores.value.length === 0) {
       return []
     }
 
-    const stores = userStores.value.map((us: { storeId: string; residents: string[] }) => ({
+    const stores = userStores.value.map((us: UserStore & { store: Store }) => ({
       storeId: us.storeId,
       residents: us.residents,
     }))
 
     return getCompletableMissions(
-      pendingMissions.value.map((um: { mission: Mission }) => um.mission),
+      pendingMissions.value.map((um: UserMission & { mission: Mission }) => um.mission),
       stores,
       allStores.value
     )
   })
 
   function isMissionCompletable(missionId: string): boolean {
-    const { data: allMissionsData } = useMissionsQuery()
-
     if (!allMissionsData.value || userStores.value.length === 0 || allStores.value.length === 0) {
       return false
     }
@@ -140,7 +157,7 @@ export function useCompletableMissions() {
       return false
     }
 
-    const stores = userStores.value.map((us: { storeId: string; residents: string[] }) => ({
+    const stores = userStores.value.map((us: UserStore & { store: Store }) => ({
       storeId: us.storeId,
       residents: us.residents,
     }))

@@ -258,9 +258,10 @@ import Tabs from '@/components/ui/Tabs.vue'
 import TabsContent from '@/components/ui/TabsContent.vue'
 import TabsList from '@/components/ui/TabsList.vue'
 import TabsTrigger from '@/components/ui/TabsTrigger.vue'
+import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { useCompletableMissions, useUserMissionsWithData, useUserStoresWithData } from '@/queries'
 import { useMissionsStore } from '@/stores'
-import type { Mission } from '@/types'
+import type { Mission, UserMission } from '@/types'
 import { useToast } from '@/utils/toast'
 import { computed, ref } from 'vue'
 
@@ -269,26 +270,13 @@ const { allMissions, userMissions, pendingMissions, completedMissions } = useUse
 const { isMissionCompletable } = useCompletableMissions()
 const { userStores, allStores } = useUserStoresWithData()
 const toast = useToast()
+const { showConfirmDialog, confirmDialogData, confirm } = useConfirmDialog()
 
 const activeTab = ref<'pending' | 'completed' | 'all'>('pending')
-const showConfirmDialog = ref(false)
-const confirmDialogData = ref<{
-  title: string
-  message: string
-  variant: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
-  confirmText: string
-  onConfirm: () => void
-}>({
-  title: '',
-  message: '',
-  variant: 'default',
-  confirmText: 'Confirm',
-  onConfirm: () => {},
-})
 
 const availableMissions = computed(() => {
   const userMissionIds = new Set(
-    userMissions.value.map((um: { missionId: string }) => um.missionId)
+    userMissions.value.map((um: UserMission & { mission: Mission }) => um.missionId)
   )
   return allMissions.value.filter(m => !userMissionIds.has(m.id))
 })
@@ -361,7 +349,7 @@ function handleAddMission(missionId: string) {
 }
 
 function handleCompleteMission(missionId: string) {
-  const mission = userMissions.value.find((um: { missionId: string }) => um.missionId === missionId)
+  const mission = userMissions.value.find((um: UserMission & { mission: Mission }) => um.missionId === missionId)
   if (!mission) {
     return
   }
@@ -375,7 +363,7 @@ function handleCompleteMission(missionId: string) {
 }
 
 function handleReopenMission(missionId: string) {
-  const mission = userMissions.value.find((um: { missionId: string }) => um.missionId === missionId)
+  const mission = userMissions.value.find((um: UserMission & { mission: Mission }) => um.missionId === missionId)
   if (!mission) {
     return
   }
@@ -389,12 +377,12 @@ function handleReopenMission(missionId: string) {
 }
 
 function handleRemoveMission(missionId: string) {
-  const mission = userMissions.value.find((um: { missionId: string }) => um.missionId === missionId)
+  const mission = userMissions.value.find((um: UserMission & { mission: Mission }) => um.missionId === missionId)
   if (!mission) {
     return
   }
 
-  confirmDialogData.value = {
+  confirm({
     title: 'Remove Mission',
     message: `Are you sure you want to remove "${mission.mission.name}"?`,
     variant: 'destructive',
@@ -407,7 +395,6 @@ function handleRemoveMission(missionId: string) {
         toast.error('Failed to remove mission')
       }
     },
-  }
-  showConfirmDialog.value = true
+  })
 }
 </script>

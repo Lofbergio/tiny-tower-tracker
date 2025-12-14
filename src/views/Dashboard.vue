@@ -60,7 +60,7 @@ import TowerIllustration from '@/components/TowerIllustration.vue'
 import Button from '@/components/ui/Button.vue'
 import { useUserMissionsWithData, useUserStoresWithData } from '@/queries'
 import { useResidentsStore } from '@/stores'
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 const { userStores } = useUserStoresWithData()
 const { userMissions } = useUserMissionsWithData()
@@ -74,14 +74,16 @@ const hasNoData = computed(() => {
   )
 })
 
-const isFirstTime = computed(() => {
+const isFirstTime = ref(false)
+
+onMounted(() => {
   // Check if this is likely first time (no data and no localStorage flag)
-  if (!hasNoData.value) return false
-  const hasVisited = localStorage.getItem('tiny-tower-has-visited')
-  if (!hasVisited) {
-    localStorage.setItem('tiny-tower-has-visited', 'true')
-    return true
+  if (hasNoData.value) {
+    const hasVisited = localStorage.getItem('tiny-tower-has-visited')
+    if (!hasVisited) {
+      localStorage.setItem('tiny-tower-has-visited', 'true')
+      isFirstTime.value = true
+    }
   }
-  return false
 })
 </script>

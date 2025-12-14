@@ -110,7 +110,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ErrorBoundary from './components/ErrorBoundary.vue'
 import Button from './components/ui/Button.vue'
@@ -167,11 +167,4 @@ function handleNavClick(path: string) {
   router.push(path)
   showMobileMenu.value = false
 }
-
-watch(
-  () => route.path,
-  () => {
-    showMobileMenu.value = false
-  }
-)
 </script>

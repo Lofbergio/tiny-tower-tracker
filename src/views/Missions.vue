@@ -269,6 +269,7 @@ import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { useCompletableMissions, useUserMissionsWithData, useUserStoresWithData } from '@/queries'
 import { useMissionsStore } from '@/stores'
 import type { Mission, UserMission } from '@/types'
+import { getMissionCoverage } from '@/utils/missionMatcher'
 import { useToast } from '@/utils/toast'
 import { computed, ref } from 'vue'
 
@@ -302,7 +303,23 @@ const sortedCompletableMissions = computed(() => {
 })
 
 const sortedNonCompletableMissions = computed(() => {
-  return [...availableNonCompletableMissions.value].sort((a, b) => b.reward - a.reward)
+  const stores = userStores.value.map(us => ({ storeId: us.storeId, residents: us.residents }))
+
+  return [...availableNonCompletableMissions.value].sort((a, b) => {
+    const aCoverage = getMissionCoverage(a, stores, allStores.value)
+    const bCoverage = getMissionCoverage(b, stores, allStores.value)
+
+    if (bCoverage.ratio !== aCoverage.ratio) {
+      return bCoverage.ratio - aCoverage.ratio
+    }
+    if (bCoverage.satisfied !== aCoverage.satisfied) {
+      return bCoverage.satisfied - aCoverage.satisfied
+    }
+    if (b.reward !== a.reward) {
+      return b.reward - a.reward
+    }
+    return a.name.localeCompare(b.name)
+  })
 })
 
 // Stats for banner

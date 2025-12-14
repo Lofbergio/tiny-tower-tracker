@@ -1,5 +1,11 @@
 import type { Mission, Store, UserStore } from '@/types'
 
+export type MissionCoverage = {
+  satisfied: number
+  total: number
+  ratio: number
+}
+
 export function canCompleteMission(
   mission: Mission,
   userStores: UserStore[],
@@ -20,6 +26,40 @@ export function canCompleteMission(
     // Check if the store produces this product
     return store.products.includes(req.product)
   })
+}
+
+export function getMissionCoverage(
+  mission: Mission,
+  userStores: UserStore[],
+  allStores: Store[]
+): MissionCoverage {
+  const builtStoreIds = new Set(userStores.map(us => us.storeId))
+
+  const total = mission.requirements.length
+  if (total === 0) {
+    return { satisfied: 0, total: 0, ratio: 0 }
+  }
+
+  let satisfied = 0
+  for (const req of mission.requirements) {
+    const store = allStores.find(s => s.name === req.store)
+    if (!store) {
+      continue
+    }
+    if (!builtStoreIds.has(store.id)) {
+      continue
+    }
+    if (!store.products.includes(req.product)) {
+      continue
+    }
+    satisfied += 1
+  }
+
+  return {
+    satisfied,
+    total,
+    ratio: satisfied / total,
+  }
 }
 
 export function getCompletableMissions(

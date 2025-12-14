@@ -23,16 +23,19 @@ A tracking application for Tiny Tower Classic to help manage missions, stores, a
 ## Setup
 
 1. Install dependencies:
+
 ```bash
 npm install
 ```
 
 2. Run development server:
+
 ```bash
 npm run dev
 ```
 
 3. Build for production:
+
 ```bash
 npm run build
 ```
@@ -45,7 +48,7 @@ The project uses ESLint and Prettier for code quality and formatting:
 - **Format code**: `npm run format` - Formats all files with Prettier
 - **Check formatting**: `npm run format:check` - Checks if files are formatted correctly
 
-You can customize the rules in `.eslintrc.cjs` and `.prettierrc` files.
+You can customize the rules in `eslint.config.mjs` and `.prettierrc` files.
 
 ## Deployment
 
@@ -64,4 +67,3 @@ The app is configured for Netlify deployment. The `netlify.toml` file includes t
 4. **View Dashboard**: Check the Dashboard for pending changes and suggestions
 
 All data is automatically saved to localStorage and persists between sessions.
-

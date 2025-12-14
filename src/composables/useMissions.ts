@@ -14,22 +14,27 @@ export async function loadMissions() {
   }
 }
 
-export function useMissions(userStores?: { value: (UserStore & { store: Store })[] }, allStores?: { value: Store[] } | Store[]) {
+export function useMissions(
+  userStores?: { value: (UserStore & { store: Store })[] },
+  allStores?: { value: Store[] } | Store[]
+) {
   const { data } = useLocalStorage()
-  
+
   const storesArray = computed(() => {
     if (!allStores) return []
     return Array.isArray(allStores) ? allStores : allStores.value
   })
 
   const userMissions = computed(() => {
-    return data.value.missions.map(um => {
-      const mission = allMissions.value.find(m => m.id === um.missionId)
-      return {
-        ...um,
-        mission,
-      }
-    }).filter(um => um.mission) as (UserMission & { mission: Mission })[]
+    return data.value.missions
+      .map(um => {
+        const mission = allMissions.value.find(m => m.id === um.missionId)
+        return {
+          ...um,
+          mission,
+        }
+      })
+      .filter(um => um.mission) as (UserMission & { mission: Mission })[]
   })
 
   const pendingMissions = computed(() => {
@@ -116,4 +121,3 @@ export function useMissions(userStores?: { value: (UserStore & { store: Store })
     isMissionCompletable,
   }
 }
-

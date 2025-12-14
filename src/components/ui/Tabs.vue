@@ -1,8 +1,9 @@
+<!-- Tabs Root -->
 <template>
   <TabsRoot
     :model-value="modelValue"
-    @update:model-value="$emit('update:modelValue', $event)"
     class="w-full"
+    @update:model-value="$emit('update:modelValue', $event)"
   >
     <slot />
   </TabsRoot>

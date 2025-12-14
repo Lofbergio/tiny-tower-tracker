@@ -42,4 +42,3 @@ export interface UserData {
   residents: Resident[]
   missions: UserMission[]
 }
-

@@ -1,164 +1,1659 @@
 [
   {
     "id": "mission-1",
-    "name": "New Year's Day '13",
-    "description": "Bitizens are celebrating the new year! They need:",
+    "name": "One Mad Tea Party",
+    "description": "A Mad Hatter is throwing an \"Absolutely Mad Tea Party\" and needs the following:",
     "requirements": [
-      {"product": "Champagne", "quantity": 1350, "store": "Bar"},
-      {"product": "Party Hat", "quantity": 675, "store": "Hat Shop"}
+      {
+        "product": "Green Tea",
+        "quantity": 225,
+        "store": "Tea House"
+      },
+      {
+        "product": "Sugar Cookies",
+        "quantity": 1350,
+        "store": "Bakery"
+      }
     ],
-    "reward": 5
+    "reward": 3
   },
   {
     "id": "mission-2",
-    "name": "Independence Day '13",
-    "description": "Feeling patriotic? Bitizens need:",
+    "name": "Comic Convention",
+    "description": "Your tower is hosting a comic convention and needs to collect:",
     "requirements": [
-      {"product": "Loaded Dog", "quantity": 2025, "store": "Hot Dog Joint"},
-      {"product": "Cowboy Hat", "quantity": 2025, "store": "Hat Shop"}
+      {
+        "product": "Mage Cards",
+        "quantity": 675,
+        "store": "Comic Store"
+      },
+      {
+        "product": "Cold Medicine",
+        "quantity": 450,
+        "store": "Pharmacy"
+      }
+    ],
+    "reward": 3
+  },
+  {
+    "id": "mission-3",
+    "name": "Award Night",
+    "description": "Your tower is hosting an awards show! We need the following:",
+    "requirements": [
+      {
+        "product": "Teeth Whitening",
+        "quantity": 5400,
+        "store": "Dentists Office"
+      },
+      {
+        "product": "Haircut",
+        "quantity": 450,
+        "store": "Barber Shop"
+      }
     ],
     "reward": 6
   },
   {
-    "id": "mission-3",
-    "name": "Aboriginal Day",
-    "description": "Bitizens are celebrating native cultures, they need:",
-    "requirements": [
-      {"product": "Arrows", "quantity": 6525, "store": "Archery Range"},
-      {"product": "Custom Robes", "quantity": 20500, "store": "Costume Shop"}
-    ],
-    "reward": 25
-  },
-  {
     "id": "mission-4",
-    "name": "Moon Day",
-    "description": "A small step for bit-kind. Bitizens need:",
+    "name": "The Dude Abides",
+    "description": "A cherished rug has been stolen! Bowling and sarsaparilla will help us think! We need:",
     "requirements": [
-      {"product": "Rocket Ship", "quantity": 675, "store": "Toy Store"},
-      {"product": "Ice Cream Bar", "quantity": 400, "store": "Scoops"}
+      {
+        "product": "Single Game",
+        "quantity": 1350,
+        "store": "Bowling Alley"
+      },
+      {
+        "product": "Root Beer",
+        "quantity": 2500,
+        "store": "Pub"
+      }
     ],
     "reward": 5
   },
   {
     "id": "mission-5",
-    "name": "Pioneer Day",
-    "description": "Bitizens are preparing to explore! They need:",
+    "name": "One Big Score",
+    "description": "Some Bitizens think they have a system to beat the odds! Collect the following:",
     "requirements": [
-      {"product": "Tune Up", "quantity": 19350, "store": "Mechanic"},
-      {"product": "Camera", "quantity": 1350, "store": "Tech Store"}
+      {
+        "product": "Loan Application",
+        "quantity": 9000,
+        "store": "Bank"
+      },
+      {
+        "product": "Poker Game",
+        "quantity": 4500,
+        "store": "Casino"
+      }
     ],
-    "reward": 15
+    "reward": 18
   },
   {
     "id": "mission-6",
-    "name": "Book Lovers Day",
-    "description": "The bookworms in your tower need:",
+    "name": "Bithoven's Symphony",
+    "description": "A grand symphony has been planned! We need:",
     "requirements": [
-      {"product": "Bookcase", "quantity": 14850, "store": "Wood Shop"},
-      {"product": "Hardback", "quantity": 1125, "store": "Book Store"}
-    ],
-    "reward": 15
-  },
-  {
-    "id": "mission-7",
-    "name": "Summer Vacation '13",
-    "description": "Bitizens are going on summer vacation! They need:",
-    "requirements": [
-      {"product": "Custom Board", "quantity": 20500, "store": "Surf Shop"},
-      {"product": "Small Smoothie", "quantity": 675, "store": "Smoothie Shop"}
-    ],
-    "reward": 15
-  },
-  {
-    "id": "mission-8",
-    "name": "Relaxation Day",
-    "description": "Bitizens are taking some time to relax, they need:",
-    "requirements": [
-      {"product": "Stone Massage", "quantity": 5400, "store": "Day Spa"},
-      {"product": "Vanilla Candle", "quantity": 675, "store": "Candle Shop"}
-    ],
-    "reward": 8
-  },
-  {
-    "id": "mission-9",
-    "name": "Aviation Day",
-    "description": "Bitizens are crazy about aviation! They need:",
-    "requirements": [
-      {"product": "Flight Booking", "quantity": 2700, "store": "Travel Agency"},
-      {"product": "Bar Nuts", "quantity": 45, "store": "Pub"}
+      {
+        "product": "Chair",
+        "quantity": 2700,
+        "store": "Wood Shop"
+      },
+      {
+        "product": "Sheet Music",
+        "quantity": 1000,
+        "store": "Music Store"
+      }
     ],
     "reward": 5
   },
   {
-    "id": "mission-10",
-    "name": "Senior Citizens Day",
-    "description": "Bitizens are showing support for their elders, they need:",
+    "id": "mission-7",
+    "name": "Prom Night",
+    "description": "Your tower is hosting a prom dance! The dance requires:",
     "requirements": [
-      {"product": "Bird Feeding", "quantity": 1350, "store": "Park"},
-      {"product": "Purse", "quantity": 1575, "store": "Women's Fashion"},
-      {"product": "Tie", "quantity": 675, "store": "Men's Fashion"}
+      {
+        "product": "Corsage",
+        "quantity": 1125,
+        "store": "Floral Studio"
+      },
+      {
+        "product": "3 Piece Suit",
+        "quantity": 4500,
+        "store": "Mens Fashion"
+      }
+    ],
+    "reward": 7
+  },
+  {
+    "id": "mission-8",
+    "name": "A Bit Fishy",
+    "description": "A recent oil spill has resulted in a sea food shortage! People can't get enough:",
+    "requirements": [
+      {
+        "product": "Sea Urchin",
+        "quantity": 1125,
+        "store": "Sushi Bar"
+      },
+      {
+        "product": "Shrimp Platters",
+        "quantity": 1350,
+        "store": "Mexican Food"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-9",
+    "name": "Thanksgiving Feast",
+    "description": "Family from all over are flying in for a feast! Gather these items:",
+    "requirements": [
+      {
+        "product": "Roast Duck",
+        "quantity": 2250,
+        "store": "Fancy Cuisine"
+      },
+      {
+        "product": "Flight Booking",
+        "quantity": 2700,
+        "store": "Travel Agency"
+      }
+    ],
+    "reward": 6
+  },
+  {
+    "id": "mission-10",
+    "name": "On the Beat",
+    "description": "Tiny Tower police need a coffee break! Bring them:",
+    "requirements": [
+      {
+        "product": "Cup of Joe",
+        "quantity": 300,
+        "store": "Diner"
+      },
+      {
+        "product": "Glazed Donut",
+        "quantity": 2025,
+        "store": "Donut Shop"
+      }
     ],
     "reward": 4
   },
   {
     "id": "mission-11",
-    "name": "Labor Day '13",
-    "description": "Bitizens are celebrating workers everywhere! They need:",
+    "name": "The Heist",
+    "description": "Some Bitizens are planning a heist on a neighboring tower. They need these supplies:",
     "requirements": [
-      {"product": "Leak Fix", "quantity": 9000, "store": "Plumber"},
-      {"product": "Inspection", "quantity": 13500, "store": "Fire Station"}
+      {
+        "product": "ID Badges",
+        "quantity": 2025,
+        "store": "Security Office"
+      },
+      {
+        "product": "Radios",
+        "quantity": 8100,
+        "store": "Security Office"
+      }
     ],
-    "reward": 10
+    "reward": 8
   },
   {
     "id": "mission-12",
-    "name": "Programmers' Day",
-    "description": "Show your support for software developers by collecting:",
+    "name": "Soy Loco",
+    "description": "A vegetarian craze is sweeping the tower, all people want to eat are:",
     "requirements": [
-      {"product": "Laptop", "quantity": 2700, "store": "Tech Store"},
-      {"product": "Anti-Virus App", "quantity": 9000, "store": "Software Studio"}
-    ],
-    "reward": 11
-  },
-  {
-    "id": "mission-13",
-    "name": "Oktoberfest '13",
-    "description": "Bitizens are celebrating Oktoberfest! They need:",
-    "requirements": [
-      {"product": "Root Beer", "quantity": 450, "store": "Pub"},
-      {"product": "Cuckoo Clock", "quantity": 6750, "store": "Clockmaker"}
+      {
+        "product": "Orange Tofu",
+        "quantity": 2025,
+        "store": "Asian Cuisine"
+      },
+      {
+        "product": "Soy Burger",
+        "quantity": 1575,
+        "store": "Vegan Food"
+      }
     ],
     "reward": 5
   },
   {
-    "id": "mission-14",
-    "name": "Confucius Day",
-    "description": "A wise man said you need to collect the following:",
+    "id": "mission-13",
+    "name": "Santa's Swap",
+    "description": "The children in your tower need cookies in exchange for their toys!",
     "requirements": [
-      {"product": "Black Belt", "quantity": 31500, "store": "Martial Arts"},
-      {"product": "Noodle Bowl", "quantity": 1125, "store": "Asian Cuisine"}
-    ],
-    "reward": 15
-  },
-  {
-    "id": "mission-15",
-    "name": "World Vegetarian Day",
-    "description": "Bitizens are going meat-less for vegetarian day, they need:",
-    "requirements": [
-      {"product": "Soy Burger", "quantity": 1575, "store": "Vegan Food"},
-      {"product": "Hanging Plant", "quantity": 1710, "store": "Plant Nursery"}
+      {
+        "product": "Sugar Cookies",
+        "quantity": 1650,
+        "store": "Bakery"
+      },
+      {
+        "product": "Toy Soldiers",
+        "quantity": 2050,
+        "store": "Toy Store"
+      }
     ],
     "reward": 4
   },
   {
+    "id": "mission-14",
+    "name": "New Years 2012",
+    "description": "Everyone is excited to celebrate the coming of the New Year in your tower! Celebrations and resolutions require:",
+    "requirements": [
+      {
+        "product": "Cocktail",
+        "quantity": 450,
+        "store": "Night Club"
+      },
+      {
+        "product": "Cardio Workout",
+        "quantity": 5400,
+        "store": "Health Club"
+      }
+    ],
+    "reward": 8
+  },
+  {
+    "id": "mission-15",
+    "name": "Save the Planet",
+    "description": "A growing number of Bitizens are becoming environmentally conscious, we need:",
+    "requirements": [
+      {
+        "product": "Mountain Bike",
+        "quantity": 3600,
+        "store": "Bike Shop"
+      },
+      {
+        "product": "Beet Salad",
+        "quantity": 450,
+        "store": "Vegan Food"
+      }
+    ],
+    "reward": 6
+  },
+  {
     "id": "mission-16",
+    "name": "Nasty Bug",
+    "description": "There's a nasty bug going around your tower :( Those affected need the following:",
+    "requirements": [
+      {
+        "product": "Cold Medicine",
+        "quantity": 450,
+        "store": "Pharmacy"
+      },
+      {
+        "product": "Soup & Sandwich",
+        "quantity": 525,
+        "store": "Diner"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-17",
+    "name": "Last Night",
+    "description": "Bitizens in your tower have been making some decisions they regret! There's been a run on:",
+    "requirements": [
+      {
+        "product": "Root Beer",
+        "quantity": 450,
+        "store": "Pub"
+      },
+      {
+        "product": "Demon Skull",
+        "quantity": 7200,
+        "store": "Tattoo Parlor"
+      }
+    ],
+    "reward": 7
+  },
+  {
+    "id": "mission-18",
+    "name": "Hot Trends",
+    "description": "Hipsters in your tower have lead[sic] to increased demand of:",
+    "requirements": [
+      {
+        "product": "Espresso",
+        "quantity": 225,
+        "store": "Coffee House"
+      },
+      {
+        "product": "Discography",
+        "quantity": 6750,
+        "store": "Record Shop"
+      }
+    ],
+    "reward": 10
+  },
+  {
+    "id": "mission-19",
+    "name": "The Big Game",
+    "description": "Everyone is excited to watch the big game! Collect the following:",
+    "requirements": [
+      {
+        "product": "Flat Screen TV",
+        "quantity": 10350,
+        "store": "Tech Store"
+      },
+      {
+        "product": "Hot Wings",
+        "quantity": 1125,
+        "store": "Pub"
+      }
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-20",
+    "name": "Valentine's 2012",
+    "description": "Everyone in your tower is making plans for Valentine's Day, stock the following",
+    "requirements": [
+      {
+        "product": "Stone Massage",
+        "quantity": 5400,
+        "store": "Day Spa"
+      },
+      {
+        "product": "Arrangement",
+        "quantity": 16200,
+        "store": "Floral Studio"
+      }
+    ],
+    "reward": 28
+  },
+  {
+    "id": "mission-21",
+    "name": "President's Day 2012",
+    "description": "Celebrations and sales are in full swing for Presidents Day! Stock the following:",
+    "requirements": [
+      {
+        "product": "Used Van",
+        "quantity": 3200,
+        "store": "Auto Dealer"
+      },
+      {
+        "product": "End Table",
+        "quantity": 5200,
+        "store": "Furniture Store"
+      }
+    ],
+    "reward": 7
+  },
+  {
+    "id": "mission-22",
+    "name": "Beware of Dog",
+    "description": "After failing to buy your tower, a rival developer would like the following:",
+    "requirements": [
+      {
+        "product": "Tower Design",
+        "quantity": 13500,
+        "store": "Architect Office"
+      },
+      {
+        "product": "City Sim",
+        "quantity": 4500,
+        "store": "Game Studio"
+      }
+    ],
+    "reward": 21
+  },
+  {
+    "id": "mission-23",
+    "name": "Superstar",
+    "description": "A certain young pop singer is going to be performing in your tower! We need:",
+    "requirements": [
+      {
+        "product": "Band Poster",
+        "quantity": 4500,
+        "store": "Graphic Design"
+      },
+      {
+        "product": "Album",
+        "quantity": 5250,
+        "store": "Record Shop"
+      }
+    ],
+    "reward": 9
+  },
+  {
+    "id": "mission-24",
+    "name": "Bits in Space",
+    "description": "Your tower is starting its own space program! They need the following:",
+    "requirements": [
+      {
+        "product": "Rocket Ship",
+        "quantity": 1350,
+        "store": "Toy Store"
+      },
+      {
+        "product": "Planet Tour",
+        "quantity": 1800,
+        "store": "Planetarium"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-25",
+    "name": "St. Patty's 2012",
+    "description": "The Bitizens are perparing for St. Patrick's Day festivities! They need:",
+    "requirements": [
+      {
+        "product": "Green Tea",
+        "quantity": 550,
+        "store": "Tea House"
+      },
+      {
+        "product": "Green Tumbler",
+        "quantity": 2700,
+        "store": "Glass Studio"
+      }
+    ],
+    "reward": 6
+  },
+  {
+    "id": "mission-26",
+    "name": "A Baby is Born",
+    "description": "To capture this precious moment we need:",
+    "requirements": [
+      {
+        "product": "Family Portrait",
+        "quantity": 2700,
+        "store": "Photo Studio"
+      },
+      {
+        "product": "Toy Blocks",
+        "quantity": 270,
+        "store": "Toy Store"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-27",
+    "name": "Wedding Season",
+    "description": "Love is in the air and Bitizens are getting hitched! These products are in demand:",
+    "requirements": [
+      {
+        "product": "Full Ceremony",
+        "quantity": 5400,
+        "store": "Wedding Chapel"
+      },
+      {
+        "product": "Bouquet",
+        "quantity": 7200,
+        "store": "Floral Studio"
+      }
+    ],
+    "reward": 11
+  },
+  {
+    "id": "mission-28",
+    "name": "April Fool's 2012",
+    "description": "Bitizens are preparing some hijinks in your tower! They need:",
+    "requirements": [
+      {
+        "product": "LOL's",
+        "quantity": 225,
+        "store": "Comedy Club"
+      },
+      {
+        "product": "Trick Shots",
+        "quantity": 1350,
+        "store": "Billiard Hall"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-29",
+    "name": "Spring Time",
+    "description": "Spring is in full-swing in your tower, there's been a run on:",
+    "requirements": [
+      {
+        "product": "Bouquet",
+        "quantity": 7200,
+        "store": "Floral Studio"
+      },
+      {
+        "product": "Butterfly",
+        "quantity": 2025,
+        "store": "Tattoo Parlor"
+      }
+    ],
+    "reward": 7
+  },
+  {
+    "id": "mission-30",
+    "name": "Tiny Taxes",
+    "description": "Bitizens are scrambling to complete their tax returns! They need:",
+    "requirements": [
+      {
+        "product": "Addition Help",
+        "quantity": 5400,
+        "store": "Tutoring Center"
+      },
+      {
+        "product": "Loan Application",
+        "quantity": 9000,
+        "store": "Bank"
+      }
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-31",
+    "name": "Earth Day 2012",
+    "description": "Your tower is going green for Earth Day! We need:",
+    "requirements": [
+      {
+        "product": "Hanging Plant",
+        "quantity": 1710,
+        "store": "Plant Nursery"
+      },
+      {
+        "product": "Cans",
+        "quantity": 8100,
+        "store": "Recycling"
+      }
+    ],
+    "reward": 9
+  },
+  {
+    "id": "mission-32",
+    "name": "Cinco de Mayo 2012",
+    "description": "The Bitizens are preparing for Cinco De Mayo festivities! They need:",
+    "requirements": [
+      {
+        "product": "Chips & Salsa",
+        "quantity": 130,
+        "store": "Mexican Food"
+      },
+      {
+        "product": "Trumpet",
+        "quantity": 2025,
+        "store": "Music Store"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-33",
+    "name": "Mother's Day 2012",
+    "description": "Bitizens are buying gifts for their mothers in droves! We need:",
+    "requirements": [
+      {
+        "product": "Stone Massage",
+        "quantity": 5400,
+        "store": "Day Spa"
+      },
+      {
+        "product": "Nice Outfit",
+        "quantity": 9000,
+        "store": "Womens Fashion"
+      }
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-34",
+    "name": "Summer Vacation",
+    "description": "Bitizens are planning trips to soak up some sun! We need:",
+    "requirements": [
+      {
+        "product": "Cruise Booking",
+        "quantity": 5400,
+        "store": "Travel Agency"
+      },
+      {
+        "product": "Triple Scoop",
+        "quantity": 675,
+        "store": "Scoops"
+      }
+    ],
+    "reward": 8
+  },
+  {
+    "id": "mission-35",
+    "name": "Summer School",
+    "description": "Your Bitizens are keeping smart over the summer! They need:",
+    "requirements": [
+      {
+        "product": "Hardback",
+        "quantity": 1125,
+        "store": "Book Store"
+      },
+      {
+        "product": "Grammar Help",
+        "quantity": 8100,
+        "store": "Tutoring Center"
+      }
+    ],
+    "reward": 8
+  },
+  {
+    "id": "mission-36",
+    "name": "First Apartment",
+    "description": "Lots of Bitizens are moving into their first apartments! They need:",
+    "requirements": [
+      {
+        "product": "Modern Chair",
+        "quantity": 3600,
+        "store": "Furniture Store"
+      },
+      {
+        "product": "Detailed Vase",
+        "quantity": 5900,
+        "store": "Pottery Studio"
+      }
+    ],
+    "reward": 10
+  },
+  {
+    "id": "mission-37",
+    "name": "Team Tiny",
+    "description": "Tryouts are being held for the tower softball team! Bitizens need:",
+    "requirements": [
+      {
+        "product": "Check Up",
+        "quantity": 2700,
+        "store": "Doctors Office"
+      },
+      {
+        "product": "Weight Workout",
+        "quantity": 1350,
+        "store": "Health Club"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-38",
+    "name": "Tower Watch",
+    "description": "Your Bitizens have formed a crime-solving group called the Tower Watch! They need:",
+    "requirements": [
+      {
+        "product": "Radios",
+        "quantity": 8100,
+        "store": "Security Office"
+      },
+      {
+        "product": "Surveillance",
+        "quantity": 22500,
+        "store": "Private Eye"
+      }
+    ],
+    "reward": 10
+  },
+  {
+    "id": "mission-39",
+    "name": "Father's Day 2012",
+    "description": "Everyone is buying gifts for Father's Day! There's been a run on:",
+    "requirements": [
+      {
+        "product": "Mountain Bike",
+        "quantity": 3600,
+        "store": "Bike Shop"
+      },
+      {
+        "product": "DVD Release",
+        "quantity": 18000,
+        "store": "Animation Studio"
+      }
+    ],
+    "reward": 10
+  },
+  {
+    "id": "mission-40",
+    "name": "Pocket Planes",
+    "description": "With the release of NimbleBit's Pocket Planes, Bitizens are jetting around the globe! Collect:",
+    "requirements": [
+      {
+        "product": "Flight Booking",
+        "quantity": 2700,
+        "store": "Travel Agency"
+      },
+      {
+        "product": "Bar Nuts",
+        "quantity": 45,
+        "store": "Pub"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-41",
+    "name": "A Day at the Beach",
+    "description": "The warm weather has everyone wishing for a day at the beach. Gather:",
+    "requirements": [
+      {
+        "product": "Sandals",
+        "quantity": 900,
+        "store": "Shoe Store"
+      },
+      {
+        "product": "Tournament",
+        "quantity": 13500,
+        "store": "Volleyball Club"
+      },
+      {
+        "product": "Jumbo Swirl",
+        "quantity": 1350,
+        "store": "Frozen Yogurt"
+      }
+    ],
+    "reward": 20
+  },
+  {
+    "id": "mission-42",
+    "name": "Beat the Heat",
+    "description": "A heatwave has hit your tower, the Bitizens need:",
+    "requirements": [
+      {
+        "product": "Frappe",
+        "quantity": 900,
+        "store": "Coffee House"
+      },
+      {
+        "product": "Root Beer",
+        "quantity": 450,
+        "store": "Pub"
+      },
+      {
+        "product": "Cola 6 Pack",
+        "quantity": 1800,
+        "store": "Soda Brewery"
+      }
+    ],
+    "reward": 8
+  },
+  {
+    "id": "mission-43",
+    "name": "Frog Fundraiser",
+    "description": "Your tower is hosting a fundraiser to save endangered frogs! They need:",
+    "requirements": [
+      {
+        "product": "Charity Event",
+        "quantity": 9900,
+        "store": "Museum"
+      },
+      {
+        "product": "Sparkling Juice",
+        "quantity": 450,
+        "store": "Fancy Cuisine"
+      }
+    ],
+    "reward": 14
+  },
+  {
+    "id": "mission-44",
+    "name": "London Games",
+    "description": "Bitizens are preparing for the upcoming London Games! They need:",
+    "requirements": [
+      {
+        "product": "Tournament",
+        "quantity": 13500,
+        "store": "Volleyball Club"
+      },
+      {
+        "product": "Sneakers",
+        "quantity": 1350,
+        "store": "Shoe Store"
+      },
+      {
+        "product": "Tournament",
+        "quantity": 13500,
+        "store": "Racquetball"
+      }
+    ],
+    "reward": 25
+  },
+  {
+    "id": "mission-45",
+    "name": "Mars Curiosity",
+    "description": "Bitizens are excited for the Mars Curiosity landing! They need:",
+    "requirements": [
+      {
+        "product": "Solar Tour",
+        "quantity": 4500,
+        "store": "Planetarium"
+      },
+      {
+        "product": "Mystery Goo",
+        "quantity": 13500,
+        "store": "Laboratory"
+      }
+    ],
+    "reward": 12
+  },
+  {
+    "id": "mission-46",
+    "name": "Self Defense",
+    "description": "Bitizens in your tower are getting serious about self-defense! They need:",
+    "requirements": [
+      {
+        "product": "White Belt",
+        "quantity": 7800,
+        "store": "Martial Arts"
+      },
+      {
+        "product": "Tasers",
+        "quantity": 12000,
+        "store": "Security Office"
+      }
+    ],
+    "reward": 12
+  },
+  {
+    "id": "mission-47",
+    "name": "Music Festival",
+    "description": "Your tower is hosting a music festival! We need:",
+    "requirements": [
+      {
+        "product": "Trumpet",
+        "quantity": 2025,
+        "store": "Music Store"
+      },
+      {
+        "product": "Album Recording",
+        "quantity": 21000,
+        "store": "Recording Studio"
+      }
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-48",
+    "name": "Bit Trek TNG",
+    "description": "Everyone is watching the newly released Bit Trek DVDs! They need:",
+    "requirements": [
+      {
+        "product": "DVD Release",
+        "quantity": 18000,
+        "store": "Animation Studio"
+      },
+      {
+        "product": "Flat Screen TV",
+        "quantity": 10350,
+        "store": "Tech Store"
+      }
+    ],
+    "reward": 12
+  },
+  {
+    "id": "mission-49",
+    "name": "Labor Day 2012",
+    "description": "Bitizens are holding a Labor Day parade! They need:",
+    "requirements": [
+      {
+        "product": "Convertible",
+        "quantity": 3500,
+        "store": "Auto Dealer"
+      },
+      {
+        "product": "Radios",
+        "quantity": 375,
+        "store": "Security Office"
+      }
+    ],
+    "reward": 6
+  },
+  {
+    "id": "mission-50",
+    "name": "Fire Drill",
+    "description": "Your tower is holding a fire drill! Firefighters need:",
+    "requirements": [
+      {
+        "product": "Radios",
+        "quantity": 8100,
+        "store": "Security Office"
+      },
+      {
+        "product": "Tower Design",
+        "quantity": 5000,
+        "store": "Architect Office"
+      }
+    ],
+    "reward": 9
+  },
+  {
+    "id": "mission-51",
+    "name": "Back to Wiz School",
+    "description": "Some Bitizens are preparing to go to a very special school, they need:",
+    "requirements": [
+      {
+        "product": "Tarot Reading",
+        "quantity": 2025,
+        "store": "Fortune Teller"
+      },
+      {
+        "product": "Love Potion",
+        "quantity": 5400,
+        "store": "Laboratory"
+      },
+      {
+        "product": "Hardback",
+        "quantity": 1125,
+        "store": "Book Store"
+      }
+    ],
+    "reward": 6
+  },
+  {
+    "id": "mission-52",
+    "name": "MyPhone 5 Launch",
+    "description": "Bitizens are already lining up for the MyPhone 5! They need:",
+    "requirements": [
+      {
+        "product": "MyPhone",
+        "quantity": 5400,
+        "store": "Mapple Store"
+      },
+      {
+        "product": "News Segment",
+        "quantity": 2025,
+        "store": "TV Studio"
+      }
+    ],
+    "reward": 6
+  },
+  {
+    "id": "mission-53",
+    "name": "Cowabunga",
+    "description": "Bitizens have noticed some odd looking turtles in the Tiny Tower sewers! Collect:",
+    "requirements": [
+      {
+        "product": "Mystery Goo",
+        "quantity": 3500,
+        "store": "Laboratory"
+      },
+      {
+        "product": "Black Belt",
+        "quantity": 1500,
+        "store": "Martial Arts"
+      },
+      {
+        "product": "Giant Pizza",
+        "quantity": 225,
+        "store": "Pizza Place"
+      }
+    ],
+    "reward": 6
+  },
+  {
+    "id": "mission-54",
+    "name": "Canadian Thanks 2012",
+    "description": "Canadian Bitizens in your tower are celebrating Thanksgiving! They need:",
+    "requirements": [
+      {
+        "product": "Roasted Potatoes",
+        "quantity": 1125,
+        "store": "Vegan Food"
+      },
+      {
+        "product": "Roast Duck",
+        "quantity": 2250,
+        "store": "Fancy Cuisine"
+      }
+    ],
+    "reward": 4
+  },
+  {
+    "id": "mission-55",
+    "name": "Baseball Playoffs",
+    "description": "Bitizens are hard at work watching baseball playoffs! They need:",
+    "requirements": [
+      {
+        "product": "Bar Nuts",
+        "quantity": 45,
+        "store": "Pub"
+      },
+      {
+        "product": "Popcorn",
+        "quantity": 675,
+        "store": "Cineplex"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-56",
+    "name": "Mimecon 2012",
+    "description": "Your tower is hosting a mime convention! They need:",
+    "requirements": [
+      {
+        "product": "Facial",
+        "quantity": 2700,
+        "store": "Day Spa"
+      },
+      {
+        "product": "Interpretive Dance",
+        "quantity": 2025,
+        "store": "Theater"
+      }
+    ],
+    "reward": 6
+  },
+  {
+    "id": "mission-57",
+    "name": "Halloween 2012",
+    "description": "Bitizens are preparing for Halloween! They need:",
+    "requirements": [
+      {
+        "product": "Choc Truffle",
+        "quantity": 2025,
+        "store": "Chocolatier"
+      },
+      {
+        "product": "Monster",
+        "quantity": 36000,
+        "store": "Laboratory"
+      },
+      {
+        "product": "Screams",
+        "quantity": 9000,
+        "store": "Haunted House"
+      }
+    ],
+    "reward": 20
+  },
+  {
+    "id": "mission-58",
+    "name": "Election 2012",
+    "description": "Bitt Romney and Barack Bitbama are running for tower president! They need:",
+    "requirements": [
+      {
+        "product": "TV Ad",
+        "quantity": 14850,
+        "store": "Ad Agency"
+      },
+      {
+        "product": "News Segment",
+        "quantity": 2025,
+        "store": "TV Studio"
+      }
+    ],
+    "reward": 20
+  },
+  {
+    "id": "mission-59",
+    "name": "North Pole Recon",
+    "description": "An elf has arrived to do some naughty/nice recon for Santa! He needs:",
+    "requirements": [
+      {
+        "product": "Background Check",
+        "quantity": 8100,
+        "store": "Private Eye"
+      },
+      {
+        "product": "Palm Reading",
+        "quantity": 1350,
+        "store": "Fortune Teller"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-60",
+    "name": "Board Meeting",
+    "description": "Big-shot executives are holding their annual board meeting and need catering!",
+    "requirements": [
+      {
+        "product": "12 Inch Sub",
+        "quantity": 900,
+        "store": "Sub Shop"
+      },
+      {
+        "product": "Walnut Muffins",
+        "quantity": 2025,
+        "store": "Bakery"
+      },
+      {
+        "product": "Espresso",
+        "quantity": 225,
+        "store": "Coffee House"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-61",
+    "name": "Valentines 2013",
+    "description": "Your Bitizens are in love and celebrating Valentines! Collect",
+    "requirements": [
+      {
+        "product": "Arrows",
+        "quantity": 6525,
+        "store": "Archery Range"
+      },
+      {
+        "product": "Choc Box",
+        "quantity": 4950,
+        "store": "Chocolatier"
+      }
+    ],
+    "reward": 11
+  },
+  {
+    "id": "mission-62",
+    "name": "National Pig Day",
+    "description": "Bitizens are going hog wild for National Pig Day, they need:",
+    "requirements": [
+      {
+        "product": "Cowboy Hat",
+        "quantity": 2025,
+        "store": "Hat Shop"
+      },
+      {
+        "product": "Pet Portrait",
+        "quantity": 675,
+        "store": "Photo Studio"
+      }
+    ],
+    "reward": 4
+  },
+  {
+    "id": "mission-63",
+    "name": "St. Patty's Day 2013",
+    "description": "Bitizens are gearing up for St. Patty's Day! They need:",
+    "requirements": [
+      {
+        "product": "Sugar Cookies",
+        "quantity": 1350,
+        "store": "Bakery"
+      },
+      {
+        "product": "Top Hat",
+        "quantity": 2700,
+        "store": "Hat Shop"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-64",
+    "name": "Tower Taxes",
+    "description": "Bitizens are rushing to prepare their taxes! The[sic] need:",
+    "requirements": [
+      {
+        "product": "Addition Help",
+        "quantity": 5400,
+        "store": "Tutoring Center"
+      },
+      {
+        "product": "Loan Application",
+        "quantity": 9000,
+        "store": "Bank"
+      }
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-65",
+    "name": "Arbor Day 2013",
+    "description": "For a day at the park to hug trees, you will need:",
+    "requirements": [
+      {
+        "product": "Fertilizer",
+        "quantity": 2475,
+        "store": "Plant Nursery"
+      },
+      {
+        "product": "9 Inch Sub",
+        "quantity": 675,
+        "store": "Sub Shop"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-66",
+    "name": "Cinco de Mayo 2013",
+    "description": "Bitizens are getting festive for Cinco de Mayo! They need:",
+    "requirements": [
+      {
+        "product": "Tacos",
+        "quantity": 450,
+        "store": "Mexican Food"
+      },
+      {
+        "product": "Trumpet",
+        "quantity": 2025,
+        "store": "Music Store"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-67",
+    "name": "Mother's Day 2013",
+    "description": "Bitizens are full of appreciation for their mothers. They need:",
+    "requirements": [
+      {
+        "product": "Purse",
+        "quantity": 1575,
+        "store": "Womens Fashion"
+      },
+      {
+        "product": "Earrings",
+        "quantity": 2250,
+        "store": "Jewelry Store"
+      },
+      {
+        "product": "Stone Massage",
+        "quantity": 5400,
+        "store": "Day Spa"
+      }
+    ],
+    "reward": 10
+  },
+  {
+    "id": "mission-68",
+    "name": "Armed Forces Day 2013",
+    "description": "Bitizens are showing support for their armed forces. They need:",
+    "requirements": [
+      {
+        "product": "Toy Soldiers",
+        "quantity": 1350,
+        "store": "Toy Store"
+      },
+      {
+        "product": "Haircut",
+        "quantity": 450,
+        "store": "Barber Shop"
+      },
+      {
+        "product": "Radios",
+        "quantity": 8100,
+        "store": "Security Office"
+      }
+    ],
+    "reward": 10
+  },
+  {
+    "id": "mission-69",
+    "name": "Memorial Day 2013",
+    "description": "Bitizens are honoring the fallen. They need:",
+    "requirements": [
+      {
+        "product": "Trumpet",
+        "quantity": 2025,
+        "store": "Music Store"
+      },
+      {
+        "product": "Bouquet",
+        "quantity": 7200,
+        "store": "Floral Studio"
+      }
+    ],
+    "reward": 8
+  },
+  {
+    "id": "mission-70",
+    "name": "JFK's Birthday",
+    "description": "Bitizens in your tower are honoring President Kennedy! They need:",
+    "requirements": [
+      {
+        "product": "Rocket Ship",
+        "quantity": 675,
+        "store": "Toy Store"
+      },
+      {
+        "product": "News Segment",
+        "quantity": 2025,
+        "store": "TV Studio"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-71",
+    "name": "Feel The Earth",
+    "description": "Bitizens are one with the Earth. They need:",
+    "requirements": [
+      {
+        "product": "Mountain Bike",
+        "quantity": 3600,
+        "store": "Bike Shop"
+      },
+      {
+        "product": "Cans",
+        "quantity": 8100,
+        "store": "Recycling"
+      },
+      {
+        "product": "Glass",
+        "quantity": 18000,
+        "store": "Recycling"
+      }
+    ],
+    "reward": 20
+  },
+  {
+    "id": "mission-72",
+    "name": "Flag Day 2013",
+    "description": "Stars and stripes galore in your tower! Get the following:",
+    "requirements": [
+      {
+        "product": "Bolts of Fabric",
+        "quantity": 7200,
+        "store": "Fabric Shop"
+      },
+      {
+        "product": "Thread Spool",
+        "quantity": 450,
+        "store": "Fabric Shop"
+      }
+    ],
+    "reward": 10
+  },
+  {
+    "id": "mission-73",
+    "name": "Father's Day 2013",
+    "description": "A special day for dads everywhere. Your Bitizens need:",
+    "requirements": [
+      {
+        "product": "Laptop",
+        "quantity": 2700,
+        "store": "Tech Store"
+      },
+      {
+        "product": "DVD Release",
+        "quantity": 18000,
+        "store": "Animation Studio"
+      }
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-74",
+    "name": "Solstice",
+    "description": "This will be a very long day! Your Bitizens need:",
+    "requirements": [
+      {
+        "product": "Sandals",
+        "quantity": 900,
+        "store": "Shoe Store"
+      },
+      {
+        "product": "Disc Toss",
+        "quantity": 18000,
+        "store": "Park"
+      }
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-75",
+    "name": "Independence Day '13",
+    "description": "Feeling patriotic? Bitizens need:",
+    "requirements": [
+      {
+        "product": "Loaded Dog",
+        "quantity": 2025,
+        "store": "Hot Dog Joint"
+      },
+      {
+        "product": "Cowboy Hat",
+        "quantity": 2025,
+        "store": "Hat Shop"
+      }
+    ],
+    "reward": 6
+  },
+  {
+    "id": "mission-76",
+    "name": "Aboriginal Day",
+    "description": "Bitizens are celebrating native cultures, they need:",
+    "requirements": [
+      {
+        "product": "Arrows",
+        "quantity": 6525,
+        "store": "Archery Range"
+      },
+      {
+        "product": "Custom Robes",
+        "quantity": 20500,
+        "store": "Costume Shop"
+      }
+    ],
+    "reward": 25
+  },
+  {
+    "id": "mission-77",
+    "name": "Moon Day",
+    "description": "A small step for bit-kind. Bitizens need:",
+    "requirements": [
+      {
+        "product": "Rocket Ship",
+        "quantity": 675,
+        "store": "Toy Store"
+      },
+      {
+        "product": "Ice Cream Bar",
+        "quantity": 400,
+        "store": "Scoops"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-78",
+    "name": "Pioneer Day",
+    "description": "Bitizens are preparing to explore! They need:",
+    "requirements": [
+      {
+        "product": "Tune Up",
+        "quantity": 19350,
+        "store": "Mechanic"
+      },
+      {
+        "product": "Camera",
+        "quantity": 1350,
+        "store": "Tech Store"
+      }
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-79",
+    "name": "Book Lovers Day",
+    "description": "The bookworms in your tower need:",
+    "requirements": [
+      {
+        "product": "Bookcase",
+        "quantity": 14850,
+        "store": "Wood Shop"
+      },
+      {
+        "product": "Hardback",
+        "quantity": 1125,
+        "store": "Book Store"
+      }
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-80",
+    "name": "Summer Vacation '13",
+    "description": "Bitizens are going on summer vacation! They need:",
+    "requirements": [
+      {
+        "product": "Custom Board",
+        "quantity": 20500,
+        "store": "Surf Shop"
+      },
+      {
+        "product": "Small Smoothie",
+        "quantity": 675,
+        "store": "Smoothie Shop"
+      }
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-81",
+    "name": "Relaxation Day",
+    "description": "Bitizens are taking some time to relax, the[sic] need:",
+    "requirements": [
+      {
+        "product": "Stone Massage",
+        "quantity": 5400,
+        "store": "Day Spa"
+      },
+      {
+        "product": "Vanilla Candle",
+        "quantity": 675,
+        "store": "Candle Shop"
+      }
+    ],
+    "reward": 8
+  },
+  {
+    "id": "mission-82",
+    "name": "Aviation Day",
+    "description": "Bitizens are crazy about aviation! They need:",
+    "requirements": [
+      {
+        "product": "Flight Booking",
+        "quantity": 2700,
+        "store": "Travel Agency"
+      },
+      {
+        "product": "Bar Nuts",
+        "quantity": 45,
+        "store": "Pub"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-83",
+    "name": "Senior Citizens Day",
+    "description": "Bitizens are showing support for their elders, they need:",
+    "requirements": [
+      {
+        "product": "Bird Feeding",
+        "quantity": 1350,
+        "store": "Park"
+      },
+      {
+        "product": "Purse",
+        "quantity": 1575,
+        "store": "Womens Fashion"
+      },
+      {
+        "product": "Tie",
+        "quantity": 675,
+        "store": "Mens Fashion"
+      }
+    ],
+    "reward": 4
+  },
+  {
+    "id": "mission-84",
+    "name": "Labor Day '13",
+    "description": "Bitizens are celebrating workers everywhere! They need:",
+    "requirements": [
+      {
+        "product": "Leak Fix",
+        "quantity": 9000,
+        "store": "Plumber"
+      },
+      {
+        "product": "Inspection",
+        "quantity": 13500,
+        "store": "Fire Station"
+      }
+    ],
+    "reward": 10
+  },
+  {
+    "id": "mission-85",
+    "name": "Programmers' Day",
+    "description": "Show your support for software developers by collecting:",
+    "requirements": [
+      {
+        "product": "Laptop",
+        "quantity": 2700,
+        "store": "Tech Store"
+      },
+      {
+        "product": "Anti-Virus App",
+        "quantity": 9000,
+        "store": "Software Studio"
+      }
+    ],
+    "reward": 11
+  },
+  {
+    "id": "mission-86",
+    "name": "Oktoberfest '13",
+    "description": "Bitizens are celebrating Oktoberfest! They need:",
+    "requirements": [
+      {
+        "product": "Root Beer",
+        "quantity": 450,
+        "store": "Pub"
+      },
+      {
+        "product": "Cuckoo Clock",
+        "quantity": 6750,
+        "store": "Clockmaker"
+      }
+    ],
+    "reward": 5
+  },
+  {
+    "id": "mission-87",
+    "name": "Confucius Day",
+    "description": "A wise man said you need to collect the following:",
+    "requirements": [
+      {
+        "product": "Black Belt",
+        "quantity": 31500,
+        "store": "Martial Arts"
+      },
+      {
+        "product": "Noodle Bowl",
+        "quantity": 1125,
+        "store": "Asian Cuisine"
+      }
+    ],
+    "reward": 15
+  },
+  {
+    "id": "mission-88",
+    "name": "World Vegetarian Day",
+    "description": "Bitizens are going meat-less for vegetarian day, they need:",
+    "requirements": [
+      {
+        "product": "Soy Burger",
+        "quantity": 1575,
+        "store": "Vegan Food"
+      },
+      {
+        "product": "Hanging Plant",
+        "quantity": 1710,
+        "store": "Plant Nursery"
+      }
+    ],
+    "reward": 4
+  },
+  {
+    "id": "mission-89",
     "name": "Fire Prevention Day",
     "description": "Bitizens are learning about fire safety! They need:",
     "requirements": [
-      {"product": "Fire Drill", "quantity": 15750, "store": "Fire Station"},
-      {"product": "Print Ad", "quantity": 2025, "store": "Ad Agency"}
+      {
+        "product": "Fire Drill",
+        "quantity": 15750,
+        "store": "Fire Station"
+      },
+      {
+        "product": "Print Ad",
+        "quantity": 2025,
+        "store": "Ad Agency"
+      }
     ],
     "reward": 15
   }
 ]
-

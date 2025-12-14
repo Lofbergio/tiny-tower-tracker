@@ -1,5 +1,9 @@
 <template>
-  <h2 class="text-lg font-semibold leading-none tracking-tight">
+  <DialogTitle class="text-lg font-semibold leading-none tracking-tight">
     <slot />
-  </h2>
+  </DialogTitle>
 </template>
+
+<script setup lang="ts">
+import { DialogTitle } from 'radix-vue'
+</script>

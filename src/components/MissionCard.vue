@@ -1,15 +1,17 @@
 <template>
   <Card :class="{ 'opacity-60': userMission.status === 'completed' }">
-    <CardHeader>
+    <div class="flex flex-col space-y-1.5 p-6">
       <div class="flex items-center justify-between">
-        <CardTitle>{{ userMission.mission.name }}</CardTitle>
+        <h3 class="text-2xl font-semibold leading-none tracking-tight">
+          {{ userMission.mission.name }}
+        </h3>
         <Badge :variant="userMission.status === 'completed' ? 'secondary' : 'default'">
           {{ userMission.status === 'completed' ? 'Completed' : 'Pending' }}
         </Badge>
       </div>
       <p class="text-sm text-muted-foreground">{{ userMission.mission.description }}</p>
-    </CardHeader>
-    <CardContent>
+    </div>
+    <div class="p-6 pt-0">
       <div class="space-y-2">
         <p class="text-sm font-medium">Requirements:</p>
         <ul class="space-y-1 text-sm">
@@ -47,7 +49,7 @@
           </p>
         </div>
       </div>
-    </CardContent>
+    </div>
   </Card>
 </template>
 
@@ -56,9 +58,6 @@ import type { Mission, UserMission } from '@/types'
 import Badge from './ui/Badge.vue'
 import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
-import CardContent from './ui/CardContent.vue'
-import CardHeader from './ui/CardHeader.vue'
-import CardTitle from './ui/CardTitle.vue'
 
 defineProps<{
   userMission: UserMission & { mission: Mission }

@@ -3,32 +3,29 @@
     <div class="mb-6 flex items-center justify-between">
       <div>
         <h1 class="mb-1 text-3xl font-bold">Missions</h1>
-        <p class="text-muted-foreground text-sm">Track and complete your Tiny Tower missions</p>
+        <p class="text-sm text-muted-foreground">Track and complete your Tiny Tower missions</p>
       </div>
       <Dialog :open="showAddDialog" @update:open="showAddDialog = $event">
-        <DialogHeader>
-          <DialogTitle>Add Mission</DialogTitle>
-        </DialogHeader>
         <DialogContent>
+          <div class="flex flex-col space-y-1.5 text-center sm:text-left">
+            <DialogTitle>Add Mission</DialogTitle>
+          </div>
           <div class="space-y-4">
             <div>
               <Label class="mb-2 block">Select Mission</Label>
-              <Select v-model="selectedMissionId" placeholder="Choose a mission...">
-                <SelectItem
-                  v-for="mission in availableMissions"
-                  :key="mission.id"
-                  :value="mission.id"
-                >
-                  {{ mission.name }}
-                </SelectItem>
-              </Select>
+              <SearchableSelect
+                v-model="selectedMissionId"
+                :items="availableMissionItems"
+                placeholder="Choose a mission..."
+                search-placeholder="Search missions…"
+              />
             </div>
           </div>
+          <div class="mt-4 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
+            <Button variant="outline" @click="showAddDialog = false">Cancel</Button>
+            <Button :disabled="!selectedMissionId" @click="handleAddMission">Add</Button>
+          </div>
         </DialogContent>
-        <DialogFooter>
-          <Button variant="outline" @click="showAddDialog = false">Cancel</Button>
-          <Button @click="handleAddMission" :disabled="!selectedMissionId">Add</Button>
-        </DialogFooter>
       </Dialog>
       <Button @click="showAddDialog = true">Add Mission</Button>
     </div>
@@ -104,13 +101,10 @@ import MissionCard from '@/components/MissionCard.vue'
 import Button from '@/components/ui/Button.vue'
 import Dialog from '@/components/ui/Dialog.vue'
 import DialogContent from '@/components/ui/DialogContent.vue'
-import DialogFooter from '@/components/ui/DialogFooter.vue'
-import DialogHeader from '@/components/ui/DialogHeader.vue'
 import DialogTitle from '@/components/ui/DialogTitle.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import Label from '@/components/ui/Label.vue'
-import Select from '@/components/ui/Select.vue'
-import SelectItem from '@/components/ui/SelectItem.vue'
+import SearchableSelect from '@/components/ui/SearchableSelect.vue'
 import Tabs from '@/components/ui/Tabs.vue'
 import TabsContent from '@/components/ui/TabsContent.vue'
 import TabsList from '@/components/ui/TabsList.vue'
@@ -139,6 +133,10 @@ const selectedMissionId = ref('')
 const availableMissions = computed(() => {
   const userMissionIds = new Set(userMissions.value.map(um => um.missionId))
   return allMissions.value.filter(m => !userMissionIds.has(m.id))
+})
+
+const availableMissionItems = computed(() => {
+  return availableMissions.value.map(mission => ({ value: mission.id, label: mission.name }))
 })
 
 function handleAddMission() {

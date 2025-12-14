@@ -1,9 +1,10 @@
 import js from '@eslint/js'
 import typescript from '@typescript-eslint/eslint-plugin'
 import typescriptParser from '@typescript-eslint/parser'
-import vue from 'eslint-plugin-vue'
 import prettier from 'eslint-config-prettier'
+import vue from 'eslint-plugin-vue'
 import globals from 'globals'
+import vueParser from 'vue-eslint-parser'
 
 export default [
   // Base JavaScript recommended rules
@@ -13,6 +14,7 @@ export default [
   {
     ignores: [
       'dist',
+      '.tmp',
       'node_modules',
       'build',
       'coverage',
@@ -35,7 +37,7 @@ export default [
   {
     files: ['**/*.vue'],
     languageOptions: {
-      parser: vue.parsers['vue-eslint-parser'],
+      parser: vueParser,
       parserOptions: {
         parser: typescriptParser,
         ecmaVersion: 'latest',
@@ -61,7 +63,9 @@ export default [
       'vue/require-default-prop': 'off',
       'vue/require-explicit-emits': 'error',
       'vue/component-name-in-template-casing': ['error', 'PascalCase'],
-      'vue/custom-event-name-casing': ['error', 'camelCase'],
+      // Vue templates commonly use kebab-case listeners (e.g. @remove-resident),
+      // so don't enforce camelCase here.
+      'vue/custom-event-name-casing': 'off',
       'vue/define-emits-declaration': ['error', 'type-based'],
       'vue/define-props-declaration': ['error', 'type-based'],
       'vue/no-unused-vars': 'error',

@@ -1,32 +1,1004 @@
 [
-  {"id": "bar", "name": "Bar", "category": "Food", "products": ["Champagne", "Beer", "Wine", "Cocktail"]},
-  {"id": "hat-shop", "name": "Hat Shop", "category": "Retail", "products": ["Party Hat", "Cowboy Hat", "Baseball Cap", "Top Hat"]},
-  {"id": "hot-dog-joint", "name": "Hot Dog Joint", "category": "Food", "products": ["Loaded Dog", "Hot Dog", "Chili Dog", "Corn Dog"]},
-  {"id": "archery-range", "name": "Archery Range", "category": "Recreation", "products": ["Arrows", "Bow", "Target", "Quiver"]},
-  {"id": "costume-shop", "name": "Costume Shop", "category": "Retail", "products": ["Custom Robes", "Costume", "Mask", "Wig"]},
-  {"id": "toy-store", "name": "Toy Store", "category": "Retail", "products": ["Rocket Ship", "Action Figure", "Doll", "Board Game"]},
-  {"id": "scoops", "name": "Scoops", "category": "Food", "products": ["Ice Cream Bar", "Ice Cream Cone", "Sundae", "Milkshake"]},
-  {"id": "mechanic", "name": "Mechanic", "category": "Service", "products": ["Tune Up", "Oil Change", "Tire Rotation", "Brake Service"]},
-  {"id": "tech-store", "name": "Tech Store", "category": "Retail", "products": ["Camera", "Laptop", "Tablet", "Smartphone"]},
-  {"id": "wood-shop", "name": "Wood Shop", "category": "Creative", "products": ["Bookcase", "Desk", "Chair", "Table"]},
-  {"id": "book-store", "name": "Book Store", "category": "Retail", "products": ["Hardback", "Paperback", "Magazine", "Comic Book"]},
-  {"id": "surf-shop", "name": "Surf Shop", "category": "Retail", "products": ["Custom Board", "Surfboard", "Wetsuit", "Wax"]},
-  {"id": "smoothie-shop", "name": "Smoothie Shop", "category": "Food", "products": ["Small Smoothie", "Large Smoothie", "Protein Smoothie", "Fruit Smoothie"]},
-  {"id": "day-spa", "name": "Day Spa", "category": "Service", "products": ["Stone Massage", "Facial", "Manicure", "Pedicure"]},
-  {"id": "candle-shop", "name": "Candle Shop", "category": "Retail", "products": ["Vanilla Candle", "Scented Candle", "Candle Set", "Wax"]},
-  {"id": "travel-agency", "name": "Travel Agency", "category": "Service", "products": ["Flight Booking", "Hotel Booking", "Package Deal", "Travel Guide"]},
-  {"id": "pub", "name": "Pub", "category": "Food", "products": ["Bar Nuts", "Root Beer", "Beer", "Pretzel"]},
-  {"id": "park", "name": "Park", "category": "Recreation", "products": ["Bird Feeding", "Picnic", "Walk", "Bench"]},
-  {"id": "womens-fashion", "name": "Women's Fashion", "category": "Retail", "products": ["Purse", "Dress", "Shoes", "Jewelry"]},
-  {"id": "mens-fashion", "name": "Men's Fashion", "category": "Retail", "products": ["Tie", "Suit", "Shoes", "Watch"]},
-  {"id": "plumber", "name": "Plumber", "category": "Service", "products": ["Leak Fix", "Pipe Repair", "Drain Clean", "Installation"]},
-  {"id": "fire-station", "name": "Fire Station", "category": "Service", "products": ["Inspection", "Fire Drill", "Rescue", "Safety Check"]},
-  {"id": "software-studio", "name": "Software Studio", "category": "Creative", "products": ["Anti-Virus App", "Game App", "Productivity App", "Social App"]},
-  {"id": "clockmaker", "name": "Clockmaker", "category": "Creative", "products": ["Cuckoo Clock", "Wall Clock", "Pocket Watch", "Alarm Clock"]},
-  {"id": "martial-arts", "name": "Martial Arts", "category": "Recreation", "products": ["Black Belt", "Karate Class", "Judo Class", "Equipment"]},
-  {"id": "asian-cuisine", "name": "Asian Cuisine", "category": "Food", "products": ["Noodle Bowl", "Sushi", "Ramen", "Dumplings"]},
-  {"id": "vegan-food", "name": "Vegan Food", "category": "Food", "products": ["Soy Burger", "Vegan Pizza", "Salad", "Smoothie"]},
-  {"id": "plant-nursery", "name": "Plant Nursery", "category": "Retail", "products": ["Hanging Plant", "Flower Pot", "Seeds", "Fertilizer"]},
-  {"id": "ad-agency", "name": "Ad Agency", "category": "Creative", "products": ["Print Ad", "Commercial", "Poster", "Flyer"]}
+  {
+    "id": "ad-agency",
+    "name": "Ad Agency",
+    "category": "Creative",
+    "products": ["Print Ad", "Billboard Ad", "TV Ad"]
+  },
+  {
+    "id": "airline-food",
+    "name": "Airline Food",
+    "category": "Food",
+    "products": ["Pretzels", "Ginger Ale", "Turkey Sandwich"]
+  },
+  {
+    "id": "animation-studio",
+    "name": "Animation Studio",
+    "category": "Creative",
+    "products": ["Animated Short", "DVD Release", "Cinema Classic"]
+  },
+  {
+    "id": "aquarium",
+    "name": "Aquarium",
+    "category": "Recreation",
+    "products": ["Admission", "Fish Toy", "Annual Pass"]
+  },
+  {
+    "id": "arcade",
+    "name": "Arcade",
+    "category": "Recreation",
+    "products": ["1 Play", "Extra Life", "High Score"]
+  },
+  {
+    "id": "archery-range",
+    "name": "Archery Range",
+    "category": "Recreation",
+    "products": ["Bow Rental", "Arrows", "Arrow Combo"]
+  },
+  {
+    "id": "architect-office",
+    "name": "Architect Office",
+    "category": "Creative",
+    "products": ["Room Addition", "House Design", "Tower Design"]
+  },
+  {
+    "id": "army-base-store",
+    "name": "Army Base Store",
+    "category": "Retail",
+    "products": ["Boot", "Can", "Computer"]
+  },
+  {
+    "id": "art-studio",
+    "name": "Art Studio",
+    "category": "Creative",
+    "products": ["Small Portrait", "Still Life", "Landscape"]
+  },
+  {
+    "id": "asian-cuisine",
+    "name": "Asian Cuisine",
+    "category": "Food",
+    "products": ["Spring Rolls", "Noodle Bowl", "Orange Tofu"]
+  },
+  {
+    "id": "auto-dealer",
+    "name": "Auto Dealer",
+    "category": "Retail",
+    "products": ["Used Van", "Hatchback", "Convertible"]
+  },
+  {
+    "id": "bakery",
+    "name": "Bakery",
+    "category": "Food",
+    "products": ["Sugar Cookies", "Walnut Muffins", "Bread Loaf"]
+  },
+  {
+    "id": "bank",
+    "name": "Bank",
+    "category": "Service",
+    "products": ["Check Deposit", "New Account", "Loan Application"]
+  },
+  {
+    "id": "barber-shop",
+    "name": "Barber Shop",
+    "category": "Service",
+    "products": ["Shave", "Haircut", "Perm"]
+  },
+  {
+    "id": "bbq-place",
+    "name": "BBQ Place",
+    "category": "Food",
+    "products": ["Onion Rings", "BBQ Sandwich", "Beef Ribs"]
+  },
+  {
+    "id": "bike-shop",
+    "name": "Bike Shop",
+    "category": "Retail",
+    "products": ["Bike Shirt", "Bike Wheel", "Mountain Bike"]
+  },
+  {
+    "id": "billiard-hall",
+    "name": "Billiard Hall",
+    "category": "Recreation",
+    "products": ["Trick Shots", "9-Ball Game", "Pool Contest"]
+  },
+  {
+    "id": "bitbook",
+    "name": "Bitbook",
+    "category": "Service",
+    "products": ["Photo Sharing", "Status Update", "Advertisment"]
+  },
+  {
+    "id": "bling-jewelers",
+    "name": "Bling Jewelers",
+    "category": "Retail",
+    "products": ["Earrings", "Diamond Ring", "Necklace"]
+  },
+  {
+    "id": "boba-shop",
+    "name": "Boba Shop",
+    "category": "Food",
+    "products": ["Milk Boba", "Fruit Boba", "Chocolate Bobaa"]
+  },
+  {
+    "id": "book-store",
+    "name": "Book Store",
+    "category": "Retail",
+    "products": ["Paperback", "Hardback", "Boxed Set"]
+  },
+  {
+    "id": "bowling-alley",
+    "name": "Bowling Alley",
+    "category": "Recreation",
+    "products": ["Shoe Rental", "Single Game", "Tournament"]
+  },
+  {
+    "id": "boxing-gym",
+    "name": "Boxing Gym",
+    "category": "Recreation",
+    "products": ["Jumprope", "Weigh In", "Sparring"]
+  },
+  {
+    "id": "brick-store",
+    "name": "Brick Store",
+    "category": "Retail",
+    "products": ["Brick Set", "Blind Bag", "Bitty Figure"]
+  },
+  {
+    "id": "broadway-theatre",
+    "name": "Broadway Theatre",
+    "category": "Recreation",
+    "products": ["Felines", "Oz", "Phantoms"]
+  },
+  {
+    "id": "budokai-arena",
+    "name": "Budokai Arena",
+    "category": "Service",
+    "products": ["Mask", "Sign", "Umbrella"]
+  },
+  {
+    "id": "burrito-bar",
+    "name": "Burrito Bar",
+    "category": "Food",
+    "products": ["Burrito", "Burrito Bowl", "Burrito Box"]
+  },
+  {
+    "id": "cake-studio",
+    "name": "Cake Studio",
+    "category": "Creative",
+    "products": ["Single Layer", "Double Layer", "Triple Layer"]
+  },
+  {
+    "id": "candle-shop",
+    "name": "Candle Shop",
+    "category": "Retail",
+    "products": ["Vanilla Candle", "Pine Candle", "Pumpkin Candle"]
+  },
+  {
+    "id": "candy-shoppe",
+    "name": "Candy Shoppe",
+    "category": "Retail",
+    "products": ["Bubble Gum", "Peppermints", "Lollypops"]
+  },
+  {
+    "id": "casino",
+    "name": "Casino",
+    "category": "Recreation",
+    "products": ["Nickel Slots", "Dollar Slots", "Poker Game"]
+  },
+  {
+    "id": "cat-cafe",
+    "name": "Cat Cafe",
+    "category": "Food",
+    "products": ["Coffee", "Cupcake", "Milkshake"]
+  },
+  {
+    "id": "central-park-coffee",
+    "name": "Central Park Coffee",
+    "category": "Food",
+    "products": ["Coffee", "Coffee To Go", "Ice Cream"]
+  },
+  {
+    "id": "cheese-shop",
+    "name": "Cheese Shop",
+    "category": "Food",
+    "products": ["Cheddar", "Parmesan", "Mozzarella"]
+  },
+  {
+    "id": "chocolatier",
+    "name": "Chocolatier",
+    "category": "Creative",
+    "products": ["Choc Truffle", "Choc Box", "Choc Sculpture"]
+  },
+  {
+    "id": "christmas-toy-store",
+    "name": "Christmas Toy Store",
+    "category": "Retail",
+    "products": ["Bear", "Plane", "Train"]
+  },
+  {
+    "id": "cineplex",
+    "name": "Cineplex",
+    "category": "Recreation",
+    "products": ["Popcorn", "Matinee", "3D Movie"]
+  },
+  {
+    "id": "circus",
+    "name": "Circus",
+    "category": "Recreation",
+    "products": ["Circus Ticket", "Elephant Ride", "Tiger Show"]
+  },
+  {
+    "id": "clockmaker",
+    "name": "Clockmaker",
+    "category": "Creative",
+    "products": ["Cuckoo Clock", "Cat Clock", "Floor Clock"]
+  },
+  {
+    "id": "coffee-house",
+    "name": "Coffee House",
+    "category": "Food",
+    "products": ["Espresso", "Tall Latte", "Frappe"]
+  },
+  {
+    "id": "college",
+    "name": "College",
+    "category": "Service",
+    "products": ["Syllabus", "Lecture", "Final"]
+  },
+  {
+    "id": "comedy-club",
+    "name": "Comedy Club",
+    "category": "Recreation",
+    "products": ["LOL's", "LMAO's", "ROFL's"]
+  },
+  {
+    "id": "comic-store",
+    "name": "Comic Store",
+    "category": "Retail",
+    "products": ["Mage Cards", "Battleclub Figure", "Atom Man No 1"]
+  },
+  {
+    "id": "cookie-shop",
+    "name": "Cookie Shop",
+    "category": "Food",
+    "products": ["Sugar", "Chocolate", "Frosted"]
+  },
+  {
+    "id": "costume-shop",
+    "name": "Costume Shop",
+    "category": "Creative",
+    "products": ["Custom Hat", "Custom Dress", "Custom Robes"]
+  },
+  {
+    "id": "courthouse",
+    "name": "Courthouse",
+    "category": "Service",
+    "products": ["Small Claims", "Family Court", "Grand Jury"]
+  },
+  {
+    "id": "crabbyland",
+    "name": "Crabbyland",
+    "category": "Recreation",
+    "products": ["Anchor", "Pirate Chest", "Starfish PIcture"]
+  },
+  {
+    "id": "creative-ink",
+    "name": "Creative Ink",
+    "category": "Creative",
+    "products": ["Butterfly Tat", "Skull Tat", "Bird Tat"]
+  },
+  {
+    "id": "cyber-cafe",
+    "name": "Cyber Café",
+    "category": "Recreation",
+    "products": ["Web Browsing", "Computer Games", "Game Tourney"]
+  },
+  {
+    "id": "dance-studio",
+    "name": "Dance Studio",
+    "category": "Creative",
+    "products": ["Tango", "Ballet", "Disco"]
+  },
+  {
+    "id": "day-spa",
+    "name": "Day Spa",
+    "category": "Service",
+    "products": ["Pedicure", "Facial", "Stone Massage"]
+  },
+  {
+    "id": "dentists-office",
+    "name": "Dentists Office",
+    "category": "Service",
+    "products": ["Cleaning", "Teeth Whitening", "Gold Crown"]
+  },
+  {
+    "id": "device-repair",
+    "name": "Device Repair",
+    "category": "Service",
+    "products": ["MP3 Player", "Tablet", "Laptop"]
+  },
+  {
+    "id": "diner",
+    "name": "Diner",
+    "category": "Food",
+    "products": ["Cup of Joe", "Bacon & Eggs", "Soup & Sandwich"]
+  },
+  {
+    "id": "doctors-office",
+    "name": "Doctors Office",
+    "category": "Service",
+    "products": ["Check Up", "Prescription", "Lab Test"]
+  },
+  {
+    "id": "doggy-daycare",
+    "name": "Doggy Daycare",
+    "category": "Service",
+    "products": ["Nap Time", "Play Time", "Grooming"]
+  },
+  {
+    "id": "donut-shop",
+    "name": "Donut Shop",
+    "category": "Food",
+    "products": ["Donut Holes", "Glazed Donut", "Bearclaws"]
+  },
+  {
+    "id": "fabric-shop",
+    "name": "Fabric Shop",
+    "category": "Retail",
+    "products": ["Thread Spool", "Quilt Square", "Bolts of Fabric"]
+  },
+  {
+    "id": "fancy-cuisine",
+    "name": "Fancy Cuisine",
+    "category": "Food",
+    "products": ["Sparkling Juice", "Caviar", "Roast Duck"]
+  },
+  {
+    "id": "farmers-market",
+    "name": "Farmer's Market",
+    "category": "Food",
+    "products": ["Blueberry Jam", "Tomato", "Carrot"]
+  },
+  {
+    "id": "fashion-studio",
+    "name": "Fashion Studio",
+    "category": "Creative",
+    "products": ["Wrap Design", "Blouse Design", "Outfit Design"]
+  },
+  {
+    "id": "film-studio",
+    "name": "Film Studio",
+    "category": "Creative",
+    "products": ["Food Commercial", "TV Episode", "Movie Shoot"]
+  },
+  {
+    "id": "fire-station",
+    "name": "Fire Station",
+    "category": "Service",
+    "products": ["Kitten Rescue", "Inspection", "Fire Drill"]
+  },
+  {
+    "id": "floral-studio",
+    "name": "Floral Studio",
+    "category": "Creative",
+    "products": ["Corsage", "Bouquet", "Arrangement"]
+  },
+  {
+    "id": "fortune-teller",
+    "name": "Fortune Teller",
+    "category": "Service",
+    "products": ["Palm Reading", "Tarot Reading", "Seance"]
+  },
+  {
+    "id": "frozen-yogurt",
+    "name": "Frozen Yogurt",
+    "category": "Food",
+    "products": ["Mini Chocolate", "Medium Vanilla", "Jumbo Swirl"]
+  },
+  {
+    "id": "furniture-store",
+    "name": "Furniture Store",
+    "category": "Retail",
+    "products": ["Fake Plant", "End Table", "Modern Chair"]
+  },
+  {
+    "id": "game-store",
+    "name": "Game Store",
+    "category": "Retail",
+    "products": ["Used Game", "Controller", "Game System"]
+  },
+  {
+    "id": "game-studio",
+    "name": "Game Studio",
+    "category": "Creative",
+    "products": ["Match 3 Game", "City Sim", "MMORPG"]
+  },
+  {
+    "id": "glass-studio",
+    "name": "Glass Studio",
+    "category": "Creative",
+    "products": ["Green Tumbler", "Orange Vase", "Aqua Bottle"]
+  },
+  {
+    "id": "golf-sim",
+    "name": "Golf Sim",
+    "category": "Recreation",
+    "products": ["75 Balls", "200 Balls", "Golf Lessons"]
+  },
+  {
+    "id": "graphic-design",
+    "name": "Graphic Design",
+    "category": "Creative",
+    "products": ["Album Cover", "Band Poster", "Web Site"]
+  },
+  {
+    "id": "grocery-store",
+    "name": "Grocery Store",
+    "category": "Retail",
+    "products": ["Cereal", "Tabloid", "Produce"]
+  },
+  {
+    "id": "hat-shop",
+    "name": "Hat Shop",
+    "category": "Retail",
+    "products": ["Trucker Hat", "Cowboy Hat", "Top Hat"]
+  },
+  {
+    "id": "haunted-house",
+    "name": "Haunted House",
+    "category": "Recreation",
+    "products": ["Chills", "Creeps", "Screams"]
+  },
+  {
+    "id": "health-club",
+    "name": "Health Club",
+    "category": "Service",
+    "products": ["Weight Workout", "Ball Workout", "Cardio Workout"]
+  },
+  {
+    "id": "home-supply",
+    "name": "Home Supply",
+    "category": "Retail",
+    "products": ["Lumber", "Power Drill", "Table Saw"]
+  },
+  {
+    "id": "hot-dog-joint",
+    "name": "Hot Dog Joint",
+    "category": "Food",
+    "products": ["Plain Dog", "Loaded Dog", "Chili Dog"]
+  },
+  {
+    "id": "ice-hockey-rink",
+    "name": "Ice Hockey Rink",
+    "category": "Recreation",
+    "products": ["Helmet", "Puck", "Skate"]
+  },
+  {
+    "id": "ichiraku-ramen",
+    "name": "Ichiraku Ramen",
+    "category": "Food",
+    "products": ["Kunai", "Niguiri", "Ramen"]
+  },
+  {
+    "id": "indoor-skydiving",
+    "name": "Indoor Skydiving",
+    "category": "Recreation",
+    "products": ["Suit Rental", "Flight Time", "Birthday"]
+  },
+  {
+    "id": "italian-food",
+    "name": "Italian Food",
+    "category": "Food",
+    "products": ["Garlic Bread", "Cannoli", "Spaghetti"]
+  },
+  {
+    "id": "jewelry-store",
+    "name": "Jewelry Store",
+    "category": "Retail",
+    "products": ["Earrings", "Diamond Ring", "Necklace"]
+  },
+  {
+    "id": "joey-bitton",
+    "name": "Joey Bitton",
+    "category": "Retail",
+    "products": ["Keychain", "Handbag", "Purse"]
+  },
+  {
+    "id": "karaoke-club",
+    "name": "Karaoke Club",
+    "category": "Recreation",
+    "products": ["Solo Song", "Duet Song", "Club Rental"]
+  },
+  {
+    "id": "laboratory",
+    "name": "Laboratory",
+    "category": "Creative",
+    "products": ["Love Potion", "Mystery Goo", "Monster"]
+  },
+  {
+    "id": "laundromat",
+    "name": "Laundromat",
+    "category": "Service",
+    "products": ["Sock Fluff", "Delicate Cycle", "Denim Dry"]
+  },
+  {
+    "id": "law-offices",
+    "name": "Law Offices",
+    "category": "Service",
+    "products": ["Contract", "Estate Plan", "Lawsuit"]
+  },
+  {
+    "id": "legit-watches",
+    "name": "Legit Watches",
+    "category": "Retail",
+    "products": ["Re-sizing", "Cheap Watch", "Deluxe Watch"]
+  },
+  {
+    "id": "library",
+    "name": "Library",
+    "category": "Service",
+    "products": ["Book Rental", "Calligraphy", "Research Help"]
+  },
+  {
+    "id": "lotus-house",
+    "name": "Lotus House",
+    "category": "Food",
+    "products": ["Hot Tea", "Sushi Roll", "Katsu Chicken"]
+  },
+  {
+    "id": "makerspace",
+    "name": "Makerspace",
+    "category": "Creative",
+    "products": ["Materials", "3D Printing", "Laser Cutting"]
+  },
+  {
+    "id": "mapple-store",
+    "name": "Mapple Store",
+    "category": "Retail",
+    "products": ["Mypod", "Myphone", "Mybook"]
+  },
+  {
+    "id": "martial-arts",
+    "name": "Martial Arts",
+    "category": "Service",
+    "products": ["White Belt", "Red Belt", "Black Belt"]
+  },
+  {
+    "id": "mechanic",
+    "name": "Mechanic",
+    "category": "Service",
+    "products": ["Oil Change", "New Tire", "Tune Up"]
+  },
+  {
+    "id": "mens-fashion",
+    "name": "Mens Fashion",
+    "category": "Retail",
+    "products": ["Tie", "Dress Belt", "3 Piece Suit"]
+  },
+  {
+    "id": "metal-studio",
+    "name": "Metal Studio",
+    "category": "Creative",
+    "products": ["Wrought Iron", "Welding", "Sculpture"]
+  },
+  {
+    "id": "mexican-food",
+    "name": "Mexican Food",
+    "category": "Food",
+    "products": ["Chips & Salsa", "Tacos", "Shrimp Platter"]
+  },
+  {
+    "id": "mini-golf",
+    "name": "Mini Golf",
+    "category": "Recreation",
+    "products": ["1 Player Round", "2 Player Round", "3 Player Round"]
+  },
+  {
+    "id": "model-trains",
+    "name": "Model Trains",
+    "category": "Creative",
+    "products": ["Water Tower", "Yellow Train", "Cargo Train"]
+  },
+  {
+    "id": "moroccan-cuisine",
+    "name": "Moroccan Cuisine",
+    "category": "Food",
+    "products": ["Hummus", "Dates", "Kebabs"]
+  },
+  {
+    "id": "museum",
+    "name": "Museum",
+    "category": "Recreation",
+    "products": ["Admission", "Audio Tour", "Charity Event"]
+  },
+  {
+    "id": "music-store",
+    "name": "Music Store",
+    "category": "Retail",
+    "products": ["Sheet Music", "Trumpet", "Electric Guitar"]
+  },
+  {
+    "id": "native-art-studio",
+    "name": "Native Art Studio",
+    "category": "Creative",
+    "products": ["Basket", "Plate", "Blanket"]
+  },
+  {
+    "id": "night-club",
+    "name": "Night Club",
+    "category": "Recreation",
+    "products": ["Cover Charge", "Cocktail", "VIP Ticket"]
+  },
+  {
+    "id": "optometrist",
+    "name": "Optometrist",
+    "category": "Service",
+    "products": ["Eye Glasses", "Contact Lenses", "Laser Treatment"]
+  },
+  {
+    "id": "paintball-arena",
+    "name": "Paintball Arena",
+    "category": "Recreation",
+    "products": ["100 Paintballs", "500 Paintballs", "1000 Paintballs"]
+  },
+  {
+    "id": "pancake-house",
+    "name": "Pancake House",
+    "category": "Food",
+    "products": ["Pancakes", "Berry Pancakes", "Big Stack"]
+  },
+  {
+    "id": "park",
+    "name": "Park",
+    "category": "Recreation",
+    "products": ["Bird Feeding", "Paper Reading", "Disc Toss"]
+  },
+  {
+    "id": "pet-shop",
+    "name": "Pet Shop",
+    "category": "Retail",
+    "products": ["Pet Food", "Hermit Crab", "Parrot"]
+  },
+  {
+    "id": "pharmacy",
+    "name": "Pharmacy",
+    "category": "Service",
+    "products": ["Cold Medicine", "Flu Shot", "Rx Refill"]
+  },
+  {
+    "id": "photo-studio",
+    "name": "Photo Studio",
+    "category": "Creative",
+    "products": ["Pet Portrait", "Single Portrait", "Family Portrait"]
+  },
+  {
+    "id": "pizza-place",
+    "name": "Pizza Place",
+    "category": "Food",
+    "products": ["Pizza Slice", "Personal Pan", "Giant Pizza"]
+  },
+  {
+    "id": "planetarium",
+    "name": "Planetarium",
+    "category": "Recreation",
+    "products": ["Planet Tour", "Solar Tour", "Laser Show"]
+  },
+  {
+    "id": "plant-nursery",
+    "name": "Plant Nursery",
+    "category": "Retail",
+    "products": ["Small Cactus", "Hanging Plant", "Fertilizer"]
+  },
+  {
+    "id": "plumber",
+    "name": "Plumber",
+    "category": "Service",
+    "products": ["Drain Clean", "Leak Fix", "New Pipes"]
+  },
+  {
+    "id": "pottery-studio",
+    "name": "Pottery Studio",
+    "category": "Creative",
+    "products": ["Simple Bowl", "Pretty Plate", "Detailed Vase"]
+  },
+  {
+    "id": "private-eye",
+    "name": "Private Eye",
+    "category": "Service",
+    "products": ["Background Check", "Surveillance", "Murder Mystery"]
+  },
+  {
+    "id": "pub",
+    "name": "Pub",
+    "category": "Food",
+    "products": ["Bar Nuts", "Root Beer", "Hot Wings"]
+  },
+  {
+    "id": "racquetball",
+    "name": "Racquetball",
+    "category": "Recreation",
+    "products": ["Practice", "Friendly Game", "Tournament"]
+  },
+  {
+    "id": "record-shop",
+    "name": "Record Shop",
+    "category": "Retail",
+    "products": ["Single", "Album", "Discography"]
+  },
+  {
+    "id": "recording-studio",
+    "name": "Recording Studio",
+    "category": "Creative",
+    "products": ["Jingle Recording", "Single Recording", "Album Recording"]
+  },
+  {
+    "id": "recycling",
+    "name": "Recycling",
+    "category": "Service",
+    "products": ["Newspaper", "Cans", "Glass"]
+  },
+  {
+    "id": "robot-store",
+    "name": "Robot Store",
+    "category": "Retail",
+    "products": ["Cleaning Robot", "Rover Robot", "Android"]
+  },
+  {
+    "id": "rock-climbing",
+    "name": "Rock Climbing",
+    "category": "Recreation",
+    "products": ["1 Climb", "2 Climbs", "3 Climbs"]
+  },
+  {
+    "id": "rock-diner",
+    "name": "Rock Diner",
+    "category": "Food",
+    "products": ["Rock Fries", "Rock Shake", "Rock Burger"]
+  },
+  {
+    "id": "scoops",
+    "name": "Scoops",
+    "category": "Food",
+    "products": ["Ice Cream Bar", "Triple Scoop", "Ice Cream Cake"]
+  },
+  {
+    "id": "sculpting-studio",
+    "name": "Sculpting Studio",
+    "category": "Creative",
+    "products": ["Bust", "Idol", "Statue"]
+  },
+  {
+    "id": "seafood",
+    "name": "Seafood",
+    "category": "Food",
+    "products": ["Sea Bass", "Lobster", "King Crab"]
+  },
+  {
+    "id": "security-office",
+    "name": "Security Office",
+    "category": "Service",
+    "products": ["Id Badges", "Radios", "Tasers"]
+  },
+  {
+    "id": "ship-print",
+    "name": "Ship & Print",
+    "category": "Service",
+    "products": ["Photocopies", "Shipment", "Sales Report"]
+  },
+  {
+    "id": "shoe-store",
+    "name": "Shoe Store",
+    "category": "Retail",
+    "products": ["Sandals", "Sneakers", "Dress Shoes"]
+  },
+  {
+    "id": "shoemaker",
+    "name": "Shoemaker",
+    "category": "Creative",
+    "products": ["Leather Shoes", "Heels", "Sports Shoes"]
+  },
+  {
+    "id": "shrimp-buffet",
+    "name": "Shrimp Buffet",
+    "category": "Food",
+    "products": ["Shrimp Cocktail", "Jumbo Shrimp", "Fried Shrimp"]
+  },
+  {
+    "id": "skate-shop",
+    "name": "Skate Shop",
+    "category": "Retail",
+    "products": ["Shoes", "Helmet", "Deck"]
+  },
+  {
+    "id": "sky-burger",
+    "name": "Sky Burger",
+    "category": "Food",
+    "products": ["Fries", "Nuggets", "Big Burger"]
+  },
+  {
+    "id": "smoothie-shop",
+    "name": "Smoothie Shop",
+    "category": "Food",
+    "products": ["Wheatgrass", "Small Smoothie", "Jumbo Juice"]
+  },
+  {
+    "id": "soda-brewery",
+    "name": "Soda Brewery",
+    "category": "Creative",
+    "products": ["Cherry Soda", "Cola 6 Pack", "Soda Keg"]
+  },
+  {
+    "id": "software-studio",
+    "name": "Software Studio",
+    "category": "Creative",
+    "products": ["Calendar App", "Anti-virus App", "Bank Software"]
+  },
+  {
+    "id": "space-museum",
+    "name": "Space Museum",
+    "category": "Recreation",
+    "products": ["Ticket", "Audio Tour", "Movie"]
+  },
+  {
+    "id": "splash-zone",
+    "name": "Splash Zone",
+    "category": "Recreation",
+    "products": ["Swim Class", "Aquarobics", "Free Swim"]
+  },
+  {
+    "id": "stables",
+    "name": "Stables",
+    "category": "Service",
+    "products": ["Horse Brushing", "Hay Bale", "Stall Cleaning"]
+  },
+  {
+    "id": "stock-exchange",
+    "name": "Stock Exchange",
+    "category": "Service",
+    "products": ["Stock Buy", "Bond Buy", "Gold Buy"]
+  },
+  {
+    "id": "style-salon",
+    "name": "Style Salon",
+    "category": "Service",
+    "products": ["Quick Trim", "Perm", "Hair Color"]
+  },
+  {
+    "id": "sub-shop",
+    "name": "Sub Shop",
+    "category": "Food",
+    "products": ["6 Inch Sub", "9 Inch Sub", "12 Inch Sub"]
+  },
+  {
+    "id": "superhero-lab",
+    "name": "Superhero Lab",
+    "category": "Creative",
+    "products": ["Super Strength", "Costume", "Fast Healing"]
+  },
+  {
+    "id": "surf-shop",
+    "name": "Surf Shop",
+    "category": "Retail",
+    "products": ["Surf Wax", "Rash Guard", "Custom Board"]
+  },
+  {
+    "id": "sushi-bar",
+    "name": "Sushi Bar",
+    "category": "Food",
+    "products": ["California Roll", "Tuna Sushi", "Sea Urchin"]
+  },
+  {
+    "id": "tailor",
+    "name": "Tailor",
+    "category": "Service",
+    "products": ["Pants Hem", "Alteration", "Fitted Suit"]
+  },
+  {
+    "id": "tattoo-parlor",
+    "name": "Tattoo Parlor",
+    "category": "Creative",
+    "products": ["Butterfly", "Demon Skull", "Fancy Parrot"]
+  },
+  {
+    "id": "tea-house",
+    "name": "Tea House",
+    "category": "Food",
+    "products": ["Green Tea", "Dumplings", "Pork Katsu"]
+  },
+  {
+    "id": "tech-store",
+    "name": "Tech Store",
+    "category": "Retail",
+    "products": ["Camera", "Laptop", "Flat Screen TV"]
+  },
+  {
+    "id": "theater",
+    "name": "Theater",
+    "category": "Recreation",
+    "products": ["Interpretive Dance", "Comedy", "Tragedy"]
+  },
+  {
+    "id": "tiger-magic",
+    "name": "Tiger Magic",
+    "category": "Recreation",
+    "products": ["Bandages", "Tiger Toy", "Tiger Show"]
+  },
+  {
+    "id": "tourist-trap",
+    "name": "Tourist Trap",
+    "category": "Retail",
+    "products": ["Hats", "Flags", "Elvis Cutout"]
+  },
+  {
+    "id": "toy-store",
+    "name": "Toy Store",
+    "category": "Retail",
+    "products": ["Toy Blocks", "Rocket Ship", "Toy Soldiers"]
+  },
+  {
+    "id": "travel-agency",
+    "name": "Travel Agency",
+    "category": "Service",
+    "products": ["Car Reservation", "Flight Booking", "Cruise Booking"]
+  },
+  {
+    "id": "tutoring-center",
+    "name": "Tutoring Center",
+    "category": "Service",
+    "products": ["Addition Help", "Grammar Help", "Trig Help"]
+  },
+  {
+    "id": "tv-studio",
+    "name": "TV Studio",
+    "category": "Creative",
+    "products": ["News Segment", "Talk Show", "Celeb Interview"]
+  },
+  {
+    "id": "vegan-food",
+    "name": "Vegan Food",
+    "category": "Food",
+    "products": ["Beet Salad", "Roasted Potatoes", "Soy Burger"]
+  },
+  {
+    "id": "video-rental",
+    "name": "Video Rental",
+    "category": "Recreation",
+    "products": ["Movie Rental", "New Release", "Console Rental"]
+  },
+  {
+    "id": "volleyball-club",
+    "name": "Volleyball Club",
+    "category": "Recreation",
+    "products": ["Practice", "Friendly Game", "Tournament"]
+  },
+  {
+    "id": "warren-buffet",
+    "name": "Warren Buffet",
+    "category": "Food",
+    "products": ["Herb Potatoes", "Popcorn", "Steaks"]
+  },
+  {
+    "id": "wax-museum",
+    "name": "Wax Museum",
+    "category": "Recreation",
+    "products": ["Admit 2", "Special Event", "Annual Pass"]
+  },
+  {
+    "id": "wedding-chapel",
+    "name": "Wedding Chapel",
+    "category": "Service",
+    "products": ["Quick Hitch", "Full Ceremony", "Themed Ceremony"]
+  },
+  {
+    "id": "womens-fashion",
+    "name": "Womens Fashion",
+    "category": "Retail",
+    "products": ["Cute Hat", "Purse", "Nice Outfit"]
+  },
+  {
+    "id": "wood-shop",
+    "name": "Wood Shop",
+    "category": "Creative",
+    "products": ["Chair", "Rocking Horse", "Bookcase"]
+  }
 ]
-

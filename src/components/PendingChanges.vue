@@ -9,16 +9,16 @@
           :key="mission.id"
           class="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20"
         >
-          <CardContent class="pt-6">
+          <div class="p-6 pt-0 pt-6">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ mission.name }}</h4>
-                <p class="text-muted-foreground mb-2 text-sm">{{ mission.description }}</p>
+                <p class="mb-2 text-sm text-muted-foreground">{{ mission.description }}</p>
                 <p class="text-sm">Reward: {{ mission.reward }} Bux</p>
               </div>
               <Button @click="handleCompleteMission(mission.id)"> Mark Done </Button>
             </div>
-          </CardContent>
+          </div>
         </Card>
       </div>
     </div>
@@ -32,11 +32,11 @@
           :key="placement.resident.id"
           class="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20"
         >
-          <CardContent class="pt-6">
+          <div class="p-6 pt-0 pt-6">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ placement.resident.name }}</h4>
-                <p class="text-muted-foreground text-sm">
+                <p class="text-sm text-muted-foreground">
                   Should be placed in <strong>{{ placement.storeName }}</strong> (dream job)
                 </p>
                 <p
@@ -53,7 +53,7 @@
                 Place Here
               </Button>
             </div>
-          </CardContent>
+          </div>
         </Card>
       </div>
     </div>
@@ -67,20 +67,20 @@
           :key="warning.resident.id"
           class="border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20"
         >
-          <CardContent class="pt-6">
+          <div class="p-6 pt-0 pt-6">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ warning.resident.name }}</h4>
-                <p class="text-muted-foreground text-sm">
+                <p class="text-sm text-muted-foreground">
                   Dream job is <strong>{{ warning.storeName }}</strong
                   >, but store is full (3/3)
                 </p>
-                <p class="text-muted-foreground mt-1 text-sm">
+                <p class="mt-1 text-sm text-muted-foreground">
                   Consider evicting a resident from this store
                 </p>
               </div>
             </div>
-          </CardContent>
+          </div>
         </Card>
       </div>
     </div>
@@ -94,11 +94,11 @@
           :key="opportunity.storeId"
           class="border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-900/20"
         >
-          <CardContent class="pt-6">
+          <div class="p-6 pt-0 pt-6">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ opportunity.storeName }}</h4>
-                <p class="text-muted-foreground text-sm">
+                <p class="text-sm text-muted-foreground">
                   {{ opportunity.residents.length }} resident(s) have this as their dream job:
                 </p>
                 <ul class="mt-1 space-y-1 text-sm">
@@ -108,7 +108,7 @@
                 </ul>
               </div>
             </div>
-          </CardContent>
+          </div>
         </Card>
       </div>
     </div>
@@ -130,7 +130,6 @@ import type { Resident, Store } from '@/types'
 import { computed } from 'vue'
 import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
-import CardContent from './ui/CardContent.vue'
 import EmptyState from './ui/EmptyState.vue'
 
 const storesComposable = useStores()

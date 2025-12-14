@@ -1,9 +1,9 @@
 <template>
   <Card>
-    <CardHeader>
-      <CardTitle>{{ resident.name }}</CardTitle>
-    </CardHeader>
-    <CardContent>
+    <div class="flex flex-col space-y-1.5 p-6">
+      <h3 class="text-2xl font-semibold leading-none tracking-tight">{{ resident.name }}</h3>
+    </div>
+    <div class="p-6 pt-0">
       <div class="space-y-2">
         <div>
           <p class="text-sm font-medium">Dream Job:</p>
@@ -16,32 +16,24 @@
         <div v-else>
           <p class="text-sm text-muted-foreground">Not placed in any store</p>
         </div>
-        <div v-if="needsPlacement" class="rounded-md bg-yellow-50 dark:bg-yellow-900/20 p-2">
+        <div v-if="needsPlacement" class="rounded-md bg-yellow-50 p-2 dark:bg-yellow-900/20">
           <p class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
             Needs placement in dream job store
           </p>
         </div>
       </div>
-      <Button
-        variant="destructive"
-        size="sm"
-        class="mt-4 w-full"
-        @click="$emit('remove-resident')"
-      >
+      <Button variant="destructive" size="sm" class="mt-4 w-full" @click="$emit('remove-resident')">
         Remove Resident
       </Button>
-    </CardContent>
+    </div>
   </Card>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import Card from './ui/Card.vue'
-import CardHeader from './ui/CardHeader.vue'
-import CardTitle from './ui/CardTitle.vue'
-import CardContent from './ui/CardContent.vue'
-import Button from './ui/Button.vue'
 import type { Resident, Store } from '@/types'
+import { computed } from 'vue'
+import Button from './ui/Button.vue'
+import Card from './ui/Card.vue'
 
 interface Props {
   resident: Resident
@@ -68,4 +60,3 @@ function getCurrentStoreName() {
   return store?.name || props.resident.currentStore
 }
 </script>
-

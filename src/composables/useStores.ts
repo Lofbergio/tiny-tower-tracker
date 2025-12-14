@@ -17,13 +17,15 @@ export function useStores() {
   const { data } = useLocalStorage()
 
   const userStores = computed(() => {
-    return data.value.stores.map(us => {
-      const store = allStores.value.find(s => s.id === us.storeId)
-      return {
-        ...us,
-        store,
-      }
-    }).filter(us => us.store) as (UserStore & { store: Store })[]
+    return data.value.stores
+      .map(us => {
+        const store = allStores.value.find(s => s.id === us.storeId)
+        return {
+          ...us,
+          store,
+        }
+      })
+      .filter(us => us.store) as (UserStore & { store: Store })[]
   })
 
   function addStore(storeId: string) {
@@ -115,4 +117,3 @@ export function useStores() {
     isStoreFull,
   }
 }
-

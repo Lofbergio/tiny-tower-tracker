@@ -21,7 +21,7 @@ export function useResidents() {
     const index = data.value.residents.findIndex(r => r.id === residentId)
     if (index !== -1) {
       const resident = data.value.residents[index]
-      
+
       // Remove from store if placed
       if (resident.currentStore) {
         const userStore = data.value.stores.find(us => us.storeId === resident.currentStore)
@@ -32,7 +32,7 @@ export function useResidents() {
           }
         }
       }
-      
+
       data.value.residents.splice(index, 1)
       return true
     }
@@ -73,4 +73,3 @@ export function useResidents() {
     getResidentsForStore,
   }
 }
-

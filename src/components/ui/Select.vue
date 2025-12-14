@@ -1,7 +1,7 @@
 <template>
   <SelectRoot :model-value="modelValue" @update:model-value="$emit('update:modelValue', $event)">
     <SelectTrigger
-      class="border-input bg-background ring-offset-background focus-visible:ring-ring flex h-10 w-full items-center justify-between rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+      class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
     >
       <SelectValue :placeholder="placeholder" />
       <SelectIcon class="h-4 w-4 opacity-50">
@@ -10,7 +10,8 @@
     </SelectTrigger>
     <SelectPortal>
       <SelectContent
-        class="bg-popover text-popover-foreground relative z-50 min-w-[8rem] overflow-hidden rounded-md border shadow-md"
+        position="popper"
+        class="relative min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md"
       >
         <SelectViewport class="p-1">
           <slot />

@@ -27,9 +27,7 @@ export function getCompletableMissions(
   userStores: UserStore[],
   allStores: Store[]
 ): Mission[] {
-  return missions.filter(mission =>
-    canCompleteMission(mission, userStores, allStores)
-  )
+  return missions.filter(mission => canCompleteMission(mission, userStores, allStores))
 }
 
 export function getMissionsForNewStore(
@@ -47,8 +45,5 @@ export function getMissionsForNewStore(
   )
 
   // Check which of these missions are now completable
-  return relevantMissions.filter(mission =>
-    canCompleteMission(mission, userStores, allStores)
-  )
+  return relevantMissions.filter(mission => canCompleteMission(mission, userStores, allStores))
 }
-

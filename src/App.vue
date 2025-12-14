@@ -1,12 +1,12 @@
 <template>
-  <div class="bg-background relative min-h-screen">
+  <div class="relative min-h-screen bg-background">
     <div class="bg-grid-pattern pointer-events-none fixed inset-0" />
     <div class="relative">
-      <nav class="bg-background/80 sticky top-0 z-50 border-b backdrop-blur-sm">
+      <nav class="sticky top-0 border-b bg-background/80 backdrop-blur-sm">
         <div class="container mx-auto px-4">
           <div class="flex h-16 items-center justify-between">
             <h1
-              class="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-xl font-bold text-transparent"
+              class="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-xl font-bold text-transparent"
             >
               Tiny Tower Tracker
             </h1>
@@ -14,9 +14,9 @@
               <Button
                 variant="ghost"
                 size="icon"
-                @click="toggleDarkMode"
                 class="md:hidden"
                 :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+                @click="toggleDarkMode"
               >
                 <svg
                   v-if="isDark"
@@ -50,8 +50,8 @@
                 <Button
                   variant="ghost"
                   size="icon"
-                  @click="toggleDarkMode"
                   :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+                  @click="toggleDarkMode"
                 >
                   <svg
                     v-if="isDark"
@@ -77,12 +77,12 @@
                   </svg>
                 </Button>
                 <Button
-                  v-for="route in routes"
-                  :key="route.path"
-                  :variant="currentRoute === route.path ? 'default' : 'ghost'"
-                  @click="$router.push(route.path)"
+                  v-for="navRoute in routes"
+                  :key="navRoute.path"
+                  :variant="currentRoute === navRoute.path ? 'default' : 'ghost'"
+                  @click="$router.push(navRoute.path)"
                 >
-                  {{ route.name }}
+                  {{ navRoute.name }}
                 </Button>
               </div>
             </div>
@@ -91,13 +91,13 @@
         <div v-if="showMobileMenu" class="border-t md:hidden">
           <div class="container mx-auto space-y-1 px-4 py-2">
             <Button
-              v-for="route in routes"
-              :key="route.path"
+              v-for="menuRoute in routes"
+              :key="menuRoute.path"
               variant="ghost"
               class="w-full justify-start"
-              @click="handleNavClick(route.path)"
+              @click="handleNavClick(menuRoute.path)"
             >
-              {{ route.name }}
+              {{ menuRoute.name }}
             </Button>
           </div>
         </div>
@@ -107,7 +107,7 @@
         <div v-if="isLoading" class="flex min-h-[calc(100vh-4rem)] items-center justify-center">
           <div class="text-center">
             <div
-              class="border-primary mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"
+              class="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"
             />
             <p class="text-muted-foreground">Loading your tower...</p>
           </div>
@@ -117,21 +117,21 @@
 
       <!-- Mobile Bottom Navigation -->
       <div
-        class="bg-background/80 fixed bottom-0 left-0 right-0 z-50 border-t backdrop-blur-sm md:hidden"
+        class="fixed bottom-0 left-0 right-0 border-t bg-background/80 backdrop-blur-sm md:hidden"
       >
         <div class="grid grid-cols-4 gap-1 p-2">
           <button
-            v-for="route in routes"
-            :key="route.path"
+            v-for="mobileRoute in routes"
+            :key="mobileRoute.path"
             :class="[
               'flex flex-col items-center justify-center rounded-md p-2 text-xs transition-colors',
-              currentRoute === route.path
+              currentRoute === mobileRoute.path
                 ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:bg-accent',
             ]"
-            @click="$router.push(route.path)"
+            @click="$router.push(mobileRoute.path)"
           >
-            <span>{{ route.name }}</span>
+            <span>{{ mobileRoute.name }}</span>
           </button>
         </div>
       </div>

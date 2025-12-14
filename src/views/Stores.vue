@@ -3,28 +3,29 @@
     <div class="mb-6 flex items-center justify-between">
       <div>
         <h1 class="mb-1 text-3xl font-bold">Stores</h1>
-        <p class="text-muted-foreground text-sm">Build and manage stores in your tower</p>
+        <p class="text-sm text-muted-foreground">Build and manage stores in your tower</p>
       </div>
       <Dialog :open="showAddDialog" @update:open="showAddDialog = $event">
-        <DialogHeader>
-          <DialogTitle>Add Store</DialogTitle>
-        </DialogHeader>
         <DialogContent>
+          <div class="flex flex-col space-y-1.5 text-center sm:text-left">
+            <DialogTitle>Add Store</DialogTitle>
+          </div>
           <div class="space-y-4">
             <div>
               <Label class="mb-2 block">Select Store</Label>
-              <Select v-model="selectedStoreId" placeholder="Choose a store...">
-                <SelectItem v-for="store in availableStores" :key="store.id" :value="store.id">
-                  {{ store.name }} ({{ store.category }})
-                </SelectItem>
-              </Select>
+              <SearchableSelect
+                v-model="selectedStoreId"
+                :items="availableStoreItems"
+                placeholder="Choose a store..."
+                search-placeholder="Search stores…"
+              />
             </div>
           </div>
+          <div class="mt-4 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">
+            <Button variant="outline" @click="showAddDialog = false">Cancel</Button>
+            <Button :disabled="!selectedStoreId" @click="handleAddStore">Add</Button>
+          </div>
         </DialogContent>
-        <DialogFooter>
-          <Button variant="outline" @click="showAddDialog = false">Cancel</Button>
-          <Button @click="handleAddStore" :disabled="!selectedStoreId">Add</Button>
-        </DialogFooter>
       </Dialog>
       <Button @click="showAddDialog = true">Add Store</Button>
     </div>
@@ -55,13 +56,10 @@ import StoreCard from '@/components/StoreCard.vue'
 import Button from '@/components/ui/Button.vue'
 import Dialog from '@/components/ui/Dialog.vue'
 import DialogContent from '@/components/ui/DialogContent.vue'
-import DialogFooter from '@/components/ui/DialogFooter.vue'
-import DialogHeader from '@/components/ui/DialogHeader.vue'
 import DialogTitle from '@/components/ui/DialogTitle.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import Label from '@/components/ui/Label.vue'
-import Select from '@/components/ui/Select.vue'
-import SelectItem from '@/components/ui/SelectItem.vue'
+import SearchableSelect from '@/components/ui/SearchableSelect.vue'
 import { useResidents } from '@/composables/useResidents'
 import { loadStores, useStores } from '@/composables/useStores'
 import { computed, onMounted, ref } from 'vue'
@@ -75,6 +73,13 @@ const selectedStoreId = ref('')
 const availableStores = computed(() => {
   const builtStoreIds = new Set(userStores.value.map(us => us.storeId))
   return allStores.value.filter(s => !builtStoreIds.has(s.id))
+})
+
+const availableStoreItems = computed(() => {
+  return availableStores.value.map(store => ({
+    value: store.id,
+    label: `${store.name} (${store.category})`,
+  }))
 })
 
 function handleAddStore() {

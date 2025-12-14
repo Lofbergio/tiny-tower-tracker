@@ -1,15 +1,13 @@
 <template>
   <Card>
-    <CardHeader>
+    <div class="flex flex-col space-y-1.5 p-6">
       <div class="flex items-center justify-between">
-        <CardTitle>{{ store.name }}</CardTitle>
-        <Badge :variant="capacity >= 3 ? 'destructive' : 'secondary'">
-          {{ capacity }}/3
-        </Badge>
+        <h3 class="text-2xl font-semibold leading-none tracking-tight">{{ store.name }}</h3>
+        <Badge :variant="capacity >= 3 ? 'destructive' : 'secondary'"> {{ capacity }}/3 </Badge>
       </div>
       <p class="text-sm text-muted-foreground">{{ store.category }}</p>
-    </CardHeader>
-    <CardContent>
+    </div>
+    <div class="p-6 pt-0">
       <div v-if="residents.length > 0" class="space-y-2">
         <p class="text-sm font-medium">Residents:</p>
         <div class="space-y-1">
@@ -19,40 +17,26 @@
             class="flex items-center justify-between text-sm"
           >
             <span>{{ getResidentName(residentId) }}</span>
-            <Button
-              variant="ghost"
-              size="sm"
-              @click="$emit('remove-resident', residentId)"
-            >
+            <Button variant="ghost" size="sm" @click="$emit('remove-resident', residentId)">
               Remove
             </Button>
           </div>
         </div>
       </div>
-      <div v-else class="text-sm text-muted-foreground">
-        No residents assigned
-      </div>
-      <Button
-        variant="destructive"
-        size="sm"
-        class="mt-4 w-full"
-        @click="$emit('remove-store')"
-      >
+      <div v-else class="text-sm text-muted-foreground">No residents assigned</div>
+      <Button variant="destructive" size="sm" class="mt-4 w-full" @click="$emit('remove-store')">
         Remove Store
       </Button>
-    </CardContent>
+    </div>
   </Card>
 </template>
 
 <script setup lang="ts">
+import type { Resident, Store, UserStore } from '@/types'
 import { computed } from 'vue'
-import Card from './ui/Card.vue'
-import CardHeader from './ui/CardHeader.vue'
-import CardTitle from './ui/CardTitle.vue'
-import CardContent from './ui/CardContent.vue'
 import Badge from './ui/Badge.vue'
 import Button from './ui/Button.vue'
-import type { Store, UserStore, Resident } from '@/types'
+import Card from './ui/Card.vue'
 
 interface Props {
   userStore: UserStore & { store: Store }
@@ -75,4 +59,3 @@ function getResidentName(residentId: string) {
   return resident?.name || 'Unknown'
 }
 </script>
-

@@ -58,6 +58,7 @@ import DataManagement from '@/components/DataManagement.vue'
 import PendingChanges from '@/components/PendingChanges.vue'
 import TowerIllustration from '@/components/TowerIllustration.vue'
 import Button from '@/components/ui/Button.vue'
+import { APP_CONSTANTS } from '@/constants'
 import { useUserMissionsWithData, useUserStoresWithData } from '@/queries'
 import { useResidentsStore } from '@/stores'
 import { computed, onMounted, ref } from 'vue'
@@ -79,9 +80,9 @@ const isFirstTime = ref(false)
 onMounted(() => {
   // Check if this is likely first time (no data and no localStorage flag)
   if (hasNoData.value) {
-    const hasVisited = localStorage.getItem('tiny-tower-has-visited')
+    const hasVisited = localStorage.getItem(APP_CONSTANTS.FIRST_VISIT_KEY)
     if (!hasVisited) {
-      localStorage.setItem('tiny-tower-has-visited', 'true')
+      localStorage.setItem(APP_CONSTANTS.FIRST_VISIT_KEY, 'true')
       isFirstTime.value = true
     }
   }

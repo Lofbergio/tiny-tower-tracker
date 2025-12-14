@@ -5,6 +5,7 @@ export const APP_CONSTANTS = {
   // Storage keys
   STORAGE_KEY: 'tiny-tower-tracker-data',
   THEME_STORAGE_KEY: 'tiny-tower-tracker-theme',
+  FIRST_VISIT_KEY: 'tiny-tower-has-visited',
 
   // Data files
   STORES_DATA_URL: '/db-store.json',

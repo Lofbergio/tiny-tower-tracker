@@ -187,12 +187,20 @@ const visibleItems = computed(() => {
   return filteredItems.value.slice(0, maxItems.value)
 })
 
+// Detect if we're on a mobile device
+const isMobile = () => {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+}
+
 watch(
   open,
   async isOpen => {
     if (isOpen) {
       await nextTick()
-      searchInput.value?.focus?.()
+      // Don't auto-focus on mobile to avoid keyboard and focus issues
+      if (!isMobile()) {
+        searchInput.value?.focus?.()
+      }
       return
     }
     if (props.clearOnClose) {

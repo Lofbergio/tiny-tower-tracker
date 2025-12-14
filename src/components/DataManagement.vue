@@ -102,10 +102,10 @@
 <script setup lang="ts">
 import { useAppStore } from '@/stores'
 import {
-  checkLocalStorageQuota,
-  clearAllData,
-  exportUserData,
-  importUserData,
+    checkLocalStorageQuota,
+    clearAllData,
+    exportUserData,
+    importUserData,
 } from '@/utils/storage'
 import { useToast } from '@/utils/toast'
 import { computed, ref } from 'vue'

@@ -42,6 +42,67 @@
             and extract resident names + dream jobs.
           </p>
 
+          <div class="space-y-2">
+            <Label class="text-sm font-medium">OCR engine</Label>
+            <div class="flex flex-col gap-2 sm:flex-row">
+              <Button
+                variant="outline"
+                class="w-full sm:w-auto"
+                :class="ocrEngine === 'local' ? 'border-primary' : ''"
+                :disabled="isImporting"
+                @click="ocrEngine = 'local'"
+              >
+                On-device
+              </Button>
+              <Button
+                variant="outline"
+                class="w-full sm:w-auto"
+                :class="ocrEngine === 'google' ? 'border-primary' : ''"
+                :disabled="isImporting || !isOnline"
+                @click="ocrEngine = 'google'"
+              >
+                Google Vision
+              </Button>
+            </div>
+            <p v-if="ocrEngine === 'google'" class="text-xs text-muted-foreground">
+              Uses a Netlify Function and Google Vision API key.
+            </p>
+            <p v-if="ocrEngine === 'google' && !isOnline" class="text-xs text-destructive">
+              You're offline. Cloud OCR requires an internet connection.
+            </p>
+
+            <div
+              v-if="ocrEngine === 'google' && isLikelyViteDev"
+              class="rounded-md border bg-muted p-3 text-xs text-muted-foreground"
+            >
+              <div class="font-medium text-foreground">Local dev note</div>
+              <div class="mt-1">
+                You're currently on the Vite dev server (port 5173). Netlify Functions only work
+                when running Netlify Dev (port 8888).
+              </div>
+              <div class="mt-2 flex flex-col gap-2 sm:flex-row">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  class="w-full sm:w-auto"
+                  :disabled="isImporting"
+                  @click="copyNetlifyDevCommand"
+                >
+                  Copy yarn dev:netlify
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  class="w-full sm:w-auto"
+                  :disabled="isImporting"
+                  @click="openNetlifyDevUrl"
+                >
+                  Open localhost:8888
+                </Button>
+              </div>
+            </div>
+          </div>
+
           <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
             <Button
               variant="outline"
@@ -307,7 +368,7 @@ import {
   type ScreenshotResidentCandidate,
 } from '@/utils/residentScreenshotImport'
 import { useToast } from '@/utils/toast'
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const residentsStore = useResidentsStore()
 const storesStore = useStoresStore()
@@ -332,6 +393,7 @@ const isDragOver = ref(false)
 const ocrFileProgress = ref<number | null>(null)
 const ocrFileIndex = ref<number | null>(null)
 const ocrFileCount = ref<number | null>(null)
+const ocrEngine = ref<'local' | 'google'>('local')
 
 const hasChosenScreenshots = computed(() => screenshotFiles.value.length > 0)
 const selectedScreenshotCountText = computed(() => {
@@ -342,7 +404,9 @@ const selectedScreenshotCountText = computed(() => {
 const selectedImportCount = computed(() => importCandidates.value.filter(c => c.selected).length)
 
 const canRunOcr = computed(() => {
-  return Boolean(allStores.value) && hasChosenScreenshots.value && !isImporting.value
+  if (!Boolean(allStores.value) || !hasChosenScreenshots.value || isImporting.value) return false
+  if (ocrEngine.value === 'google') return isOnline.value
+  return true
 })
 
 const importStatusText = computed(() => {
@@ -401,6 +465,8 @@ watch(showImportDialog, (isOpen: boolean) => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('paste', handlePaste)
+  window.removeEventListener('online', handleOnlineChange)
+  window.removeEventListener('offline', handleOnlineChange)
 })
 
 function triggerScreenshotPicker() {
@@ -493,10 +559,29 @@ async function runScreenshotOcr() {
     const candidates = await extractResidentsFromScreenshots({
       files: screenshotFiles.value,
       stores: allStores.value,
+      ocrEngine: ocrEngine.value,
       onProgress: info => {
         if (info.phase === 'loading') {
           importProgressText.value = 'Loading OCR engine…'
           ocrFileProgress.value = null
+          return
+        }
+        if (info.phase === 'cloud') {
+          const count = info.fileCount ?? screenshotFiles.value.length
+          const idx = (info.fileIndex ?? 0) + 1
+          const filePart = count > 1 ? ` (${idx}/${count})` : ''
+          importProgressText.value = `Cloud OCR${filePart}…`
+          if (typeof info.fileIndex === 'number') {
+            ocrFileIndex.value = info.fileIndex
+          }
+          if (typeof info.fileCount === 'number') {
+            ocrFileCount.value = info.fileCount
+          }
+          if (typeof info.progress === 'number') {
+            ocrFileProgress.value = info.progress
+          } else {
+            ocrFileProgress.value = null
+          }
           return
         }
         if (typeof info.progress === 'number') {
@@ -526,12 +611,53 @@ async function runScreenshotOcr() {
     }
   } catch (error) {
     console.error('Screenshot OCR failed:', error)
-    toast.error('Failed to read screenshots')
-    importProgressText.value = ''
+    const message =
+      error instanceof Error
+        ? error.message
+        : typeof error === 'string'
+          ? error
+          : 'Failed to read screenshots'
+    toast.error(message)
+    importProgressText.value = message
+    ocrFileProgress.value = null
   } finally {
     isImporting.value = false
     // Keep last progress value for a moment via status text; bar hides when not importing.
   }
+}
+
+const isOnline = ref(typeof navigator !== 'undefined' ? navigator.onLine : true)
+
+function handleOnlineChange() {
+  isOnline.value = navigator.onLine
+}
+
+onMounted(() => {
+  window.addEventListener('online', handleOnlineChange)
+  window.addEventListener('offline', handleOnlineChange)
+})
+
+const isLikelyViteDev = computed(() => {
+  const isDev = Boolean((import.meta as any)?.env?.DEV)
+  if (!isDev) return false
+  const port = window.location.port
+  return (
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') &&
+    (port === '5173' || port === '4173')
+  )
+})
+
+async function copyNetlifyDevCommand() {
+  try {
+    await navigator.clipboard.writeText('yarn dev:netlify')
+    toast.success('Copied: yarn dev:netlify')
+  } catch {
+    toast.error('Could not copy to clipboard')
+  }
+}
+
+function openNetlifyDevUrl() {
+  window.open('http://localhost:8888', '_blank', 'noopener,noreferrer')
 }
 
 function getStoreName(storeId: string): string {

@@ -6,6 +6,8 @@
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     class="mx-auto"
+    aria-hidden="true"
+    focusable="false"
   >
     <!-- Construction site -->
     <rect x="50" y="120" width="100" height="60" :fill="isDark ? '#3a3a4e' : '#D4D4D8'" />

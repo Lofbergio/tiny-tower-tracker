@@ -1,8 +1,14 @@
 <template>
   <ErrorBoundary>
     <div class="relative min-h-screen bg-background">
-      <div class="bg-grid-pattern pointer-events-none fixed inset-0" />
+      <div class="bg-grid-pattern pointer-events-none fixed inset-0" aria-hidden="true" />
       <div class="relative">
+        <a
+          href="#main-content"
+          class="sr-only z-50 rounded-md bg-background px-3 py-2 text-sm font-medium text-foreground ring-2 ring-ring ring-offset-2 ring-offset-background focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
+        >
+          Skip to content
+        </a>
         <nav class="sticky top-0 border-b bg-background/80 backdrop-blur-sm">
           <div class="container mx-auto px-4">
             <div class="flex h-16 items-center justify-between">
@@ -74,7 +80,7 @@
           </div>
         </nav>
 
-        <main class="min-h-[calc(100vh-4rem)]">
+        <main id="main-content" tabindex="-1" class="min-h-[calc(100vh-4rem)]">
           <div
             v-if="hasLoadError"
             class="container mx-auto flex min-h-[calc(100vh-4rem)] items-center justify-center px-4"

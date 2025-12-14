@@ -31,6 +31,12 @@
 - Only ask a question when the request is **genuinely ambiguous**, has **multiple reasonable interpretations**, or carries **non-trivial risk** (data loss, breaking changes). Otherwise, proceed end-to-end: find all instances → implement → validate/build.
 - Prefer creating small, focused components/composables over bloating existing ones.
 
+## User Preferences (Sticky)
+
+- **Single-user app.** Optimize for what the user personally needs day-to-day.
+- **Deprioritize screen-reader/a11y-only work.** Do not spend time on ARIA/screen reader tuning or accessibility-only refinements unless it also improves the user's UX (speed, clarity, mobile ergonomics) or prevents real breakage.
+- **When the user states a broad preference like this, update these instructions immediately** so it doesnt get lost.
+
 ## Common Tasks
 
 - **Adding a feature:** Update types → validation schemas → store logic → views

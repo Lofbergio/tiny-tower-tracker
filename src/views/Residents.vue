@@ -102,7 +102,7 @@
                 <input
                   v-model="c.selected"
                   type="checkbox"
-                  class="mt-1 h-4 w-4"
+                  class="mt-1 h-4 w-4 rounded border-input bg-background text-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   :disabled="!c.name || !c.dreamJobStoreId"
                   :aria-label="`Select ${c.name}`"
                 />
@@ -222,7 +222,7 @@
 
     <EmptyState
       v-if="residents.length === 0"
-      title="👋 No Residents Yet"
+      title="No Residents Yet"
       description="Add residents to your tower and assign them to their dream jobs!"
     >
       <Button @click="showAddDialog = true">Add Your First Resident</Button>

@@ -31,7 +31,7 @@
           Get started by adding stores, residents, and missions to track your tower's progress.
         </p>
         <div class="flex flex-wrap justify-center gap-2">
-          <Button variant="default" @click="$router.push('/stores')"> Add Your First Store </Button>
+          <Button variant="default" @click="$router.push('/stores')">Add Your First Store</Button>
           <Button variant="outline" @click="$router.push('/residents')">
             Add Your First Resident
           </Button>

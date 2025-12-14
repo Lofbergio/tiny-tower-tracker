@@ -6,6 +6,8 @@
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     :class="className"
+    aria-hidden="true"
+    focusable="false"
   >
     <!-- Sky background -->
     <rect width="200" height="300" :fill="isDark ? '#1a1a2e' : '#87CEEB'" />

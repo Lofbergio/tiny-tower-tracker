@@ -240,21 +240,106 @@ function isLikelyStoreName(text: string): boolean {
 }
 
 function dedupe(candidates: ScreenshotResidentCandidate[]): ScreenshotResidentCandidate[] {
-  const seen = new Set<string>()
-  const out: ScreenshotResidentCandidate[] = []
-  for (const c of candidates) {
-    const currentKey = c.currentJobStoreId
-      ? c.currentJobStoreId
-      : c.currentJobRaw
-        ? normalizeForMatch(c.currentJobRaw)
-        : ''
-    const dreamKey = c.dreamJobStoreId ? c.dreamJobStoreId : normalizeForMatch(c.dreamJobRaw)
-    const key = `${normalizeForMatch(c.name)}|${dreamKey}|${currentKey}`
-    if (seen.has(key)) continue
-    seen.add(key)
-    out.push(c)
+  function currentKeyFor(c: ScreenshotResidentCandidate): string {
+    if (c.currentJobStoreId) return c.currentJobStoreId
+    if (c.currentJobRaw) return normalizeForMatch(c.currentJobRaw)
+    return ''
   }
-  return out
+
+  function dreamKeyFor(c: ScreenshotResidentCandidate): string {
+    return c.dreamJobStoreId ? c.dreamJobStoreId : normalizeForMatch(c.dreamJobRaw)
+  }
+
+  function baseKeyFor(c: ScreenshotResidentCandidate): string {
+    return `${normalizeForMatch(c.name)}|${dreamKeyFor(c)}`
+  }
+
+  function isBetterCandidate(
+    a: ScreenshotResidentCandidate,
+    b: ScreenshotResidentCandidate
+  ): boolean {
+    // Prefer store-id matches over raw text, fewer issues, then higher confidence.
+    const aHasId = Boolean(a.dreamJobStoreId)
+    const bHasId = Boolean(b.dreamJobStoreId)
+    if (aHasId !== bHasId) return aHasId
+
+    const aIssues = a.issues?.length ?? 0
+    const bIssues = b.issues?.length ?? 0
+    if (aIssues !== bIssues) return aIssues < bIssues
+
+    const aConf = typeof a.matchConfidence === 'number' ? a.matchConfidence : 0
+    const bConf = typeof b.matchConfidence === 'number' ? b.matchConfidence : 0
+    if (aConf !== bConf) return aConf > bConf
+
+    // Prefer the candidate that detected current job info.
+    const aHasCurrent = Boolean(a.currentJobStoreId || a.currentJobRaw)
+    const bHasCurrent = Boolean(b.currentJobStoreId || b.currentJobRaw)
+    if (aHasCurrent !== bHasCurrent) return aHasCurrent
+
+    return false
+  }
+
+  function mergeCandidates(
+    keep: ScreenshotResidentCandidate,
+    incoming: ScreenshotResidentCandidate
+  ): ScreenshotResidentCandidate {
+    // Choose the better base record, but preserve any missing current-job info.
+    const base = isBetterCandidate(incoming, keep) ? { ...incoming } : { ...keep }
+    const other = base === incoming ? keep : incoming
+
+    // Merge selection.
+    base.selected = Boolean(base.selected || other.selected)
+
+    // Merge current-job fields if missing.
+    if (!base.currentJobStoreId && other.currentJobStoreId)
+      base.currentJobStoreId = other.currentJobStoreId
+    if (!base.currentJobRaw && other.currentJobRaw) base.currentJobRaw = other.currentJobRaw
+    if (base.currentMatchConfidence === undefined && other.currentMatchConfidence !== undefined) {
+      base.currentMatchConfidence = other.currentMatchConfidence
+    }
+    if (!base.matchedCurrentStoreName && other.matchedCurrentStoreName) {
+      base.matchedCurrentStoreName = other.matchedCurrentStoreName
+    }
+
+    // Keep the more helpful issue list (prefer non-empty).
+    if ((base.issues?.length ?? 0) === 0 && (other.issues?.length ?? 0) > 0) {
+      base.issues = other.issues
+    }
+
+    return base
+  }
+
+  // Group by (name + dream), then within each group keep separate entries only when
+  // both have non-empty current-job keys that disagree.
+  const grouped = new Map<string, ScreenshotResidentCandidate[]>()
+
+  for (const c of candidates) {
+    const baseKey = baseKeyFor(c)
+    const list = grouped.get(baseKey) ?? []
+    const cCurrentKey = currentKeyFor(c)
+
+    let merged = false
+    for (let i = 0; i < list.length; i++) {
+      const existing = list[i]
+      const eCurrentKey = currentKeyFor(existing)
+
+      // Treat missing current-job as a wildcard match.
+      const compatible = eCurrentKey === cCurrentKey || eCurrentKey === '' || cCurrentKey === ''
+      if (compatible) {
+        list[i] = mergeCandidates(existing, c)
+        merged = true
+        break
+      }
+    }
+
+    if (!merged) {
+      list.push(c)
+    }
+
+    grouped.set(baseKey, list)
+  }
+
+  return Array.from(grouped.values()).flat()
 }
 
 function columnForLine(line: TesseractLine, inferredWidth: number): 'left' | 'middle' | 'right' {

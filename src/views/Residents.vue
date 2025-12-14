@@ -42,7 +42,7 @@
             and extract resident names + dream jobs.
           </p>
 
-          <div class="space-y-2">
+          <div v-if="importCandidates.length === 0" class="space-y-2">
             <Label class="text-sm font-medium">OCR engine</Label>
             <div class="flex flex-col gap-2 sm:flex-row">
               <Button
@@ -103,7 +103,10 @@
             </div>
           </div>
 
-          <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <div
+            v-if="importCandidates.length === 0"
+            class="flex flex-col gap-2 sm:flex-row sm:items-center"
+          >
             <Button
               variant="outline"
               class="w-full sm:w-auto"
@@ -118,6 +121,7 @@
           </div>
 
           <div
+            v-if="importCandidates.length === 0"
             class="rounded-md border border-dashed p-4 text-sm text-muted-foreground"
             :class="isDragOver ? 'bg-muted' : ''"
             tabindex="0"
@@ -149,8 +153,31 @@
           </div>
 
           <div class="flex flex-col gap-2 sm:flex-row">
-            <Button class="w-full sm:w-auto" :disabled="!canRunOcr" @click="runScreenshotOcr">
+            <Button
+              v-if="importCandidates.length === 0"
+              class="w-full sm:w-auto"
+              :disabled="!canRunOcr"
+              @click="runScreenshotOcr"
+            >
               Run OCR
+            </Button>
+            <Button
+              v-else
+              variant="outline"
+              class="w-full sm:w-auto"
+              :disabled="isImporting"
+              @click="triggerScreenshotPicker"
+            >
+              Change screenshots
+            </Button>
+            <Button
+              v-if="importCandidates.length > 0"
+              variant="outline"
+              class="w-full sm:w-auto"
+              :disabled="!canRunOcr"
+              @click="runScreenshotOcr"
+            >
+              Run OCR again
             </Button>
             <Button
               variant="ghost"
@@ -162,92 +189,115 @@
             </Button>
           </div>
 
-          <div v-if="importCandidates.length > 0" class="space-y-3">
-            <div class="rounded-md bg-muted p-3">
-              <div
-                class="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div>
-                  Found <span class="font-medium">{{ importCandidates.length }}</span> residents.
-                  Selected <span class="font-medium">{{ selectedImportCount }}</span
-                  >.
-                </div>
-                <div class="flex flex-col gap-2 sm:flex-row">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    class="w-full sm:w-auto"
-                    @click="selectAllMatched"
-                    >Select matched</Button
-                  >
-                  <Button variant="outline" size="sm" class="w-full sm:w-auto" @click="selectNone"
-                    >Select none</Button
-                  >
+          <Transition
+            appear
+            enter-active-class="transition duration-200 ease-out"
+            enter-from-class="opacity-0 translate-y-1"
+            enter-to-class="opacity-100 translate-y-0"
+            leave-active-class="transition duration-150 ease-in"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+          >
+            <div v-if="importCandidates.length > 0" class="space-y-3">
+              <div class="rounded-md bg-muted p-3">
+                <div
+                  class="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div>
+                    Found <span class="font-medium">{{ importCandidates.length }}</span> residents.
+                    Selected <span class="font-medium">{{ selectedImportCount }}</span
+                    >.
+                  </div>
+                  <div class="flex flex-col gap-2 sm:flex-row">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      class="w-full sm:w-auto"
+                      @click="selectAllMatched"
+                      >Select matched</Button
+                    >
+                    <Button variant="outline" size="sm" class="w-full sm:w-auto" @click="selectNone"
+                      >Select none</Button
+                    >
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="max-h-[50vh] overflow-auto rounded-md border sm:max-h-[320px]">
-              <label
-                v-for="(c, idx) in importCandidates"
-                :key="idx"
-                class="flex items-start gap-3 border-b p-4 last:border-b-0 sm:p-3"
-                :class="
-                  !c.name || !c.dreamJobStoreId
-                    ? 'cursor-not-allowed opacity-60'
-                    : 'cursor-pointer active:bg-muted/60'
-                "
+              <div class="max-h-[50vh] overflow-auto rounded-md border sm:max-h-[320px]">
+                <TransitionGroup
+                  tag="div"
+                  enter-active-class="transition duration-200 ease-out"
+                  enter-from-class="opacity-0 translate-y-1"
+                  enter-to-class="opacity-100 translate-y-0"
+                  leave-active-class="transition duration-150 ease-in"
+                  leave-from-class="opacity-100"
+                  leave-to-class="opacity-0"
+                  move-class="transition-transform duration-200"
+                >
+                  <label
+                    v-for="(c, idx) in importCandidates"
+                    :key="`${c.sourceFileName}-${idx}`"
+                    class="flex items-start gap-3 border-b p-4 transition-colors last:border-b-0 sm:p-3"
+                    :class="
+                      !c.name || !c.dreamJobStoreId
+                        ? 'cursor-not-allowed opacity-60'
+                        : 'cursor-pointer active:bg-muted/60'
+                    "
+                  >
+                    <div class="-m-2 p-2">
+                      <input
+                        v-model="c.selected"
+                        type="checkbox"
+                        class="mt-0.5 h-6 w-6 rounded border-input bg-background text-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:mt-1 sm:h-4 sm:w-4"
+                        :disabled="!c.name || !c.dreamJobStoreId"
+                        :aria-label="`Select ${c.name}`"
+                      />
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <span class="font-medium">{{ c.name || c.nameRaw }}</span>
+                        <span v-if="showImportSourceFile" class="text-xs text-muted-foreground"
+                          >({{ c.sourceFileName }})</span
+                        >
+                      </div>
+                      <div class="text-sm">
+                        <span class="text-muted-foreground">Dream job:</span>
+                        <span class="ml-1 font-medium">
+                          {{ c.matchedStoreName ?? c.dreamJobRaw }}
+                        </span>
+                        <span class="ml-2 text-xs text-muted-foreground">
+                          {{ Math.round(c.matchConfidence * 100) }}%
+                        </span>
+                      </div>
+                      <div v-if="c.currentJobRaw || c.currentJobStoreId" class="text-sm">
+                        <span class="text-muted-foreground">Current job:</span>
+                        <span class="ml-1 font-medium">
+                          {{ c.matchedCurrentStoreName ?? c.currentJobRaw ?? 'Unknown' }}
+                        </span>
+                        <span
+                          v-if="c.currentMatchConfidence !== undefined"
+                          class="ml-2 text-xs text-muted-foreground"
+                        >
+                          {{ Math.round(c.currentMatchConfidence * 100) }}%
+                        </span>
+                      </div>
+                      <div v-if="c.issues.length > 0" class="mt-1 text-xs text-destructive">
+                        {{ c.issues[0] }}
+                      </div>
+                    </div>
+                  </label>
+                </TransitionGroup>
+              </div>
+
+              <Button
+                class="w-full"
+                :disabled="selectedImportCount === 0 || isImporting"
+                @click="importSelectedResidents"
               >
-                <div class="-m-2 p-2">
-                  <input
-                    v-model="c.selected"
-                    type="checkbox"
-                    class="mt-0.5 h-6 w-6 rounded border-input bg-background text-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:mt-1 sm:h-4 sm:w-4"
-                    :disabled="!c.name || !c.dreamJobStoreId"
-                    :aria-label="`Select ${c.name}`"
-                  />
-                </div>
-                <div class="min-w-0 flex-1">
-                  <div class="flex flex-wrap items-center gap-2">
-                    <span class="font-medium">{{ c.name || c.nameRaw }}</span>
-                    <span class="text-xs text-muted-foreground">({{ c.sourceFileName }})</span>
-                  </div>
-                  <div class="text-sm">
-                    <span class="text-muted-foreground">Dream job:</span>
-                    <span class="ml-1 font-medium">
-                      {{ c.matchedStoreName ?? c.dreamJobRaw }}
-                    </span>
-                    <span class="ml-2 text-xs text-muted-foreground">
-                      {{ Math.round(c.matchConfidence * 100) }}%
-                    </span>
-                  </div>
-                  <div v-if="c.currentJobRaw || c.currentJobStoreId" class="text-sm">
-                    <span class="text-muted-foreground">Current job:</span>
-                    <span class="ml-1 font-medium">
-                      {{ c.matchedCurrentStoreName ?? c.currentJobRaw ?? 'Unknown' }}
-                    </span>
-                    <span
-                      v-if="c.currentMatchConfidence !== undefined"
-                      class="ml-2 text-xs text-muted-foreground"
-                    >
-                      {{ Math.round(c.currentMatchConfidence * 100) }}%
-                    </span>
-                  </div>
-                  <div v-if="c.issues.length > 0" class="mt-1 text-xs text-destructive">
-                    {{ c.issues[0] }}
-                  </div>
-                </div>
-              </label>
+                Import {{ selectedImportCount }} Residents
+              </Button>
             </div>
-
-            <Button
-              class="w-full"
-              :disabled="selectedImportCount === 0 || isImporting"
-              @click="importSelectedResidents"
-            >
-              Import {{ selectedImportCount }} Residents
-            </Button>
-          </div>
+          </Transition>
         </div>
 
         <input
@@ -403,8 +453,10 @@ const selectedScreenshotCountText = computed(() => {
 
 const selectedImportCount = computed(() => importCandidates.value.filter(c => c.selected).length)
 
+const showImportSourceFile = computed(() => screenshotFiles.value.length > 1)
+
 const canRunOcr = computed(() => {
-  if (!Boolean(allStores.value) || !hasChosenScreenshots.value || isImporting.value) return false
+  if (!allStores.value || !hasChosenScreenshots.value || isImporting.value) return false
   if (ocrEngine.value === 'google') return isOnline.value
   return true
 })
@@ -603,7 +655,15 @@ async function runScreenshotOcr() {
     })
 
     importCandidates.value = candidates
-    importProgressText.value = `Done. Found ${candidates.length} residents.`
+    // Reduce busywork: auto-select high-confidence matches.
+    selectAllMatched()
+    const autoSelected = importCandidates.value.filter(c => c.selected).length
+    importProgressText.value =
+      candidates.length === 0
+        ? 'Done. No residents found.'
+        : autoSelected > 0
+          ? `Done. Found ${candidates.length} residents. Auto-selected ${autoSelected}.`
+          : `Done. Found ${candidates.length} residents.`
     ocrFileProgress.value = 1
 
     if (candidates.length === 0) {

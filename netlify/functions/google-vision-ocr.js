@@ -105,11 +105,20 @@ exports.handler = async function handler(event) {
     return json(400, { error: 'Invalid JSON' })
   }
 
-  const imageBase64 = payload?.imageBase64
+  let imageBase64 = payload?.imageBase64
+  // mimeType is accepted from the client for convenience, but it is NOT a valid field
+  // for the synchronous `images:annotate` request schema.
+  // (mimeType is used with other endpoints like async file annotation input configs.)
   const mimeType = payload?.mimeType
 
   if (typeof imageBase64 !== 'string' || imageBase64.length < 32) {
     return json(400, { error: 'imageBase64 is required' })
+  }
+
+  // Allow callers to accidentally pass a full data URL ("data:image/png;base64,...").
+  const dataUrlIdx = imageBase64.indexOf('base64,')
+  if (dataUrlIdx >= 0) {
+    imageBase64 = imageBase64.slice(dataUrlIdx + 'base64,'.length)
   }
 
   // Basic size guard (~10MB raw base64 payload is bigger; this is just a safety check)
@@ -122,7 +131,7 @@ exports.handler = async function handler(event) {
       {
         image: { content: imageBase64 },
         features: [{ type: 'DOCUMENT_TEXT_DETECTION' }],
-        imageContext: mimeType ? { languageHints: ['en'], mimeType } : { languageHints: ['en'] },
+        imageContext: { languageHints: ['en'] },
       },
     ],
   }

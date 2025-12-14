@@ -1,0 +1,1 @@
+export const AUTO_SELECT_MIN_CONFIDENCE = 0.85

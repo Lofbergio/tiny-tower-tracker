@@ -29,6 +29,7 @@
 
 - **Default to completing the full sweep.** When the user asks for a change, apply it **everywhere it makes sense across the project**, not just one or two files.
 - **Do not pause to ask “should I continue?”** Assume the answer is **yes**.
+- **Be fully autonomous by default.** When the user says “fix it” / “fix all the things” / expresses impatience with step-by-step prompts, interpret that as: do the full end-to-end work (find all instances → implement → validate/build) without asking for permission at each intermediate step.
 - Only ask a question when the request is **genuinely ambiguous**, has **multiple reasonable interpretations**, or carries **non-trivial risk** (data loss, breaking changes). Otherwise, proceed end-to-end: find all instances → implement → validate/build.
 - Prefer creating small, focused components/composables over bloating existing ones.
 

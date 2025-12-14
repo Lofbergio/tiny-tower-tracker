@@ -30,17 +30,27 @@
           v-for="store in availableStores.slice(0, 6)"
           :key="store.id"
           class="group cursor-pointer overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg"
-          :class="getCategoryBorderColor(store.category)"
+          :style="{ borderLeftColor: getCategoryColors(store.category).border }"
           @click="handleAddStore(store.id)"
         >
-          <div class="relative flex flex-col space-y-1 p-3 md:p-4">
-            <div class="flex items-center justify-between gap-2">
-              <h3 class="flex items-center gap-2 text-base font-semibold leading-tight md:text-lg">
-                <span class="text-xl md:text-2xl">{{ getCategoryEmoji(store.category) }}</span>
-                <span>{{ store.name }}</span>
-              </h3>
+          <div
+            class="relative flex flex-col space-y-1 p-3 md:p-4"
+            :style="{ backgroundColor: getCategoryColors(store.category).bg }"
+          >
+            <div class="flex items-center gap-3">
+              <StoreIcon :category="store.category" :size="40" class="shrink-0" />
+              <div class="min-w-0 flex-1">
+                <h3 class="text-base font-semibold leading-tight md:text-lg">
+                  {{ store.name }}
+                </h3>
+                <p
+                  class="line-clamp-1 text-xs font-medium"
+                  :style="{ color: getCategoryColors(store.category).primary }"
+                >
+                  {{ store.category }}
+                </p>
+              </div>
             </div>
-            <p class="text-muted-foreground line-clamp-1 text-xs">{{ store.category }}</p>
           </div>
         </Card>
       </div>
@@ -70,19 +80,27 @@
             v-for="store in availableStores.slice(0, 9)"
             :key="store.id"
             class="group cursor-pointer overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg"
-            :class="getCategoryBorderColor(store.category)"
+            :style="{ borderLeftColor: getCategoryColors(store.category).border }"
             @click="handleAddStore(store.id)"
           >
-            <div class="relative flex flex-col space-y-1 p-3 md:p-4">
-              <div class="flex items-center justify-between gap-2">
-                <h3
-                  class="flex items-center gap-2 text-base font-semibold leading-tight md:text-lg"
-                >
-                  <span class="text-xl md:text-2xl">{{ getCategoryEmoji(store.category) }}</span>
-                  <span>{{ store.name }}</span>
-                </h3>
+            <div
+              class="relative flex flex-col space-y-1 p-3 md:p-4"
+              :style="{ backgroundColor: getCategoryColors(store.category).bg }"
+            >
+              <div class="flex items-center gap-3">
+                <StoreIcon :category="store.category" :size="40" class="shrink-0" />
+                <div class="min-w-0 flex-1">
+                  <h3 class="text-base font-semibold leading-tight md:text-lg">
+                    {{ store.name }}
+                  </h3>
+                  <p
+                    class="line-clamp-1 text-xs font-medium"
+                    :style="{ color: getCategoryColors(store.category).primary }"
+                  >
+                    {{ store.category }}
+                  </p>
+                </div>
               </div>
-              <p class="text-muted-foreground line-clamp-1 text-xs">{{ store.category }}</p>
             </div>
           </Card>
         </div>
@@ -130,14 +148,22 @@
             v-for="store in availableStores"
             :key="store.id"
             class="cursor-pointer overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-md"
-            :class="getCategoryBorderColor(store.category)"
+            :style="{ borderLeftColor: getCategoryColors(store.category).border }"
             @click="handleAddStore(store.id)"
           >
-            <div class="flex items-center gap-2 p-3">
-              <span class="text-2xl">{{ getCategoryEmoji(store.category) }}</span>
-              <div class="flex-1">
+            <div
+              class="flex items-center gap-3 p-3"
+              :style="{ backgroundColor: getCategoryColors(store.category).bg }"
+            >
+              <StoreIcon :category="store.category" :size="32" class="shrink-0" />
+              <div class="min-w-0 flex-1">
                 <h3 class="font-semibold leading-tight">{{ store.name }}</h3>
-                <p class="text-muted-foreground text-xs">{{ store.category }}</p>
+                <p
+                  class="text-xs font-medium"
+                  :style="{ color: getCategoryColors(store.category).primary }"
+                >
+                  {{ store.category }}
+                </p>
               </div>
             </div>
           </Card>
@@ -163,6 +189,7 @@
 
 <script setup lang="ts">
 import StoreCard from '@/components/StoreCard.vue'
+import StoreIcon from '@/components/StoreIcon.vue'
 import Badge from '@/components/ui/Badge.vue'
 import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
@@ -173,6 +200,7 @@ import DialogTitle from '@/components/ui/DialogTitle.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import { useUserStoresWithData } from '@/queries'
 import { useResidentsStore, useStoresStore } from '@/stores'
+import { getCategoryColors } from '@/utils/categoryColors'
 import { useToast } from '@/utils/toast'
 import { computed, ref } from 'vue'
 
@@ -202,26 +230,6 @@ const availableStores = computed(() => {
   const builtStoreIds = new Set(storesStore.userStores.map((us: { storeId: string }) => us.storeId))
   return allStores.value.filter(s => !builtStoreIds.has(s.id))
 })
-
-function getCategoryEmoji(category: string): string {
-  const cat = category.toLowerCase()
-  if (cat.includes('food')) return '🍔'
-  if (cat.includes('service')) return '🛎️'
-  if (cat.includes('recreation')) return '🎮'
-  if (cat.includes('retail')) return '🛍️'
-  if (cat.includes('creative')) return '🎨'
-  return '🏪'
-}
-
-function getCategoryBorderColor(category: string): string {
-  const cat = category.toLowerCase()
-  if (cat.includes('food')) return 'border-orange-500 dark:border-orange-600'
-  if (cat.includes('service')) return 'border-blue-500 dark:border-blue-600'
-  if (cat.includes('recreation')) return 'border-purple-500 dark:border-purple-600'
-  if (cat.includes('retail')) return 'border-pink-500 dark:border-pink-600'
-  if (cat.includes('creative')) return 'border-yellow-500 dark:border-yellow-600'
-  return 'border-gray-500 dark:border-gray-600'
-}
 
 function handleAddStore(storeId: string) {
   const success = storesStore.addStore(storeId)

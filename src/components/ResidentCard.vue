@@ -4,12 +4,19 @@
     :class="statusBorderColor"
   >
     <div class="flex flex-col space-y-1 p-3 md:space-y-1.5 md:p-6">
-      <h3
-        class="flex items-center gap-2 text-lg font-semibold leading-tight md:text-2xl md:leading-none md:tracking-tight"
-      >
-        <span class="text-xl md:text-2xl">👤</span>
-        <span>{{ resident.name }}</span>
-      </h3>
+      <div class="flex items-center gap-3">
+        <img
+          :src="avatarUrl"
+          :alt="resident.name"
+          class="h-12 w-12 shrink-0 rounded-full border-2"
+          :class="statusBorderColor.replace('border-l-4', 'border')"
+        />
+        <h3
+          class="flex-1 text-lg font-semibold leading-tight md:text-2xl md:leading-none md:tracking-tight"
+        >
+          {{ resident.name }}
+        </h3>
+      </div>
     </div>
     <div class="p-3 pt-0 md:p-6 md:pt-0">
       <div class="space-y-1.5 md:space-y-2">
@@ -74,6 +81,12 @@ const statusBorderColor = computed(() => {
     return 'border-green-500 dark:border-green-600' // In dream job
   }
   return 'border-yellow-500 dark:border-yellow-600' // Needs placement
+})
+
+// Generate avatar using DiceBear API
+const avatarUrl = computed(() => {
+  const seed = props.resident.name.toLowerCase().replace(/\s+/g, '-')
+  return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`
 })
 
 function getDreamJobName() {

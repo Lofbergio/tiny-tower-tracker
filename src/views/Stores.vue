@@ -8,7 +8,7 @@
           Stores
         </span>
       </template>
-      <template #subtitle>🍔 Food • 🛎️ Service • 🎮 Recreation • 🛍️ Retail • 🎨 Creative</template>
+      <template #subtitle>Food • Service • Recreation • Retail • Creative</template>
       <template #aside>
         <TowerIllustration
           :width="110"
@@ -22,7 +22,6 @@
     <div v-if="availableStores.length > 0 && userStoresWithData.length > 0" class="mb-8">
       <div class="mb-3 flex items-center justify-between">
         <h2 class="flex items-center gap-2 text-lg font-semibold">
-          <span class="text-xl">➕</span>
           <span>Add More Stores</span>
         </h2>
         <Badge variant="default">{{ availableStores.length }} available</Badge>
@@ -71,7 +70,6 @@
       />
       <div class="mt-6">
         <h2 class="mb-3 flex items-center gap-2 text-lg font-semibold">
-          <span class="text-xl">🏪</span>
           <span>Available Stores</span>
         </h2>
         <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
@@ -115,7 +113,6 @@
     <div v-if="userStoresWithData.length > 0" class="mb-6">
       <div class="mb-3 flex items-center justify-between">
         <h2 class="flex items-center gap-2 text-lg font-semibold">
-          <span class="text-xl">🏢</span>
           <span>Your Stores</span>
         </h2>
         <Badge variant="secondary">{{ userStoresWithData.length }}</Badge>
@@ -147,10 +144,11 @@
               v-for="cat in categories"
               :key="cat"
               :variant="selectedCategory === cat ? 'default' : 'outline'"
-              class="min-h-[44px] cursor-pointer px-3 py-2 text-sm"
+              class="min-h-[44px] cursor-pointer gap-2 px-3 py-2 text-sm"
               @click="toggleCategory(cat)"
             >
-              {{ getCategoryEmoji(cat) }} {{ cat }}
+              <StoreIcon :category="cat" :size="16" class="shrink-0" />
+              <span>{{ cat }}</span>
             </Badge>
             <Badge
               v-if="selectedCategory"
@@ -228,7 +226,7 @@ import { useDarkMode } from '@/composables/useDarkMode'
 import { useUserStoresWithData } from '@/queries'
 import { useResidentsStore, useStoresStore } from '@/stores'
 import type { Resident, Store, UserStore } from '@/types'
-import { getCategoryColors, getCategoryEmoji } from '@/utils/categoryColors'
+import { getCategoryColors } from '@/utils/categoryColors'
 import { useToast } from '@/utils/toast'
 import { computed, ref } from 'vue'
 

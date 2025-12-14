@@ -31,7 +31,14 @@
             :key="residentId"
             class="flex min-h-[44px] items-center justify-between gap-3 border-b px-3 last:border-b-0"
           >
-            <span class="min-w-0 flex-1 truncate text-sm">{{ getResidentName(residentId) }}</span>
+            <div class="flex min-w-0 flex-1 items-center gap-2">
+              <img
+                :src="getResidentAvatarUrl(residentId)"
+                :alt="getResidentName(residentId)"
+                class="h-7 w-7 shrink-0 rounded-full border"
+              />
+              <span class="min-w-0 flex-1 truncate text-sm">{{ getResidentName(residentId) }}</span>
+            </div>
             <Button
               variant="ghost"
               size="sm"
@@ -66,6 +73,7 @@
 <script setup lang="ts">
 import { useDarkMode } from '@/composables/useDarkMode'
 import type { Resident, Store, UserStore } from '@/types'
+import { getResidentAvatarUrl as getResidentAvatarUrlByName } from '@/utils/avatar'
 import { getCategoryColors } from '@/utils/categoryColors'
 import { computed } from 'vue'
 import StoreIcon from './StoreIcon.vue'
@@ -96,5 +104,9 @@ const categoryColors = computed(() => getCategoryColors(store.value.category, is
 function getResidentName(residentId: string) {
   const resident = props.residents.find(r => r.id === residentId)
   return resident?.name || 'Unknown'
+}
+
+function getResidentAvatarUrl(residentId: string) {
+  return getResidentAvatarUrlByName(getResidentName(residentId))
 }
 </script>

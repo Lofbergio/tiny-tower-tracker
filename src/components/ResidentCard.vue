@@ -83,6 +83,7 @@
 
 <script setup lang="ts">
 import type { Resident, Store } from '@/types'
+import { getResidentAvatarUrl } from '@/utils/avatar'
 import { computed } from 'vue'
 import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
@@ -125,8 +126,7 @@ const statusBorderColor = computed(() => {
 
 // Generate avatar using DiceBear API
 const avatarUrl = computed(() => {
-  const seed = props.resident.name.toLowerCase().replace(/\s+/g, '-')
-  return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`
+  return getResidentAvatarUrl(props.resident.name)
 })
 
 function getDreamJobName() {

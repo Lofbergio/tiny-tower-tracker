@@ -2,21 +2,26 @@
   <div class="space-y-6">
     <!-- Mission Suggestions -->
     <div v-if="completableMissions.length > 0">
-      <h3 class="mb-3 text-lg font-semibold">Missions Ready to Complete</h3>
+      <h3 class="mb-3 flex items-center gap-2 text-lg font-semibold">
+        <span class="text-2xl">🎉</span>
+        Missions Ready to Complete
+      </h3>
       <div class="space-y-3">
         <Card
           v-for="mission in completableMissions"
           :key="mission.id"
           class="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20"
         >
-          <div class="p-6 pt-0 pt-6">
-            <div class="flex items-start justify-between">
+          <div class="p-4 sm:p-6">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ mission.name }}</h4>
                 <p class="text-muted-foreground mb-2 text-sm">{{ mission.description }}</p>
                 <p class="text-sm">Reward: {{ mission.reward }} Bux</p>
               </div>
-              <Button @click="handleCompleteMission(mission.id)"> Mark Done </Button>
+              <Button class="w-full sm:w-auto" @click="handleCompleteMission(mission.id)">
+                Mark Done
+              </Button>
             </div>
           </div>
         </Card>
@@ -25,15 +30,18 @@
 
     <!-- Resident Placement Suggestions -->
     <div v-if="residentPlacements.length > 0">
-      <h3 class="mb-3 text-lg font-semibold">Resident Placements Needed</h3>
+      <h3 class="mb-3 flex items-center gap-2 text-lg font-semibold">
+        <span class="text-2xl">👷</span>
+        Resident Placements Needed
+      </h3>
       <div class="space-y-3">
         <Card
           v-for="placement in residentPlacements"
           :key="placement.resident.id"
           class="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20"
         >
-          <div class="p-6 pt-0 pt-6">
-            <div class="flex items-start justify-between">
+          <div class="p-4 sm:p-6">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ placement.resident.name }}</h4>
                 <p class="text-muted-foreground text-sm">
@@ -47,6 +55,7 @@
                 </p>
               </div>
               <Button
+                class="w-full sm:w-auto"
                 :disabled="placement.isFull"
                 @click="handlePlaceResident(placement.resident.id, placement.storeId)"
               >
@@ -60,14 +69,17 @@
 
     <!-- Overcapacity Warnings -->
     <div v-if="overcapacityWarnings.length > 0">
-      <h3 class="mb-3 text-lg font-semibold">Overcapacity Warnings</h3>
+      <h3 class="mb-3 flex items-center gap-2 text-lg font-semibold">
+        <span class="text-2xl">⚠️</span>
+        Overcapacity Warnings
+      </h3>
       <div class="space-y-3">
         <Card
           v-for="warning in overcapacityWarnings"
           :key="warning.resident.id"
           class="border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20"
         >
-          <div class="p-6 pt-0 pt-6">
+          <div class="p-4 sm:p-6">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ warning.resident.name }}</h4>
@@ -87,14 +99,17 @@
 
     <!-- New Store Opportunities -->
     <div v-if="newStoreOpportunities.length > 0">
-      <h3 class="mb-3 text-lg font-semibold">New Store Opportunities</h3>
+      <h3 class="mb-3 flex items-center gap-2 text-lg font-semibold">
+        <span class="text-2xl">🏗️</span>
+        New Store Opportunities
+      </h3>
       <div class="space-y-3">
         <Card
           v-for="opportunity in newStoreOpportunities"
           :key="opportunity.storeId"
           class="border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-900/20"
         >
-          <div class="p-6 pt-0 pt-6">
+          <div class="p-4 sm:p-6">
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ opportunity.storeName }}</h4>

@@ -1,9 +1,12 @@
 <template>
-  <div class="container mx-auto p-4 pb-20 md:pb-4">
-    <div class="mb-6 flex items-center justify-between">
-      <div>
-        <h1 class="mb-1 text-3xl font-bold">Residents</h1>
-        <p class="text-muted-foreground text-sm">
+  <div class="container mx-auto p-4 pb-24 md:pb-4">
+    <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex-1">
+        <h1 class="mb-1 flex items-center gap-2 text-2xl font-bold md:text-3xl">
+          <span class="text-3xl md:text-4xl">👥</span>
+          Residents
+        </h1>
+        <p class="text-muted-foreground text-sm md:text-base">
           Manage your tower's residents and their dream jobs
         </p>
       </div>
@@ -39,7 +42,10 @@
           </div>
         </DialogContent>
       </Dialog>
-      <Button @click="showAddDialog = true">Add Resident</Button>
+      <Button class="w-full sm:w-auto" @click="showAddDialog = true">
+        <span class="sm:hidden">Add</span>
+        <span class="hidden sm:inline">Add Resident</span>
+      </Button>
     </div>
 
     <EmptyState

@@ -1,9 +1,14 @@
 <template>
-  <div class="container mx-auto p-4 pb-20 md:pb-4">
-    <div class="mb-6 flex items-center justify-between">
-      <div>
-        <h1 class="mb-1 text-3xl font-bold">Stores</h1>
-        <p class="text-muted-foreground text-sm">Build and manage stores in your tower</p>
+  <div class="container mx-auto p-4 pb-24 md:pb-4">
+    <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex-1">
+        <h1 class="mb-1 flex items-center gap-2 text-2xl font-bold md:text-3xl">
+          <span class="text-3xl md:text-4xl">🏪</span>
+          Stores
+        </h1>
+        <p class="text-muted-foreground text-sm md:text-base">
+          Build and manage stores in your tower
+        </p>
       </div>
       <Dialog :open="showAddDialog" @update:open="showAddDialog = $event">
         <DialogContent>
@@ -27,7 +32,10 @@
           </div>
         </DialogContent>
       </Dialog>
-      <Button @click="showAddDialog = true">Add Store</Button>
+      <Button class="w-full sm:w-auto" @click="showAddDialog = true">
+        <span class="sm:hidden">Add</span>
+        <span class="hidden sm:inline">Add Store</span>
+      </Button>
     </div>
 
     <EmptyState

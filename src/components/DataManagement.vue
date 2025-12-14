@@ -1,7 +1,10 @@
 <template>
   <Card>
     <div class="flex flex-col space-y-1.5 p-6">
-      <h3 class="text-2xl font-semibold leading-none tracking-tight">Data Management</h3>
+      <h3 class="flex items-center gap-2 text-2xl font-semibold leading-none tracking-tight">
+        <span>💾</span>
+        Data Management
+      </h3>
       <p class="text-muted-foreground text-sm">
         Export your data for backup or import from a previous backup
       </p>
@@ -27,8 +30,8 @@
       </div>
 
       <!-- Actions -->
-      <div class="grid gap-2 sm:grid-cols-2">
-        <Button variant="outline" class="w-full" @click="handleExport">
+      <div class="grid gap-3 sm:grid-cols-2">
+        <Button variant="outline" class="w-full min-h-[48px]" @click="handleExport">
           <svg
             class="mr-2 h-4 w-4"
             fill="none"
@@ -45,7 +48,7 @@
           </svg>
           Export Data
         </Button>
-        <Button variant="outline" class="w-full" @click="triggerImport">
+        <Button variant="outline" class="w-full min-h-[48px]" @click="triggerImport">
           <svg
             class="mr-2 h-4 w-4"
             fill="none"
@@ -65,7 +68,7 @@
       </div>
 
       <div class="border-t pt-4">
-        <Button variant="destructive" class="w-full" @click="handleClearAll">
+        <Button variant="destructive" class="w-full min-h-[48px]" @click="handleClearAll">
           Clear All Data
         </Button>
         <p class="text-muted-foreground mt-2 text-xs">

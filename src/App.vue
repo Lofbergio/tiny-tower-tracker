@@ -6,11 +6,14 @@
         <nav class="bg-background/80 sticky top-0 border-b backdrop-blur-sm">
           <div class="container mx-auto px-4">
             <div class="flex h-16 items-center justify-between">
-              <h1
-                class="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-xl font-bold text-transparent"
-              >
-                Tiny Tower Tracker
-              </h1>
+              <div class="flex items-center gap-2">
+                <div class="text-2xl">🏢</div>
+                <h1
+                  class="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-xl font-bold text-transparent"
+                >
+                  Tiny Tower Tracker
+                </h1>
+              </div>
               <div class="flex items-center gap-2">
                 <DarkModeToggle class="md:hidden" />
                 <div class="flex gap-2 md:hidden">
@@ -68,7 +71,7 @@
               v-for="mobileRoute in routes"
               :key="mobileRoute.path"
               :class="[
-                'flex flex-col items-center justify-center rounded-md p-2 text-xs transition-colors',
+                'flex min-h-[56px] flex-col items-center justify-center rounded-md p-3 text-xs transition-colors active:scale-95',
                 currentRoute === mobileRoute.path
                   ? 'bg-primary text-primary-foreground'
                   : 'text-muted-foreground hover:bg-accent',
@@ -77,11 +80,11 @@
               :aria-current="currentRoute === mobileRoute.path ? 'page' : undefined"
               @click="$router.push(mobileRoute.path)"
             >
-              <span>{{ mobileRoute.name }}</span>
+              <span class="font-medium">{{ mobileRoute.name }}</span>
             </button>
           </div>
         </div>
-        <div class="h-16 md:hidden" />
+        <div class="h-[72px] md:hidden" />
         <!-- Spacer for mobile nav -->
       </div>
       <Toast />

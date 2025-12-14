@@ -16,6 +16,7 @@
 - **Persistence:** LocalStorage with debounced saves (500ms)
 - **UI Components:** Radix Vue + Tailwind CSS
 - **Code Style:** Vue 3 Composition API with `<script setup>`, TypeScript strict mode
+- **Package Manager:** Yarn (use `yarn`, not `npm`; e.g. `yarn dev`, `yarn build`, `yarn lint`)
 
 ## Before You Start
 

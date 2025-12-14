@@ -18,7 +18,7 @@
           👥 {{ capacity }}/3
         </Badge>
       </div>
-      <p class="text-xs md:text-sm" :style="{ color: categoryColors.primary }">
+      <p class="text-muted-foreground text-xs font-medium md:text-sm">
         {{ store.category }}
       </p>
     </div>

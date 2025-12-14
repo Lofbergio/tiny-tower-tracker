@@ -43,10 +43,7 @@
                 <h3 class="text-base font-semibold leading-tight md:text-lg">
                   {{ store.name }}
                 </h3>
-                <p
-                  class="line-clamp-1 text-xs font-medium"
-                  :style="{ color: categoryColors(store.category).primary }"
-                >
+                <p class="text-muted-foreground line-clamp-1 text-xs font-medium">
                   {{ store.category }}
                 </p>
               </div>
@@ -93,10 +90,7 @@
                   <h3 class="text-base font-semibold leading-tight md:text-lg">
                     {{ store.name }}
                   </h3>
-                  <p
-                    class="line-clamp-1 text-xs font-medium"
-                    :style="{ color: categoryColors(store.category).primary }"
-                  >
+                  <p class="text-muted-foreground line-clamp-1 text-xs font-medium">
                     {{ store.category }}
                   </p>
                 </div>
@@ -139,14 +133,43 @@
     </div>
 
     <!-- Full Store List Dialog (only shown when clicking "View All") -->
-    <Dialog :open="showAddDialog" @update:open="showAddDialog = $event">
+    <Dialog :open="showAddDialog" @update:open="handleDialogOpenChange">
       <DialogContent>
         <div class="flex flex-col space-y-1.5 text-center sm:text-left">
-          <DialogTitle>All Available Stores</DialogTitle>
+          <DialogTitle>All Available Stores ({{ filteredStores.length }})</DialogTitle>
         </div>
-        <div class="max-h-[60vh] space-y-2 overflow-y-auto pr-2">
+        <div class="space-y-3">
+          <Input
+            v-model="searchQuery"
+            placeholder="Search stores..."
+            class="w-full"
+          />
+          <div class="flex flex-wrap gap-2">
+            <Badge
+              v-for="cat in categories"
+              :key="cat"
+              :variant="selectedCategory === cat ? 'default' : 'outline'"
+              class="cursor-pointer"
+              @click="toggleCategory(cat)"
+            >
+              {{ getCategoryEmoji(cat) }} {{ cat }}
+            </Badge>
+            <Badge
+              v-if="selectedCategory"
+              variant="secondary"
+              class="cursor-pointer"
+              @click="selectedCategory = null"
+            >
+              Clear filter
+            </Badge>
+          </div>
+        </div>
+        <div class="max-h-[50vh] space-y-2 overflow-y-auto pr-2">
+          <div v-if="filteredStores.length === 0" class="text-muted-foreground py-8 text-center text-sm">
+            No stores found
+          </div>
           <Card
-            v-for="store in availableStores"
+            v-for="store in filteredStores"
             :key="store.id"
             class="cursor-pointer overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-md"
             :style="{ borderLeftColor: categoryColors(store.category).border }"
@@ -159,10 +182,7 @@
               <StoreIcon :category="store.category" :size="32" class="shrink-0" />
               <div class="min-w-0 flex-1">
                 <h3 class="font-semibold leading-tight">{{ store.name }}</h3>
-                <p
-                  class="text-xs font-medium"
-                  :style="{ color: categoryColors(store.category).primary }"
-                >
+                <p class="text-muted-foreground text-xs font-medium">
                   {{ store.category }}
                 </p>
               </div>
@@ -199,12 +219,13 @@ import Dialog from '@/components/ui/Dialog.vue'
 import DialogContent from '@/components/ui/DialogContent.vue'
 import DialogTitle from '@/components/ui/DialogTitle.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
+import Input from '@/components/ui/Input.vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { useDarkMode } from '@/composables/useDarkMode'
 import { useUserStoresWithData } from '@/queries'
 import { useResidentsStore, useStoresStore } from '@/stores'
 import type { Resident, Store, UserStore } from '@/types'
-import { getCategoryColors } from '@/utils/categoryColors'
+import { getCategoryColors, getCategoryEmoji } from '@/utils/categoryColors'
 import { useToast } from '@/utils/toast'
 import { computed, ref } from 'vue'
 
@@ -217,6 +238,8 @@ const { showConfirmDialog, confirmDialogData, confirm } = useConfirmDialog()
 const { isDark } = useDarkMode()
 
 const showAddDialog = ref(false)
+const searchQuery = ref('')
+const selectedCategory = ref<string | null>(null)
 
 const categoryColors = computed(() => (category: string) => getCategoryColors(category, isDark.value))
 
@@ -224,6 +247,44 @@ const availableStores = computed(() => {
   const builtStoreIds = new Set(storesStore.userStores.map((us: UserStore) => us.storeId))
   return allStores.value.filter(s => !builtStoreIds.has(s.id))
 })
+
+const categories = computed(() => {
+  const cats = new Set(allStores.value.map(s => s.category))
+  return Array.from(cats).sort()
+})
+
+const filteredStores = computed(() => {
+  let stores = availableStores.value
+
+  // Filter by search query
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase()
+    stores = stores.filter(s =>
+      s.name.toLowerCase().includes(query) ||
+      s.category.toLowerCase().includes(query)
+    )
+  }
+
+  // Filter by category
+  if (selectedCategory.value) {
+    stores = stores.filter(s => s.category === selectedCategory.value)
+  }
+
+  return stores
+})
+
+function toggleCategory(category: string) {
+  selectedCategory.value = selectedCategory.value === category ? null : category
+}
+
+function handleDialogOpenChange(isOpen: boolean) {
+  showAddDialog.value = isOpen
+  if (!isOpen) {
+    // Reset filters when dialog closes
+    searchQuery.value = ''
+    selectedCategory.value = null
+  }
+}
 
 function handleAddStore(storeId: string) {
   const success = storesStore.addStore(storeId)

@@ -1,15 +1,15 @@
 <template>
   <ErrorBoundary>
-    <div class="bg-background relative min-h-screen">
+    <div class="relative min-h-screen bg-background">
       <div class="bg-grid-pattern pointer-events-none fixed inset-0" />
       <div class="relative">
-        <nav class="bg-background/80 sticky top-0 border-b backdrop-blur-sm">
+        <nav class="sticky top-0 border-b bg-background/80 backdrop-blur-sm">
           <div class="container mx-auto px-4">
             <div class="flex h-16 items-center justify-between">
               <div class="flex items-center gap-2">
                 <div class="text-2xl">🏢</div>
                 <h1
-                  class="from-primary to-primary/80 bg-gradient-to-r bg-clip-text text-xl font-bold text-transparent"
+                  class="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-xl font-bold text-transparent"
                 >
                   Tiny Tower Tracker
                 </h1>
@@ -17,7 +17,14 @@
               <div class="flex items-center gap-2">
                 <DarkModeToggle class="md:hidden" />
                 <div class="flex gap-2 md:hidden">
-                  <Button variant="ghost" size="sm" @click="showMobileMenu = !showMobileMenu">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label="Toggle menu"
+                    aria-controls="mobile-menu"
+                    :aria-expanded="showMobileMenu"
+                    @click="showMobileMenu = !showMobileMenu"
+                  >
                     Menu
                   </Button>
                 </div>
@@ -30,10 +37,11 @@
                     class="relative"
                     @click="$router.push(navRoute.path)"
                   >
+                    <span aria-hidden="true" class="mr-1">{{ navRoute.icon }}</span>
                     {{ navRoute.name }}
                     <span
                       v-if="getPendingCount(navRoute.path) > 0"
-                      class="bg-destructive text-destructive-foreground absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold"
+                      class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground"
                     >
                       {{
                         getPendingCount(navRoute.path) > 9 ? '9+' : getPendingCount(navRoute.path)
@@ -44,43 +52,74 @@
               </div>
             </div>
           </div>
-          <div v-if="showMobileMenu" class="border-t md:hidden">
+          <div v-if="showMobileMenu" id="mobile-menu" class="border-t md:hidden">
             <div class="container mx-auto space-y-1 px-4 py-2">
               <Button
                 v-for="menuRoute in routes"
                 :key="menuRoute.path"
                 variant="ghost"
-                class="w-full justify-start"
+                class="relative w-full justify-start"
                 @click="handleNavClick(menuRoute.path)"
               >
+                <span aria-hidden="true" class="mr-2">{{ menuRoute.icon }}</span>
                 {{ menuRoute.name }}
+                <span
+                  v-if="getPendingCount(menuRoute.path) > 0"
+                  class="absolute right-2 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground"
+                >
+                  {{ getPendingCount(menuRoute.path) > 9 ? '9+' : getPendingCount(menuRoute.path) }}
+                </span>
               </Button>
             </div>
           </div>
         </nav>
 
         <main class="min-h-[calc(100vh-4rem)]">
-          <div v-if="isLoading" class="flex min-h-[calc(100vh-4rem)] items-center justify-center">
+          <div
+            v-if="hasLoadError"
+            class="container mx-auto flex min-h-[calc(100vh-4rem)] items-center justify-center px-4"
+          >
+            <EmptyState
+              title="⚠️ Couldn't load game data"
+              description="The store/mission database didn't load. Check your connection and try again."
+            >
+              <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+                <Button class="w-full sm:w-auto" @click="retryLoad">Retry</Button>
+                <Button variant="outline" class="w-full sm:w-auto" @click="reloadPage">
+                  Reload
+                </Button>
+              </div>
+              <p v-if="loadErrorMessage" class="mt-3 text-xs text-muted-foreground">
+                {{ loadErrorMessage }}
+              </p>
+            </EmptyState>
+          </div>
+          <div
+            v-else-if="isLoading"
+            class="flex min-h-[calc(100vh-4rem)] items-center justify-center"
+            role="status"
+            aria-live="polite"
+          >
             <div class="text-center">
               <div
-                class="border-primary mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"
+                class="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent motion-reduce:animate-none"
               />
               <p class="text-muted-foreground">Loading your tower...</p>
             </div>
           </div>
-          <RouterView v-else-if="!isLoading" />
+          <RouterView v-else />
         </main>
 
         <!-- Mobile Bottom Navigation -->
         <div
-          class="bg-background/95 fixed bottom-0 left-0 right-0 border-t backdrop-blur-sm md:hidden"
+          class="fixed bottom-0 left-0 right-0 border-t bg-background/95 backdrop-blur-sm md:hidden"
         >
           <div class="grid grid-cols-4 gap-1 p-2">
             <button
               v-for="mobileRoute in routes"
               :key="mobileRoute.path"
               :class="[
-                'relative flex min-h-[60px] flex-col items-center justify-center rounded-md p-3 text-xs font-medium transition-colors',
+                'relative flex min-h-[60px] flex-col items-center justify-center rounded-md p-3 text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95',
                 currentRoute === mobileRoute.path
                   ? 'bg-primary text-primary-foreground'
                   : 'text-muted-foreground active:bg-accent',
@@ -89,10 +128,11 @@
               :aria-current="currentRoute === mobileRoute.path ? 'page' : undefined"
               @click="$router.push(mobileRoute.path)"
             >
+              <span aria-hidden="true" class="text-base leading-none">{{ mobileRoute.icon }}</span>
               <span>{{ mobileRoute.name }}</span>
               <span
                 v-if="getPendingCount(mobileRoute.path) > 0"
-                class="bg-destructive text-destructive-foreground absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold"
+                class="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground"
               >
                 {{
                   getPendingCount(mobileRoute.path) > 9 ? '9+' : getPendingCount(mobileRoute.path)
@@ -110,11 +150,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ErrorBoundary from './components/ErrorBoundary.vue'
 import Button from './components/ui/Button.vue'
 import DarkModeToggle from './components/ui/DarkModeToggle.vue'
+import EmptyState from './components/ui/EmptyState.vue'
 import Toast from './components/ui/Toast.vue'
 import {
   useCompletableMissions,
@@ -129,10 +170,42 @@ const route = useRoute()
 const showMobileMenu = ref(false)
 
 // Preload data using Vue Query
-const { isLoading: storesLoading } = useStoresQuery()
-const { isLoading: missionsLoading } = useMissionsQuery()
+const {
+  isLoading: storesLoading,
+  isError: storesIsError,
+  error: storesError,
+  refetch: refetchStores,
+} = useStoresQuery()
+const {
+  isLoading: missionsLoading,
+  isError: missionsIsError,
+  error: missionsError,
+  refetch: refetchMissions,
+} = useMissionsQuery()
 
 const isLoading = computed(() => storesLoading.value || missionsLoading.value)
+const hasLoadError = computed(() => Boolean(storesIsError.value || missionsIsError.value))
+
+const loadErrorMessage = computed(() => {
+  const err = (storesError.value ?? missionsError.value) as unknown
+  if (!err) return ''
+  if (typeof err === 'string') return err
+  if (err instanceof Error) return err.message
+  try {
+    return JSON.stringify(err)
+  } catch {
+    return ''
+  }
+})
+
+function retryLoad() {
+  refetchStores()
+  refetchMissions()
+}
+
+function reloadPage() {
+  window.location.reload()
+}
 
 // Get pending counts for navigation badges
 const { pendingMissions } = useUserMissionsWithData()
@@ -140,13 +213,47 @@ const { completableMissions } = useCompletableMissions()
 const residentsStore = useResidentsStore()
 
 const routes = [
-  { path: '/', name: 'Dashboard' },
-  { path: '/missions', name: 'Missions' },
-  { path: '/residents', name: 'Residents' },
-  { path: '/stores', name: 'Stores' },
+  { path: '/', name: 'Dashboard', icon: '📊' },
+  { path: '/missions', name: 'Missions', icon: '🎯' },
+  { path: '/residents', name: 'Residents', icon: '👥' },
+  { path: '/stores', name: 'Stores', icon: '🏪' },
 ]
 
 const currentRoute = computed(() => route.path)
+
+watch(
+  () => route.path,
+  () => {
+    showMobileMenu.value = false
+  }
+)
+
+function handleGlobalKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    showMobileMenu.value = false
+  }
+}
+
+function handleGlobalPointerDown(event: PointerEvent) {
+  if (!showMobileMenu.value) return
+  const target = event.target as HTMLElement | null
+  if (!target) return
+  // Close when clicking outside the mobile menu region and menu button.
+  if (target.closest('#mobile-menu') || target.closest('[aria-controls="mobile-menu"]')) {
+    return
+  }
+  showMobileMenu.value = false
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleGlobalKeydown)
+  window.addEventListener('pointerdown', handleGlobalPointerDown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleGlobalKeydown)
+  window.removeEventListener('pointerdown', handleGlobalPointerDown)
+})
 
 function getPendingCount(path: string): number {
   if (path === '/missions') {

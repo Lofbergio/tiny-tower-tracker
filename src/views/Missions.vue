@@ -11,25 +11,25 @@
           </span>
         </h1>
       </div>
-      <p class="text-muted-foreground text-sm md:text-base">Complete missions and earn Bux 💰✨</p>
+      <p class="text-sm text-muted-foreground md:text-base">Complete missions and earn Bux</p>
     </div>
 
     <!-- Quick Stats Banner -->
     <div v-if="stats.totalPending > 0 || stats.completableAvailable > 0" class="mb-6">
       <Card
-        class="border-primary/20 from-primary/5 via-primary/10 to-primary/5 overflow-hidden bg-gradient-to-br"
+        class="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5"
       >
         <div class="p-4">
           <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
             <div class="rounded-lg bg-white/50 p-3 dark:bg-black/20">
-              <p class="text-muted-foreground mb-1 flex items-center gap-1 text-xs">
+              <p class="mb-1 flex items-center gap-1 text-xs text-muted-foreground">
                 <span>📋</span>
                 <span>Pending</span>
               </p>
               <p class="text-2xl font-bold">{{ stats.totalPending }}</p>
             </div>
             <div class="rounded-lg bg-green-50/80 p-3 dark:bg-green-950/20">
-              <p class="text-muted-foreground mb-1 flex items-center gap-1 text-xs">
+              <p class="mb-1 flex items-center gap-1 text-xs text-muted-foreground">
                 <span>✅</span>
                 <span>Ready</span>
               </p>
@@ -38,7 +38,7 @@
               </p>
             </div>
             <div class="rounded-lg bg-yellow-50/80 p-3 dark:bg-yellow-950/20">
-              <p class="text-muted-foreground mb-1 flex items-center gap-1 text-xs">
+              <p class="mb-1 flex items-center gap-1 text-xs text-muted-foreground">
                 <span>💰</span>
                 <span>Potential Bux</span>
               </p>
@@ -47,7 +47,7 @@
               </p>
             </div>
             <div class="rounded-lg bg-blue-50/80 p-3 dark:bg-blue-950/20">
-              <p class="text-muted-foreground mb-1 flex items-center gap-1 text-xs">
+              <p class="mb-1 flex items-center gap-1 text-xs text-muted-foreground">
                 <span>🎁</span>
                 <span>Available</span>
               </p>
@@ -70,7 +70,7 @@
       <TabsContent value="pending">
         <EmptyState
           v-if="pendingMissions.length === 0"
-          title="🎉 No Pending Missions"
+          title="No Pending Missions"
           description="All your missions are completed! Scroll down to see available missions you can add."
         >
           <Button variant="outline" @click="activeTab = 'all'">View All Missions</Button>
@@ -90,7 +90,7 @@
       <TabsContent value="completed">
         <EmptyState
           v-if="completedMissions.length === 0"
-          title="🎯 No Completed Missions"
+          title="No Completed Missions"
           description="Complete missions to see them here. Keep building your tower!"
         />
         <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -108,7 +108,7 @@
       <TabsContent value="all">
         <EmptyState
           v-if="userMissions.length === 0"
-          title="🚀 No Missions Yet"
+          title="No Missions Yet"
           description="Start tracking your Tiny Tower missions! Click the available missions below to get started."
         />
         <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -155,7 +155,7 @@
                 💰 {{ mission.reward }}
               </Badge>
             </div>
-            <p class="text-muted-foreground line-clamp-1 text-xs md:line-clamp-2">
+            <p class="line-clamp-1 text-xs text-muted-foreground md:line-clamp-2">
               {{ mission.description }}
             </p>
           </div>
@@ -179,7 +179,7 @@
 
     <div v-if="sortedNonCompletableMissions.length > 0" class="mb-8">
       <div class="mb-3 flex items-center justify-between">
-        <h2 class="text-muted-foreground flex items-center gap-2 text-lg font-semibold">
+        <h2 class="flex items-center gap-2 text-lg font-semibold text-muted-foreground">
           <span class="text-xl">🔒</span>
           <span>Need More Stores</span>
         </h2>
@@ -199,7 +199,7 @@
               </h3>
               <Badge variant="outline" class="shrink-0 text-xs">💰 {{ mission.reward }}</Badge>
             </div>
-            <p class="text-muted-foreground line-clamp-1 text-xs md:line-clamp-2">
+            <p class="line-clamp-1 text-xs text-muted-foreground md:line-clamp-2">
               {{ mission.description }}
             </p>
           </div>
@@ -231,7 +231,7 @@
 
     <EmptyState
       v-if="availableMissions.length === 0 && userMissions.length === 0"
-      title="🏗️ No Available Missions"
+      title="No Available Missions"
       description="All missions have been added! Complete your pending missions or add more stores to unlock new ones."
     />
 
@@ -350,7 +350,9 @@ function handleAddMission(missionId: string) {
 }
 
 function handleCompleteMission(missionId: string) {
-  const mission = userMissions.value.find((um: UserMission & { mission: Mission }) => um.missionId === missionId)
+  const mission = userMissions.value.find(
+    (um: UserMission & { mission: Mission }) => um.missionId === missionId
+  )
   if (!mission) {
     return
   }
@@ -364,7 +366,9 @@ function handleCompleteMission(missionId: string) {
 }
 
 function handleReopenMission(missionId: string) {
-  const mission = userMissions.value.find((um: UserMission & { mission: Mission }) => um.missionId === missionId)
+  const mission = userMissions.value.find(
+    (um: UserMission & { mission: Mission }) => um.missionId === missionId
+  )
   if (!mission) {
     return
   }
@@ -378,7 +382,9 @@ function handleReopenMission(missionId: string) {
 }
 
 function handleRemoveMission(missionId: string) {
-  const mission = userMissions.value.find((um: UserMission & { mission: Mission }) => um.missionId === missionId)
+  const mission = userMissions.value.find(
+    (um: UserMission & { mission: Mission }) => um.missionId === missionId
+  )
   if (!mission) {
     return
   }

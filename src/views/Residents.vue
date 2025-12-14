@@ -11,7 +11,7 @@
           </span>
         </h1>
         <p class="text-sm text-muted-foreground md:text-base">
-          Manage residents and place them in their dream jobs ✨
+          Manage residents and place them in their dream jobs
         </p>
       </div>
 
@@ -143,7 +143,7 @@
               Ready to run OCR.
             </div>
 
-            <div v-if="!allStores" class="text-sm text-destructive">
+            <div v-if="!allStores" class="text-sm text-muted-foreground">
               Store data is still loading. Please wait.
             </div>
           </div>
@@ -200,8 +200,8 @@
               class="w-full"
               @click="handleAddResident"
             >
-              <span v-if="!newResidentName || !newResidentDreamJob">✨ Add Resident</span>
-              <span v-else>✨ Add {{ newResidentName }}</span>
+              <span v-if="!newResidentName || !newResidentDreamJob">Add Resident</span>
+              <span v-else>Add {{ newResidentName }}</span>
             </Button>
             <Button variant="ghost" class="w-full" @click="showAddDialog = false">Cancel</Button>
           </div>
@@ -224,7 +224,7 @@
       title="👋 No Residents Yet"
       description="Add residents to your tower and assign them to their dream jobs!"
     >
-      <Button @click="showAddDialog = true">✨ Add Your First Resident</Button>
+      <Button @click="showAddDialog = true">Add Your First Resident</Button>
     </EmptyState>
 
     <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

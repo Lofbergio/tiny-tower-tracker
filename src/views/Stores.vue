@@ -10,7 +10,7 @@
             Stores
           </span>
         </h1>
-        <p class="text-muted-foreground text-sm md:text-base">
+        <p class="text-sm text-muted-foreground md:text-base">
           🍔 Food • 🛎️ Service • 🎮 Recreation • 🛍️ Retail • 🎨 Creative
         </p>
       </div>
@@ -43,7 +43,7 @@
                 <h3 class="text-base font-semibold leading-tight md:text-lg">
                   {{ store.name }}
                 </h3>
-                <p class="text-muted-foreground line-clamp-1 text-xs font-medium">
+                <p class="line-clamp-1 text-xs font-medium text-muted-foreground">
                   {{ store.category }}
                 </p>
               </div>
@@ -64,7 +64,7 @@
     <!-- First Time Experience - Show Available Stores -->
     <div v-if="userStoresWithData.length === 0 && availableStores.length > 0" class="mb-8">
       <EmptyState
-        title="🏗️ No Stores Yet"
+        title="No Stores Yet"
         description="Build stores in your tower and assign residents to work in them! Click any store below to add it."
       />
       <div class="mt-6">
@@ -90,7 +90,7 @@
                   <h3 class="text-base font-semibold leading-tight md:text-lg">
                     {{ store.name }}
                   </h3>
-                  <p class="text-muted-foreground line-clamp-1 text-xs font-medium">
+                  <p class="line-clamp-1 text-xs font-medium text-muted-foreground">
                     {{ store.category }}
                   </p>
                 </div>
@@ -139,11 +139,7 @@
           <DialogTitle>All Available Stores ({{ filteredStores.length }})</DialogTitle>
         </div>
         <div class="space-y-3">
-          <Input
-            v-model="searchQuery"
-            placeholder="Search stores..."
-            class="w-full"
-          />
+          <Input v-model="searchQuery" placeholder="Search stores..." class="w-full" />
           <div class="flex flex-wrap gap-2">
             <Badge
               v-for="cat in categories"
@@ -165,9 +161,12 @@
           </div>
         </div>
         <div class="max-h-[50vh] space-y-2 overflow-y-auto pr-2">
-          <div v-if="filteredStores.length === 0" class="text-muted-foreground py-8 text-center text-sm">
-            No stores found
-          </div>
+          <EmptyState
+            v-if="filteredStores.length === 0"
+            title="No stores found"
+            description="Try a different search or clear the filters."
+            :hide-illustration="true"
+          />
           <Card
             v-for="store in filteredStores"
             :key="store.id"
@@ -182,7 +181,7 @@
               <StoreIcon :category="store.category" :size="32" class="shrink-0" />
               <div class="min-w-0 flex-1">
                 <h3 class="font-semibold leading-tight">{{ store.name }}</h3>
-                <p class="text-muted-foreground text-xs font-medium">
+                <p class="text-xs font-medium text-muted-foreground">
                   {{ store.category }}
                 </p>
               </div>
@@ -241,7 +240,9 @@ const showAddDialog = ref(false)
 const searchQuery = ref('')
 const selectedCategory = ref<string | null>(null)
 
-const categoryColors = computed(() => (category: string) => getCategoryColors(category, isDark.value))
+const categoryColors = computed(
+  () => (category: string) => getCategoryColors(category, isDark.value)
+)
 
 const availableStores = computed(() => {
   const builtStoreIds = new Set(storesStore.userStores.map((us: UserStore) => us.storeId))
@@ -259,9 +260,8 @@ const filteredStores = computed(() => {
   // Filter by search query
   if (searchQuery.value.trim()) {
     const query = searchQuery.value.toLowerCase()
-    stores = stores.filter(s =>
-      s.name.toLowerCase().includes(query) ||
-      s.category.toLowerCase().includes(query)
+    stores = stores.filter(
+      s => s.name.toLowerCase().includes(query) || s.category.toLowerCase().includes(query)
     )
   }
 
@@ -298,7 +298,9 @@ function handleAddStore(storeId: string) {
 }
 
 function handleRemoveStore(storeId: string) {
-  const store = userStoresWithData.value.find((us: UserStore & { store: Store }) => us.storeId === storeId)
+  const store = userStoresWithData.value.find(
+    (us: UserStore & { store: Store }) => us.storeId === storeId
+  )
   if (!store) {
     return
   }
@@ -335,9 +337,7 @@ function handleAddResidentToStore(storeId: string) {
   }
 
   // Prefer residents with this as dream job
-  const dreamJobResidents = availableResidents.filter(
-    (r: Resident) => r.dreamJob === storeId
-  )
+  const dreamJobResidents = availableResidents.filter((r: Resident) => r.dreamJob === storeId)
   const residentToAdd = dreamJobResidents.length > 0 ? dreamJobResidents[0] : availableResidents[0]
 
   const result = storesStore.addResidentToStore(storeId, residentToAdd.id)

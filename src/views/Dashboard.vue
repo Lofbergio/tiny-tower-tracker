@@ -10,8 +10,8 @@
             Dashboard
           </span>
         </h1>
-        <p class="text-muted-foreground text-sm md:text-base">
-          Welcome to your tower! 🎉 Track progress and manage everything here
+        <p class="text-sm text-muted-foreground md:text-base">
+          Welcome to your tower! Track progress and manage everything here
         </p>
       </div>
       <div class="hidden md:block">
@@ -26,21 +26,19 @@
     <!-- First Time Experience -->
     <div
       v-if="isFirstTime && hasNoData"
-      class="border-primary/50 bg-primary/5 mb-8 rounded-lg border-2 border-dashed p-6"
+      class="mb-8 rounded-lg border-2 border-dashed border-primary/50 bg-primary/5 p-6"
     >
       <div class="text-center">
-        <h2 class="mb-2 text-xl font-bold">Welcome to Tiny Tower Tracker! 🎉</h2>
-        <p class="text-muted-foreground mb-4 text-sm">
+        <h2 class="mb-2 text-xl font-bold">Welcome to Tiny Tower Tracker!</h2>
+        <p class="mb-4 text-sm text-muted-foreground">
           Get started by adding stores, residents, and missions to track your tower's progress.
         </p>
         <div class="flex flex-wrap justify-center gap-2">
-          <Button variant="default" @click="$router.push('/stores')">
-            🏪 Add Your First Store
-          </Button>
+          <Button variant="default" @click="$router.push('/stores')"> Add Your First Store </Button>
           <Button variant="outline" @click="$router.push('/residents')">
-            👥 Add Your First Resident
+            Add Your First Resident
           </Button>
-          <Button variant="outline" @click="$router.push('/missions')"> 🎯 Browse Missions </Button>
+          <Button variant="outline" @click="$router.push('/missions')">Browse Missions</Button>
         </div>
       </div>
     </div>

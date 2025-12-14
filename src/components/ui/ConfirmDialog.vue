@@ -5,7 +5,9 @@
         <DialogTitle>{{ title }}</DialogTitle>
       </div>
       <div class="space-y-4">
-        <p class="whitespace-pre-line text-sm text-muted-foreground">{{ message }}</p>
+        <div class="max-h-[50vh] overflow-auto rounded-md border p-3">
+          <p class="whitespace-pre-line text-sm text-muted-foreground">{{ message }}</p>
+        </div>
       </div>
       <div class="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
         <Button variant="outline" @click="handleCancel">{{ cancelText }}</Button>

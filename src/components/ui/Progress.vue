@@ -2,7 +2,7 @@
   <ProgressRoot
     :model-value="modelValue"
     :max="max"
-    :class="cn('relative h-2 w-full overflow-hidden rounded-full bg-muted', className)"
+    :class="['relative h-2 w-full overflow-hidden rounded-full bg-muted', $attrs.class]"
   >
     <ProgressIndicator
       class="h-full w-full flex-1 bg-primary transition-all duration-300 ease-in-out"
@@ -17,15 +17,13 @@ import { ProgressIndicator, ProgressRoot } from 'radix-vue'
 interface Props {
   modelValue: number
   max?: number
-  className?: string
 }
 
 withDefaults(defineProps<Props>(), {
   max: 100,
-  className: '',
 })
 
-function cn(...classes: (string | undefined)[]) {
-  return classes.filter(Boolean).join(' ')
-}
+defineOptions({
+  inheritAttrs: false,
+})
 </script>

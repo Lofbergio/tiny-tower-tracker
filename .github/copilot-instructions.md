@@ -63,6 +63,45 @@
 - Use Tailwind utilities over custom CSS
 - Follow mobile-first responsive design
 
+## Vue-Specific Patterns (CRITICAL)
+
+**This is a Vue 3 project. DO NOT use React patterns or conventions.**
+
+### ✅ DO (Vue Way):
+- **Class binding:** Use Vue's native `:class` with arrays and objects
+  ```vue
+  :class="['base-class', { 'active': isActive }, $attrs.class]"
+  ```
+- **Attribute inheritance:** Use `$attrs.class` and `defineOptions({ inheritAttrs: false })`
+- **Props:** Accept `class` naturally via `$attrs`, no need for `className` prop
+- **Conditional classes:** Use objects `{ 'text-red': isError }` or ternary in arrays
+- **Component patterns:** Follow Vue 3 + Composition API conventions
+
+### ❌ DO NOT (React Anti-Patterns):
+- **NO `cn()` utility functions** - This is a React/shadcn-ui pattern
+- **NO `className` props** - Vue supports `class` natively via `$attrs`
+- **NO manual class string merging** - Use Vue's `:class` binding
+- **NO JSX-style patterns** - Use Vue SFC templates
+- **NO React hooks naming** - Use Vue composables (useX not useX hook patterns)
+
+### Example of Proper Vue Class Binding:
+```vue
+<template>
+  <!-- Base classes + conditional + inherited -->
+  <div :class="['flex items-center', { 'bg-red': hasError }, $attrs.class]">
+    Content
+  </div>
+</template>
+
+<script setup lang="ts">
+defineOptions({
+  inheritAttrs: false, // Prevents automatic class inheritance on root
+})
+</script>
+```
+
+**If you catch yourself writing a `cn()` function or `className` prop, STOP and use Vue patterns instead.**
+
 ---
 
 **Remember: Read PROJECT-OVERVIEW.md before making changes!**

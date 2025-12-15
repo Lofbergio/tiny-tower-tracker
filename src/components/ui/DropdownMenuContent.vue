@@ -4,7 +4,7 @@
       :side="side"
       :side-offset="sideOffset"
       :align="align"
-      :class="cn('z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2', className)"
+      :class="['z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2', $attrs.class]"
     >
       <slot />
     </DropdownMenuContent>
@@ -18,17 +18,15 @@ interface Props {
   side?: 'top' | 'right' | 'bottom' | 'left'
   sideOffset?: number
   align?: 'start' | 'center' | 'end'
-  className?: string
 }
 
 withDefaults(defineProps<Props>(), {
   side: 'bottom',
   sideOffset: 4,
   align: 'start',
-  className: '',
 })
 
-function cn(...classes: (string | undefined)[]) {
-  return classes.filter(Boolean).join(' ')
-}
+defineOptions({
+  inheritAttrs: false,
+})
 </script>

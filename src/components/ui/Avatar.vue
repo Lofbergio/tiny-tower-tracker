@@ -1,11 +1,7 @@
 <template>
-  <AvatarRoot
-    :class="cn('relative flex shrink-0 overflow-hidden rounded-full', sizeClasses[size], className)"
-  >
+  <AvatarRoot :class="['relative flex shrink-0 overflow-hidden rounded-full', sizeClasses[size], $attrs.class]">
     <AvatarImage v-if="src" :src="src" :alt="alt" class="aspect-square h-full w-full object-cover" />
-    <AvatarFallback
-      :class="cn('flex h-full w-full items-center justify-center rounded-full bg-muted text-muted-foreground', fallbackClassName)"
-    >
+    <AvatarFallback :class="['flex h-full w-full items-center justify-center rounded-full bg-muted text-muted-foreground', fallbackClass]">
       <slot name="fallback">
         {{ fallbackText }}
       </slot>
@@ -22,8 +18,7 @@ interface Props {
   alt?: string
   fallback?: string
   size?: 'sm' | 'md' | 'lg' | 'xl'
-  className?: string
-  fallbackClassName?: string
+  fallbackClass?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -31,8 +26,11 @@ const props = withDefaults(defineProps<Props>(), {
   alt: '',
   fallback: '',
   size: 'md',
-  className: '',
-  fallbackClassName: '',
+  fallbackClass: '',
+})
+
+defineOptions({
+  inheritAttrs: false,
 })
 
 const sizeClasses = {
@@ -54,8 +52,4 @@ const fallbackText = computed(() => {
   }
   return '??'
 })
-
-function cn(...classes: (string | undefined)[]) {
-  return classes.filter(Boolean).join(' ')
-}
 </script>

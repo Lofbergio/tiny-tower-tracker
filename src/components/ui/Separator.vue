@@ -2,7 +2,11 @@
   <Separator
     :orientation="orientation"
     :decorative="decorative"
-    :class="cn('shrink-0 bg-border', orientation === 'horizontal' ? 'h-px w-full' : 'h-full w-px', className)"
+    :class="[
+      'shrink-0 bg-border',
+      orientation === 'horizontal' ? 'h-px w-full' : 'h-full w-px',
+      $attrs.class
+    ]"
   />
 </template>
 
@@ -12,16 +16,14 @@ import { Separator } from 'radix-vue'
 interface Props {
   orientation?: 'horizontal' | 'vertical'
   decorative?: boolean
-  className?: string
 }
 
 withDefaults(defineProps<Props>(), {
   orientation: 'horizontal',
   decorative: true,
-  className: '',
 })
 
-function cn(...classes: (string | undefined | boolean)[]) {
-  return classes.filter(v => typeof v === 'string').join(' ')
-}
+defineOptions({
+  inheritAttrs: false,
+})
 </script>

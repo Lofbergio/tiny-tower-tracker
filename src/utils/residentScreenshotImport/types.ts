@@ -19,10 +19,8 @@ export interface ScreenshotResidentCandidate {
   sourceFileName: string
 }
 
-export type OcrEngine = 'local' | 'google'
-
 export type ExtractProgressInfo = {
-  phase: 'loading' | 'recognizing' | 'cloud'
+  phase: 'loading' | 'cloud'
   fileName?: string
   progress?: number
   fileIndex?: number
@@ -32,6 +30,5 @@ export type ExtractProgressInfo = {
 export type ExtractResidentsFromScreenshotsParams = {
   files: File[]
   stores: Store[]
-  ocrEngine?: OcrEngine
   onProgress?: (info: ExtractProgressInfo) => void
 }

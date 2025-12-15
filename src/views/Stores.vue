@@ -128,22 +128,55 @@
       </div>
     </div>
 
-    <TransitionGroup
-      v-if="userStoresWithData.length > 0"
-      tag="div"
-      name="list"
-      class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-    >
-      <StoreCard
-        v-for="userStore in userStoresWithData"
-        :key="userStore.storeId"
-        :user-store="userStore"
-        :residents="residents"
-        @remove-store="handleRemoveStore(userStore.storeId)"
-        @remove-resident="handleRemoveResident(userStore.storeId, $event)"
-        @add-resident="handleAddResidentToStore(userStore.storeId)"
-      />
-    </TransitionGroup>
+    <div v-if="userStoresWithData.length > 0">
+      <div v-if="activeStores.length > 0" class="mb-6">
+        <div class="mb-3 flex items-center justify-between">
+          <h2 class="flex items-center gap-2 text-lg font-semibold">
+            <span>Needs Attention</span>
+          </h2>
+          <span class="text-sm text-muted-foreground">{{ activeStores.length }}</span>
+        </div>
+        <TransitionGroup
+          tag="div"
+          name="list"
+          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+        >
+          <StoreCard
+            v-for="item in activeStores"
+            :key="item.userStore.storeId"
+            :user-store="item.userStore"
+            :residents="residents"
+            :is-complete="false"
+            @remove-resident="handleRemoveResident(item.userStore.storeId, $event)"
+            @add-resident="handleAddResidentToStore(item.userStore.storeId)"
+          />
+        </TransitionGroup>
+      </div>
+
+      <div v-if="completeStores.length > 0">
+        <div class="mb-3 flex items-center justify-between">
+          <h2 class="flex items-center gap-2 text-lg font-semibold">
+            <span>All Set</span>
+          </h2>
+          <span class="text-sm text-muted-foreground">{{ completeStores.length }}</span>
+        </div>
+        <TransitionGroup
+          tag="div"
+          name="list"
+          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+        >
+          <StoreCard
+            v-for="item in completeStores"
+            :key="item.userStore.storeId"
+            :user-store="item.userStore"
+            :residents="residents"
+            :is-complete="true"
+            @remove-resident="handleRemoveResident(item.userStore.storeId, $event)"
+            @add-resident="handleAddResidentToStore(item.userStore.storeId)"
+          />
+        </TransitionGroup>
+      </div>
+    </div>
 
     <!-- Full Store List Dialog (only shown when clicking "View All") -->
     <Dialog :open="showAddDialog" @update:open="handleDialogOpenChange">
@@ -262,6 +295,29 @@ const categoryColors = computed(
   () => (category: string) => getCategoryColors(category, isDark.value)
 )
 
+function isStoreComplete(storeId: string, assignedResidentIds: string[]): boolean {
+  if (assignedResidentIds.length !== 3) {
+    return false
+  }
+  return assignedResidentIds.every(residentId => {
+    const resident = residents.find((r: Resident) => r.id === residentId)
+    if (!resident) {
+      return false
+    }
+    return resident.dreamJob === storeId
+  })
+}
+
+const storesWithCompletion = computed(() => {
+  return userStoresWithData.value.map((userStore: UserStore & { store: Store }) => {
+    const complete = isStoreComplete(userStore.storeId, userStore.residents)
+    return { userStore, complete }
+  })
+})
+
+const activeStores = computed(() => storesWithCompletion.value.filter(s => !s.complete))
+const completeStores = computed(() => storesWithCompletion.value.filter(s => s.complete))
+
 const availableStores = computed(() => {
   const builtStoreIds = new Set(storesStore.userStores.map((us: UserStore) => us.storeId))
   return allStores.value.filter(s => !builtStoreIds.has(s.id))
@@ -313,30 +369,6 @@ function handleAddStore(storeId: string) {
   } else {
     toast.error('Store already exists')
   }
-}
-
-function handleRemoveStore(storeId: string) {
-  const store = userStoresWithData.value.find(
-    (us: UserStore & { store: Store }) => us.storeId === storeId
-  )
-  if (!store) {
-    return
-  }
-
-  confirm({
-    title: 'Remove Store',
-    message: `Are you sure you want to remove ${store.store.name}? This will also remove all residents from this store.`,
-    variant: 'destructive',
-    confirmText: 'Remove',
-    onConfirm: () => {
-      const success = storesStore.removeStore(storeId)
-      if (success) {
-        toast.success(`Removed ${store.store.name}`)
-      } else {
-        toast.error('Failed to remove store')
-      }
-    },
-  })
 }
 
 function handleAddResidentToStore(storeId: string) {

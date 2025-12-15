@@ -85,6 +85,64 @@
       </DialogContent>
     </Dialog>
 
+    <Dialog :open="showEditDialog" @update:open="handleEditDialogOpenChange">
+      <DialogContent class="max-w-md">
+        <div class="flex flex-col space-y-1.5 text-center sm:text-left">
+          <DialogTitle class="flex items-center gap-2">
+            <span class="text-2xl">✏️</span>
+            <span>Edit Resident</span>
+          </DialogTitle>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <Label class="mb-2 flex items-center gap-1 text-sm font-medium">
+              <span>Name</span>
+              <span class="text-destructive">*</span>
+            </Label>
+            <Input v-model="editName" placeholder="e.g., John Smith" />
+          </div>
+
+          <div>
+            <Label class="mb-2 flex items-center gap-1 text-sm font-medium">
+              <span>Dream Job</span>
+              <span class="text-destructive">*</span>
+            </Label>
+            <SearchableSelect
+              v-model="editDreamJob"
+              :items="storeItems"
+              placeholder="Choose their dream job..."
+              search-placeholder="Search stores…"
+            />
+          </div>
+
+          <div>
+            <Label class="mb-2 flex items-center gap-1 text-sm font-medium">
+              <span>Current Store</span>
+            </Label>
+            <SearchableSelect
+              v-model="editCurrentStore"
+              :items="builtStoreItems"
+              placeholder="Assign to a built store..."
+              search-placeholder="Search built stores…"
+            />
+            <p class="mt-1 text-xs text-muted-foreground">This is where they currently work</p>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-col gap-2">
+          <Button
+            class="w-full"
+            :disabled="!editName.trim() || !editDreamJob.trim()"
+            @click="handleSaveResidentEdits"
+          >
+            Save Changes
+          </Button>
+          <Button variant="outline" class="w-full" @click="showEditDialog = false">Cancel</Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+
     <EmptyState
       v-if="residents.length === 0"
       title="No Residents Yet"
@@ -94,25 +152,106 @@
       <Button @click="showAddDialog = true">Add Your First Resident</Button>
     </EmptyState>
 
-    <TransitionGroup
-      v-else
-      tag="div"
-      name="list"
-      class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-    >
-      <ResidentCard
-        v-for="resident in residents"
-        :key="resident.id"
-        :resident="resident"
-        :stores="allStores ?? []"
-        :current-store="residentsStore.getCurrentStore(resident.id)"
-        :dream-job-store-built="isDreamJobStoreBuilt(resident.dreamJob)"
-        :dream-job-store-full="isDreamJobStoreFull(resident.dreamJob)"
-        @remove-resident="handleRemoveResident(resident.id)"
-        @place-in-dream-job="handlePlaceInDreamJob(resident.id)"
-        @assign-to-store="handleAssignToStore(resident.id)"
+    <div v-else>
+      <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <Input
+          v-model="searchQuery"
+          placeholder="Search residents, dream jobs, stores..."
+          class="w-full sm:max-w-md"
+        />
+        <div class="flex flex-wrap gap-2">
+          <Button
+            size="sm"
+            :variant="quickFilter === 'all' ? 'secondary' : 'outline'"
+            @click="quickFilter = 'all'"
+          >
+            All ({{ residentCounts.all }})
+          </Button>
+          <Button
+            size="sm"
+            :variant="quickFilter === 'active' ? 'secondary' : 'outline'"
+            @click="quickFilter = 'active'"
+          >
+            Needs Attention ({{ residentCounts.active }})
+          </Button>
+          <Button
+            size="sm"
+            :variant="quickFilter === 'settled' ? 'secondary' : 'outline'"
+            @click="quickFilter = 'settled'"
+          >
+            All Set ({{ residentCounts.settled }})
+          </Button>
+          <Button
+            size="sm"
+            :variant="quickFilter === 'unassigned' ? 'secondary' : 'outline'"
+            @click="quickFilter = 'unassigned'"
+          >
+            Unassigned ({{ residentCounts.unassigned }})
+          </Button>
+        </div>
+      </div>
+
+      <EmptyState
+        v-if="filteredResidentsWithState.length === 0"
+        title="No matches"
+        description="Try a different search or clear filters."
+        :hide-illustration="true"
       />
-    </TransitionGroup>
+
+      <div v-if="activeResidents.length > 0" class="mb-6">
+        <div class="mb-3 flex items-center justify-between">
+          <h2 class="flex items-center gap-2 text-lg font-semibold">
+            <span>Needs Attention</span>
+          </h2>
+          <span class="text-sm text-muted-foreground">{{ activeResidents.length }}</span>
+        </div>
+        <TransitionGroup
+          tag="div"
+          name="list"
+          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+        >
+          <ResidentCard
+            v-for="item in activeResidents"
+            :key="item.resident.id"
+            :resident="item.resident"
+            :stores="allStores ?? []"
+            :current-store="item.currentStore"
+            :dream-job-store-built="isDreamJobStoreBuilt(item.resident.dreamJob)"
+            :dream-job-store-full="isDreamJobStoreFull(item.resident.dreamJob)"
+            @remove-resident="handleRemoveResident(item.resident.id)"
+            @place-in-dream-job="handlePlaceInDreamJob(item.resident.id)"
+            @edit-resident="openEditResident(item.resident.id)"
+          />
+        </TransitionGroup>
+      </div>
+
+      <div v-if="settledResidents.length > 0">
+        <div class="mb-3 flex items-center justify-between">
+          <h2 class="flex items-center gap-2 text-lg font-semibold">
+            <span>All Set</span>
+          </h2>
+          <span class="text-sm text-muted-foreground">{{ settledResidents.length }}</span>
+        </div>
+        <TransitionGroup
+          tag="div"
+          name="list"
+          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+        >
+          <ResidentCard
+            v-for="item in settledResidents"
+            :key="item.resident.id"
+            :resident="item.resident"
+            :stores="allStores ?? []"
+            :current-store="item.currentStore"
+            :dream-job-store-built="isDreamJobStoreBuilt(item.resident.dreamJob)"
+            :dream-job-store-full="isDreamJobStoreFull(item.resident.dreamJob)"
+            @remove-resident="handleRemoveResident(item.resident.id)"
+            @place-in-dream-job="handlePlaceInDreamJob(item.resident.id)"
+            @edit-resident="openEditResident(item.resident.id)"
+          />
+        </TransitionGroup>
+      </div>
+    </div>
 
     <!-- Confirmation Dialog -->
     <ConfirmDialog
@@ -143,7 +282,6 @@ import Input from '@/components/ui/Input.vue'
 import Label from '@/components/ui/Label.vue'
 import SearchableSelect from '@/components/ui/SearchableSelect.vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
-import { APP_CONSTANTS } from '@/constants'
 import { useStoresQuery, useUserStoresWithData } from '@/queries'
 import { useResidentsStore, useStoresStore } from '@/stores'
 import type { Resident, Store, UserStore } from '@/types'
@@ -161,6 +299,15 @@ const { showConfirmDialog, confirmDialogData, confirm } = useConfirmDialog()
 
 const showAddDialog = ref(false)
 const showImportDialog = ref(false)
+const showEditDialog = ref(false)
+
+const searchQuery = ref('')
+const quickFilter = ref<'all' | 'active' | 'settled' | 'unassigned'>('all')
+
+const editingResidentId = ref<string | null>(null)
+const editName = ref('')
+const editDreamJob = ref('')
+const editCurrentStore = ref('__none__')
 const newResidentName = ref('')
 const newResidentDreamJob = ref('')
 const nameInput = ref<HTMLInputElement | null>(null)
@@ -176,6 +323,142 @@ const storeItems = computed(() => {
   }
   return allStores.value.map(store => ({ value: store.id, label: store.name }))
 })
+
+const builtStoreItems = computed(() => {
+  const built = userStores.value
+    .map((us: UserStore & { store: Store }) => ({ value: us.storeId, label: us.store.name }))
+    .sort((a, b) => a.label.localeCompare(b.label))
+  return [{ value: '__none__', label: 'Unassigned' }, ...built]
+})
+
+const storeNameById = computed(() => {
+  const map = new Map<string, string>()
+  for (const s of allStores.value ?? []) {
+    map.set(s.id, s.name)
+  }
+  return map
+})
+
+const residentsWithState = computed(() => {
+  return residents.map((resident: Resident) => {
+    const currentStore = residentsStore.getCurrentStore(resident.id)
+    const isSettled = !!currentStore && currentStore === resident.dreamJob
+    return { resident, currentStore, isSettled }
+  })
+})
+
+const residentCounts = computed(() => {
+  const all = residentsWithState.value.length
+  const settled = residentsWithState.value.filter(r => r.isSettled).length
+  const unassigned = residentsWithState.value.filter(r => !r.currentStore).length
+  const active = all - settled
+  return { all, active, settled, unassigned }
+})
+
+const filteredResidentsWithState = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase()
+  let list = residentsWithState.value
+
+  if (quickFilter.value === 'active') {
+    list = list.filter(r => !r.isSettled)
+  } else if (quickFilter.value === 'settled') {
+    list = list.filter(r => r.isSettled)
+  } else if (quickFilter.value === 'unassigned') {
+    list = list.filter(r => !r.currentStore)
+  }
+
+  if (!query) {
+    return list
+  }
+
+  return list.filter(r => {
+    const name = formatResidentName(r.resident.name).toLowerCase()
+    const dreamJobName = (
+      storeNameById.value.get(r.resident.dreamJob) ?? r.resident.dreamJob
+    ).toLowerCase()
+    const currentStoreName = (
+      r.currentStore ? (storeNameById.value.get(r.currentStore) ?? r.currentStore) : 'unassigned'
+    ).toLowerCase()
+
+    return name.includes(query) || dreamJobName.includes(query) || currentStoreName.includes(query)
+  })
+})
+
+const activeResidents = computed(() => filteredResidentsWithState.value.filter(r => !r.isSettled))
+const settledResidents = computed(() => filteredResidentsWithState.value.filter(r => r.isSettled))
+
+function handleEditDialogOpenChange(isOpen: boolean) {
+  showEditDialog.value = isOpen
+  if (!isOpen) {
+    editingResidentId.value = null
+    editName.value = ''
+    editDreamJob.value = ''
+    editCurrentStore.value = '__none__'
+  }
+}
+
+function openEditResident(residentId: string) {
+  const resident = residents.find((r: Resident) => r.id === residentId)
+  if (!resident) {
+    return
+  }
+
+  editingResidentId.value = residentId
+  editName.value = resident.name
+  editDreamJob.value = resident.dreamJob
+  const currentStore = residentsStore.getCurrentStore(residentId)
+  editCurrentStore.value = currentStore ?? '__none__'
+  showEditDialog.value = true
+}
+
+function handleSaveResidentEdits() {
+  if (!editingResidentId.value) {
+    return
+  }
+
+  const resident = residents.find((r: Resident) => r.id === editingResidentId.value)
+  if (!resident) {
+    toast.error('Resident not found')
+    return
+  }
+
+  const currentStore = residentsStore.getCurrentStore(editingResidentId.value)
+
+  // Update current store assignment first (can fail due to capacity)
+  if (editCurrentStore.value === '__none__') {
+    if (currentStore) {
+      const success = storesStore.removeResidentFromStore(currentStore, editingResidentId.value)
+      if (!success) {
+        toast.error('Failed to unassign resident')
+        return
+      }
+    }
+  } else if (editCurrentStore.value !== currentStore) {
+    const result = storesStore.addResidentToStore(editCurrentStore.value, editingResidentId.value)
+    if (!result.success) {
+      toast.error(result.error ?? 'Failed to move resident')
+      return
+    }
+  }
+
+  // Update resident fields
+  try {
+    const success = residentsStore.updateResident(editingResidentId.value, {
+      name: editName.value,
+      dreamJob: editDreamJob.value,
+    })
+    if (!success) {
+      toast.error('Failed to update resident')
+      return
+    }
+  } catch (e) {
+    toast.error(e instanceof Error ? e.message : 'Invalid resident details')
+    return
+  }
+
+  toast.success(`Saved ${formatResidentName(editName.value)}`)
+  showEditDialog.value = false
+}
 
 function handleDialogOpenChange(isOpen: boolean) {
   showAddDialog.value = isOpen
@@ -244,39 +527,6 @@ function handlePlaceInDreamJob(residentId: string) {
     )
   } else {
     toast.error(result.error ?? 'Failed to place resident')
-  }
-}
-
-function handleAssignToStore(residentId: string) {
-  const resident = residents.find((r: Resident) => r.id === residentId)
-  if (!resident) return
-
-  // Find stores that have space and this resident wants to work at
-  const currentStore = residentsStore.getCurrentStore(residentId)
-  const availableStores = userStores.value.filter((us: UserStore & { store: Store }) => {
-    const store = allStores.value?.find(s => s.id === us.storeId)
-    const hasSpace = us.residents.length < APP_CONSTANTS.MAX_STORE_CAPACITY
-    const isDreamJob = us.storeId === resident.dreamJob
-    return hasSpace && store && (isDreamJob || !currentStore)
-  })
-
-  if (availableStores.length === 0) {
-    toast.info('No available stores with space')
-    return
-  }
-
-  // Prefer dream job store
-  const dreamJobStore = availableStores.find(
-    (us: UserStore & { store: Store }) => us.storeId === resident.dreamJob
-  )
-  const targetStore = dreamJobStore || availableStores[0]
-
-  const result = storesStore.addResidentToStore(targetStore.storeId, residentId)
-  if (result.success) {
-    const store = allStores.value?.find(s => s.id === targetStore.storeId)
-    toast.success(`📍 Placed ${formatResidentName(resident.name)} in ${store?.name}`)
-  } else {
-    toast.error(result.error ?? 'Failed to assign resident')
   }
 }
 

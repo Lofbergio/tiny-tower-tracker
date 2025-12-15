@@ -1,16 +1,26 @@
 <template>
   <Card
     class="group overflow-hidden border-l-4 transition-all hover:shadow-md"
-    :class="statusBorderColor"
+    :class="[
+      statusBorderColor,
+      isSettled ? 'opacity-70 motion-safe:transition-opacity motion-safe:hover:opacity-100' : '',
+    ]"
   >
     <div class="flex flex-col space-y-1 p-3 md:space-y-1.5 md:p-6">
       <div class="flex items-center gap-3">
         <Avatar :src="avatarUrl" :alt="displayName" size="lg" :class="avatarClass" />
-        <h3
-          class="flex-1 text-lg font-semibold leading-tight motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:translate-x-0.5 md:text-2xl md:leading-none md:tracking-tight"
-        >
-          {{ displayName }}
-        </h3>
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center justify-between gap-2">
+            <h3
+              class="min-w-0 flex-1 truncate text-lg font-semibold leading-tight motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:translate-x-0.5 md:text-2xl md:leading-none md:tracking-tight"
+            >
+              {{ displayName }}
+            </h3>
+            <Badge v-if="isSettled" variant="secondary" class="badge-pop shrink-0 text-xs">
+              ✓ All set
+            </Badge>
+          </div>
+        </div>
       </div>
     </div>
     <div class="p-3 pt-0 md:p-6 md:pt-0">
@@ -56,7 +66,7 @@
 
       <div class="space-y-2">
         <Button
-          v-if="needsPlacement && canPlaceInDreamJob"
+          v-if="!isSettled && needsPlacement && canPlaceInDreamJob"
           variant="default"
           size="sm"
           class="w-full"
@@ -67,15 +77,14 @@
           >
           Place in Dream Job
         </Button>
-        <Button
-          v-else-if="!currentStore"
-          variant="outline"
-          size="sm"
-          class="w-full"
-          @click="$emit('assign-to-store')"
-        >
-          📍 Assign to Store
+        <p v-else-if="isSettled" class="text-xs text-muted-foreground md:text-sm">
+          Done — working their dream job.
+        </p>
+
+        <Button variant="outline" size="sm" class="w-full" @click="$emit('edit-resident')">
+          Edit
         </Button>
+
         <Button
           variant="ghost"
           size="sm"
@@ -95,6 +104,7 @@ import { getResidentAvatarUrl } from '@/utils/avatar'
 import { formatResidentName } from '@/utils/residentName'
 import { computed } from 'vue'
 import Avatar from './ui/Avatar.vue'
+import Badge from './ui/Badge.vue'
 import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
 import Separator from './ui/Separator.vue'
@@ -116,8 +126,12 @@ const props = withDefaults(defineProps<Props>(), {
 defineEmits<{
   'remove-resident': []
   'place-in-dream-job': []
-  'assign-to-store': []
+  'edit-resident': []
 }>()
+
+const isSettled = computed(() => {
+  return !!props.currentStore && props.currentStore === props.resident.dreamJob
+})
 
 const needsPlacement = computed(() => {
   return !props.currentStore || props.currentStore !== props.resident.dreamJob

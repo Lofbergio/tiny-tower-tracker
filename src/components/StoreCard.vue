@@ -1,6 +1,9 @@
 <template>
   <Card
     class="flex h-full flex-col overflow-hidden border-l-4 transition-all hover:shadow-md"
+    :class="
+      isComplete ? 'opacity-70 motion-safe:transition-opacity motion-safe:hover:opacity-100' : ''
+    "
     :style="{ borderLeftColor: categoryColors.border }"
   >
     <div
@@ -14,8 +17,12 @@
           <StoreIcon :category="store.category" :size="32" class="shrink-0" />
           <span>{{ store.name }}</span>
         </h3>
-        <Badge :variant="capacity >= 3 ? 'destructive' : 'secondary'" class="text-xs">
-          {{ capacity }}/3
+        <Badge
+          :variant="isComplete ? 'secondary' : capacity >= 3 ? 'destructive' : 'secondary'"
+          class="text-xs"
+        >
+          <span v-if="isComplete">✓ 3/3</span>
+          <span v-else>{{ capacity }}/3</span>
         </Badge>
       </div>
       <p class="text-xs font-medium text-muted-foreground md:text-sm">
@@ -40,6 +47,7 @@
               <span class="min-w-0 flex-1 truncate text-sm">{{ getResidentName(residentId) }}</span>
             </div>
             <Button
+              v-if="!isComplete"
               variant="ghost"
               size="sm"
               class="min-h-[44px] px-3 text-muted-foreground hover:text-foreground"
@@ -55,20 +63,11 @@
       <Separator class="my-3 md:my-4" />
 
       <div class="mt-auto">
-        <div v-if="capacity < 3" class="space-y-2">
+        <div v-if="!isComplete && capacity < 3" class="space-y-2">
           <Button variant="outline" size="sm" class="w-full" @click="$emit('add-resident')">
             Add Resident ({{ capacity }}/3)
           </Button>
         </div>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          class="mt-2 min-h-[44px] w-full text-destructive hover:text-destructive"
-          @click="$emit('remove-store')"
-        >
-          Remove Store
-        </Button>
       </div>
     </div>
   </Card>
@@ -91,12 +90,14 @@ import Separator from './ui/Separator.vue'
 interface Props {
   userStore: UserStore & { store: Store }
   residents: Resident[]
+  isComplete?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  isComplete: false,
+})
 
 defineEmits<{
-  'remove-store': []
   'remove-resident': [residentId: string]
   'add-resident': []
 }>()

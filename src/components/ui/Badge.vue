@@ -12,7 +12,7 @@ const props = defineProps<{
 }>()
 
 const baseClasses =
-  'focus:ring-ring inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2'
+  'pressable focus:ring-ring inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-[transform,background-color,color,border-color,opacity] duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-[0.99]'
 
 const variantClasses = {
   default: 'border-transparent bg-primary text-primary-foreground hover:bg-primary/80',

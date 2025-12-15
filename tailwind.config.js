@@ -9,6 +9,13 @@ export default {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-6px)' },
         },
+        jiggle: {
+          '0%': { transform: 'rotate(0deg) scale(1)' },
+          '25%': { transform: 'rotate(-6deg) scale(1.04)' },
+          '50%': { transform: 'rotate(6deg) scale(1.04)' },
+          '75%': { transform: 'rotate(-3deg) scale(1.02)' },
+          '100%': { transform: 'rotate(0deg) scale(1)' },
+        },
         wiggle: {
           '0%, 100%': { transform: 'rotate(-1deg)' },
           '50%': { transform: 'rotate(1deg)' },
@@ -21,6 +28,7 @@ export default {
       },
       animation: {
         'float-slow': 'float 6.5s ease-in-out infinite',
+        jiggle: 'jiggle 420ms cubic-bezier(0.16, 1, 0.3, 1)',
         'wiggle-slow': 'wiggle 1.8s ease-in-out infinite',
         pop: 'pop 220ms cubic-bezier(0.16, 1, 0.3, 1)',
       },

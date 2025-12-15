@@ -13,10 +13,12 @@
           <nav class="sticky top-0 border-b bg-background/80 backdrop-blur-sm">
             <div class="container mx-auto px-4">
               <div class="flex h-16 items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <div class="text-2xl">🏢</div>
+                <div class="group flex items-center gap-2 select-none">
+                  <div aria-hidden="true" class="text-2xl motion-safe:group-hover:animate-jiggle">
+                    🏢
+                  </div>
                   <h1
-                    class="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-xl font-bold text-transparent"
+                    class="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-xl font-bold text-transparent motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:scale-[1.01]"
                   >
                     Tiny Tower Tracker
                   </h1>
@@ -41,10 +43,15 @@
                       v-for="navRoute in routes"
                       :key="navRoute.path"
                       :variant="currentRoute === navRoute.path ? 'default' : 'ghost'"
-                      class="relative"
+                      class="group relative"
                       @click="$router.push(navRoute.path)"
                     >
-                      <span aria-hidden="true" class="mr-1">{{ navRoute.icon }}</span>
+                      <span
+                        aria-hidden="true"
+                        class="mr-1 inline-block motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:animate-jiggle motion-safe:group-active:scale-110"
+                      >
+                        {{ navRoute.icon }}
+                      </span>
                       {{ navRoute.name }}
                       <CountBadge
                         v-if="getPendingCount(navRoute.path) > 0"
@@ -63,10 +70,15 @@
                     v-for="menuRoute in routes"
                     :key="menuRoute.path"
                     variant="ghost"
-                    class="relative w-full justify-start"
+                    class="group relative w-full justify-start"
                     @click="handleNavClick(menuRoute.path)"
                   >
-                    <span aria-hidden="true" class="mr-2">{{ menuRoute.icon }}</span>
+                    <span
+                      aria-hidden="true"
+                      class="mr-2 inline-block motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-active:scale-110"
+                    >
+                      {{ menuRoute.icon }}
+                    </span>
                     {{ menuRoute.name }}
                     <CountBadge
                       v-if="getPendingCount(menuRoute.path) > 0"
@@ -128,7 +140,7 @@
                 v-for="mobileRoute in routes"
                 :key="mobileRoute.path"
                 :class="[
-                  'pressable relative flex min-h-[60px] flex-col items-center justify-center rounded-md p-3 text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  'pressable group relative flex min-h-[60px] flex-col items-center justify-center rounded-md p-3 text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   currentRoute === mobileRoute.path
                     ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground active:bg-accent',
@@ -137,9 +149,12 @@
                 :aria-current="currentRoute === mobileRoute.path ? 'page' : undefined"
                 @click="$router.push(mobileRoute.path)"
               >
-                <span aria-hidden="true" class="text-base leading-none">{{
-                  mobileRoute.icon
-                }}</span>
+                <span
+                  aria-hidden="true"
+                  class="inline-block text-base leading-none motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-active:scale-110"
+                >
+                  {{ mobileRoute.icon }}
+                </span>
                 <span>{{ mobileRoute.name }}</span>
                 <CountBadge
                   v-if="getPendingCount(mobileRoute.path) > 0"

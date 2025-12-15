@@ -1,6 +1,7 @@
 <template>
   <ErrorBoundary>
-    <div class="relative min-h-screen bg-background">
+    <TooltipProvider>
+      <div class="relative min-h-screen bg-background">
       <div class="bg-grid-pattern pointer-events-none fixed inset-0" aria-hidden="true" />
       <div class="relative">
         <a
@@ -148,7 +149,8 @@
         <!-- Spacer for mobile nav -->
       </div>
       <Toast />
-    </div>
+      </div>
+    </TooltipProvider>
   </ErrorBoundary>
 </template>
 
@@ -161,6 +163,7 @@ import CountBadge from './components/ui/CountBadge.vue'
 import DarkModeToggle from './components/ui/DarkModeToggle.vue'
 import EmptyState from './components/ui/EmptyState.vue'
 import Toast from './components/ui/Toast.vue'
+import TooltipProvider from './components/ui/TooltipProvider.vue'
 import {
   useCompletableMissions,
   useMissionsQuery,

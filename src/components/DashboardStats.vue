@@ -10,12 +10,7 @@
               ({{ completedCount }}/{{ totalMissionsCount }})
             </p>
           </div>
-          <div class="mt-3 h-2 w-full rounded-full bg-muted">
-            <div
-              class="h-2 rounded-full bg-primary"
-              :style="{ width: `${missionCompletionPct}%` }"
-            />
-          </div>
+          <Progress :model-value="missionCompletionPct" class="mt-3" />
         </div>
       </Card>
 
@@ -28,9 +23,7 @@
               ({{ residentsInDreamJobs }}/{{ totalResidentsCount }})
             </p>
           </div>
-          <div class="mt-3 h-2 w-full rounded-full bg-muted">
-            <div class="h-2 rounded-full bg-primary" :style="{ width: `${dreamJobPct}%` }" />
-          </div>
+          <Progress :model-value="dreamJobPct" class="mt-3" />
         </div>
       </Card>
 
@@ -43,9 +36,7 @@
               ({{ storesBuiltCount }}/{{ totalStoresCount }})
             </p>
           </div>
-          <div class="mt-3 h-2 w-full rounded-full bg-muted">
-            <div class="h-2 rounded-full bg-primary" :style="{ width: `${storesBuiltPct}%` }" />
-          </div>
+          <Progress :model-value="storesBuiltPct" class="mt-3" />
         </div>
       </Card>
 
@@ -58,9 +49,7 @@
               ({{ assignedResidentsCount }}/{{ totalCapacityCount }})
             </p>
           </div>
-          <div class="mt-3 h-2 w-full rounded-full bg-muted">
-            <div class="h-2 rounded-full bg-primary" :style="{ width: `${storeOccupancyPct}%` }" />
-          </div>
+          <Progress :model-value="storeOccupancyPct" class="mt-3" />
           <p v-if="readyMissionsCount > 0" class="mt-2 text-xs text-muted-foreground">
             {{ readyMissionsCount }} mission{{ readyMissionsCount === 1 ? '' : 's' }} ready to
             complete
@@ -73,6 +62,7 @@
 
 <script setup lang="ts">
 import Card from '@/components/ui/Card.vue'
+import Progress from '@/components/ui/Progress.vue'
 import { APP_CONSTANTS } from '@/constants'
 import { useCompletableMissions, useUserMissionsWithData, useUserStoresWithData } from '@/queries'
 import { useResidentsStore } from '@/stores'

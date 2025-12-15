@@ -3,6 +3,7 @@ import {
   extractResidentsFromScreenshots,
   type ScreenshotResidentCandidate,
 } from '@/utils/residentScreenshotImport'
+import type { OcrPage } from '@/utils/residentScreenshotImport/types'
 import { useToast } from '@/utils/toast'
 import { computed, onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue'
 
@@ -20,6 +21,7 @@ export function useScreenshotResidentImport(options: {
   const ocrFileProgress = ref<number | null>(null)
   const ocrFileIndex = ref<number | null>(null)
   const ocrFileCount = ref<number | null>(null)
+  const lastOcrPages = ref<OcrPage[]>([])
 
   const isOnline = ref(typeof navigator !== 'undefined' ? navigator.onLine : true)
 
@@ -81,6 +83,7 @@ export function useScreenshotResidentImport(options: {
     screenshotFiles.value = [...screenshotFiles.value, ...unique]
     importCandidates.value = []
     importProgressText.value = ''
+    lastOcrPages.value = []
   }
 
   function handleScreenshotDrop(event: DragEvent) {
@@ -124,6 +127,27 @@ export function useScreenshotResidentImport(options: {
     ocrFileProgress.value = null
     ocrFileIndex.value = null
     ocrFileCount.value = null
+    lastOcrPages.value = []
+  }
+
+  async function copyOcrFixtureToClipboard(fileName: string) {
+    const page = lastOcrPages.value.find(p => p.fileName === fileName)
+    if (!page) {
+      options.toast.error('No OCR fixture found for that file yet')
+      return
+    }
+
+    const payload = {
+      text: page.text ?? '',
+      lines: page.lines ?? [],
+    }
+
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(payload, null, 2))
+      options.toast.success(`Copied OCR JSON for ${fileName}`)
+    } catch {
+      options.toast.error('Could not copy OCR JSON to clipboard')
+    }
   }
 
   function selectAllMatched() {
@@ -152,6 +176,7 @@ export function useScreenshotResidentImport(options: {
     isImporting.value = true
     importProgressText.value = 'Starting OCR…'
     importCandidates.value = []
+    lastOcrPages.value = []
     ocrFileProgress.value = 0
     ocrFileIndex.value = 0
     ocrFileCount.value = screenshotFiles.value.length
@@ -160,6 +185,9 @@ export function useScreenshotResidentImport(options: {
       const candidates = await extractResidentsFromScreenshots({
         files: screenshotFiles.value,
         stores: options.stores.value,
+        onOcrPage: page => {
+          lastOcrPages.value.push(page)
+        },
         onProgress: info => {
           const count = info.fileCount ?? screenshotFiles.value.length
           const idx = (info.fileIndex ?? 0) + 1
@@ -256,6 +284,8 @@ export function useScreenshotResidentImport(options: {
     importStatusText,
     importStatusKey,
     overallOcrProgress,
+    lastOcrPages,
+    copyOcrFixtureToClipboard,
     triggerScreenshotPicker,
     appendScreenshotFiles,
     handleScreenshotDrop,

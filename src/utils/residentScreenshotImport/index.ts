@@ -6,24 +6,20 @@ import { recognizeWithGoogleVision } from './googleVision'
 import type {
   ExtractResidentsFromScreenshotsParams,
   OcrLine,
+  OcrPage,
   ScreenshotResidentCandidate,
 } from './types'
 
 export type { ScreenshotResidentCandidate } from './types'
 
-export async function extractResidentsFromScreenshots(
-  params: ExtractResidentsFromScreenshotsParams
-): Promise<ScreenshotResidentCandidate[]> {
-  const { files, stores, onProgress } = params
-  const fileCount = files.length
+export function extractResidentsFromOcrPages(params: {
+  pages: OcrPage[]
+  stores: ExtractResidentsFromScreenshotsParams['stores']
+}): ScreenshotResidentCandidate[] {
+  const { pages, stores } = params
+  if (pages.length === 0) return []
 
-  if (fileCount === 0) return []
-
-  function parseResultForFile(p: {
-    fileName: string
-    page: { lines?: OcrLine[]; text?: string }
-  }): ScreenshotResidentCandidate[] {
-    const { fileName, page } = p
+  function parsePage(page: OcrPage): ScreenshotResidentCandidate[] {
     const lines: OcrLine[] = page.lines ?? []
     const inferredWidth = Math.max(1, ...lines.map(l => l.bbox.x1))
 
@@ -31,44 +27,67 @@ export async function extractResidentsFromScreenshots(
       lines,
       inferredWidth,
       stores,
-      sourceFileName: fileName,
+      sourceFileName: page.fileName,
     })
 
     const legacy = extractCandidatesVerticalPair({
       lines,
       inferredWidth,
       stores,
-      sourceFileName: fileName,
+      sourceFileName: page.fileName,
     })
 
     if (threeCol.length === 0 && legacy.length === 0) {
       const fallbackText = typeof page.text === 'string' ? page.text : ''
       return fallbackText
-        ? extractCandidatesFromPlainText({ text: fallbackText, stores, sourceFileName: fileName })
+        ? extractCandidatesFromPlainText({
+            text: fallbackText,
+            stores,
+            sourceFileName: page.fileName,
+          })
         : []
     }
 
-    // Dedupe the combined results from both extractors to avoid duplicates
     return dedupe([...threeCol, ...legacy])
   }
 
   const allCandidates: ScreenshotResidentCandidate[] = []
+  for (const page of pages) {
+    allCandidates.push(...parsePage(page))
+  }
+
+  return dedupe(allCandidates)
+}
+
+export async function extractResidentsFromScreenshots(
+  params: ExtractResidentsFromScreenshotsParams
+): Promise<ScreenshotResidentCandidate[]> {
+  const { files, stores, onProgress, onOcrPage } = params
+  const fileCount = files.length
+
+  if (fileCount === 0) return []
+
+  const pages: OcrPage[] = []
 
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
 
     // Start processing with indeterminate progress
-    onProgress?.({ phase: 'processing', fileName: file.name, progress: undefined, fileIndex: i, fileCount })
+    onProgress?.({
+      phase: 'processing',
+      fileName: file.name,
+      progress: undefined,
+      fileIndex: i,
+      fileCount,
+    })
     const cloud = await recognizeWithGoogleVision(file)
     // Mark as complete for this file
     onProgress?.({ phase: 'processing', fileName: file.name, progress: 1, fileIndex: i, fileCount })
 
-    const candidates = parseResultForFile({
-      fileName: file.name,
-      page: { lines: cloud.lines, text: cloud.text },
-    })
-    allCandidates.push(...candidates)
+    const page: OcrPage = { fileName: file.name, lines: cloud.lines, text: cloud.text }
+    pages.push(page)
+    onOcrPage?.(page)
   }
 
-  return dedupe(allCandidates)
+  return extractResidentsFromOcrPages({ pages, stores })
 }

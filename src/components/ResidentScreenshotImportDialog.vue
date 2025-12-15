@@ -50,6 +50,34 @@
         </div>
 
         <div
+          v-if="isDev && lastOcrPages.length > 0"
+          class="rounded-md border bg-muted p-3 text-xs text-muted-foreground"
+        >
+          <div class="font-medium text-foreground">Dev: Save OCR fixture</div>
+          <div class="mt-1">
+            Copy the raw Google Vision OCR JSON for a screenshot, then save it as
+            <span class="font-mono">tests/fixtures/ocr/&lt;name&gt;.json</span>.
+          </div>
+          <div class="mt-2 flex flex-col gap-2">
+            <div
+              v-for="page in lastOcrPages"
+              :key="page.fileName"
+              class="flex items-center justify-between gap-2"
+            >
+              <div class="min-w-0 truncate">{{ page.fileName }}</div>
+              <Button
+                variant="outline"
+                size="sm"
+                :disabled="isImporting"
+                @click="copyOcrFixtureToClipboard(page.fileName)"
+              >
+                Copy OCR JSON
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <div
           v-if="importCandidates.length === 0"
           class="flex flex-col gap-2 sm:flex-row sm:items-center"
         >
@@ -199,6 +227,8 @@ const {
   isImporting,
   isDragOver,
   isOnline,
+  lastOcrPages,
+  copyOcrFixtureToClipboard,
   selectedScreenshotCountText,
   selectedImportCount,
   showImportSourceFile,
@@ -219,6 +249,8 @@ const {
   stores: computed(() => props.stores),
   toast,
 })
+
+const isDev = computed(() => Boolean((import.meta as any)?.env?.DEV))
 
 function handleOpenChange(isOpen: boolean) {
   emit('update:open', isOpen)

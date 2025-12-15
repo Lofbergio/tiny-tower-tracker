@@ -124,6 +124,14 @@ export function extractResidentNameFromOcrLine(raw: string, storesList?: Store[]
   const trimmed = raw.trim()
   if (!trimmed) return ''
 
+  const trimmedCollapsed = trimmed.replace(/\s+/g, ' ')
+
+  function indexOfIgnoreCase(haystack: string, needle: string): number {
+    const h = haystack.toLowerCase()
+    const n = needle.toLowerCase()
+    return n ? h.indexOf(n) : -1
+  }
+
   let cutIndex = -1
   const unemployedMatch = /\bunemployed\b/i.exec(trimmed)
   if (unemployedMatch?.index !== undefined && unemployedMatch.index > 0) {
@@ -139,6 +147,18 @@ export function extractResidentNameFromOcrLine(raw: string, storesList?: Store[]
       const m = re.exec(trimmed)
       if (m?.index !== undefined && m.index > 0) {
         if (cutIndex === -1 || m.index < cutIndex) cutIndex = m.index
+      }
+
+      // Fallback for OCR oddities where word boundaries/spacing break the regex.
+      // This intentionally uses a simple substring match to avoid missing obvious cases.
+      const idxExact = indexOfIgnoreCase(trimmed, store.name)
+      if (idxExact > 0) {
+        if (cutIndex === -1 || idxExact < cutIndex) cutIndex = idxExact
+      }
+      const storeCollapsed = store.name.trim().replace(/\s+/g, ' ')
+      const idxCollapsed = indexOfIgnoreCase(trimmedCollapsed, storeCollapsed)
+      if (idxCollapsed > 0) {
+        if (cutIndex === -1 || idxCollapsed < cutIndex) cutIndex = idxCollapsed
       }
     }
   }

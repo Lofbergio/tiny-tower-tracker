@@ -1,0 +1,8 @@
+{
+  "text": "Alice Wonderland Soda Brewery Cake Studio",
+  "lines": [
+    { "text": "Alice Wonderland", "bbox": { "x0": 60, "y0": 100, "x1": 350, "y1": 120 } },
+    { "text": "Soda Brewery", "bbox": { "x0": 480, "y0": 102, "x1": 680, "y1": 122 } },
+    { "text": "Cake Studio", "bbox": { "x0": 820, "y0": 101, "x1": 980, "y1": 121 } }
+  ]
+}

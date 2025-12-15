@@ -1,0 +1,18 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`OCR fixtures (golden) > keeps parsing stable for all saved fixtures 1`] = `
+[
+  {
+    "candidates": [
+      {
+        "currentJobStoreId": "soda-brewery",
+        "dreamJobStoreId": "cake-studio",
+        "issues": [],
+        "name": "Alice Wonderland",
+        "selected": true,
+      },
+    ],
+    "fileName": "example.json",
+  },
+]
+`;

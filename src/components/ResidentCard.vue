@@ -1,13 +1,13 @@
 <template>
   <Card
-    class="overflow-hidden border-l-4 transition-all hover:shadow-md"
+    class="group overflow-hidden border-l-4 transition-all hover:shadow-md"
     :class="statusBorderColor"
   >
     <div class="flex flex-col space-y-1 p-3 md:space-y-1.5 md:p-6">
       <div class="flex items-center gap-3">
-        <Avatar :src="avatarUrl" :alt="displayName" size="lg" :class="statusBorderColor.replace('border-l-4', 'border-2')" />
+        <Avatar :src="avatarUrl" :alt="displayName" size="lg" :class="avatarClass" />
         <h3
-          class="flex-1 text-lg font-semibold leading-tight md:text-2xl md:leading-none md:tracking-tight"
+          class="flex-1 text-lg font-semibold leading-tight motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:translate-x-0.5 md:text-2xl md:leading-none md:tracking-tight"
         >
           {{ displayName }}
         </h3>
@@ -27,16 +27,24 @@
           <p class="text-xs text-muted-foreground md:text-sm">Not placed in any store</p>
         </div>
         <div
-          v-if="needsPlacement && canPlaceInDreamJob"
-          class="rounded bg-yellow-50 p-1.5 dark:bg-yellow-900/20 md:rounded-md md:p-2"
+          v-if="needsPlacement && !dreamJobStoreBuilt"
+          class="motion-safe:animate-pop rounded bg-blue-50 p-1.5 dark:bg-blue-950/20 md:rounded-md md:p-2"
+        >
+          <p class="text-xs font-medium text-blue-800 dark:text-blue-200 md:text-sm">
+            🏗️ Dream job store not built yet
+          </p>
+        </div>
+        <div
+          v-else-if="needsPlacement && canPlaceInDreamJob"
+          class="motion-safe:animate-pop rounded bg-yellow-50 p-1.5 dark:bg-yellow-900/20 md:rounded-md md:p-2"
         >
           <p class="text-xs font-medium text-yellow-800 dark:text-yellow-200 md:text-sm">
             Needs placement in dream job store
           </p>
         </div>
         <div
-          v-else-if="needsPlacement && !canPlaceInDreamJob"
-          class="rounded bg-orange-50 p-1.5 dark:bg-orange-900/20 md:rounded-md md:p-2"
+          v-else-if="needsPlacement && dreamJobStoreBuilt && !canPlaceInDreamJob"
+          class="motion-safe:animate-pop rounded bg-orange-50 p-1.5 dark:bg-orange-900/20 md:rounded-md md:p-2"
         >
           <p class="text-xs font-medium text-orange-800 dark:text-orange-200 md:text-sm">
             ⚠️ Dream job store is full (3/3)
@@ -54,7 +62,10 @@
           class="w-full"
           @click="$emit('place-in-dream-job')"
         >
-          ✨ Place in Dream Job
+          <span aria-hidden="true" class="motion-safe:group-hover:animate-jiggle mr-1 inline-block"
+            >✨</span
+          >
+          Place in Dream Job
         </Button>
         <Button
           v-else-if="!currentStore"
@@ -92,11 +103,13 @@ interface Props {
   resident: Resident
   stores: Store[]
   currentStore?: string
+  dreamJobStoreBuilt?: boolean
   dreamJobStoreFull?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   currentStore: undefined,
+  dreamJobStoreBuilt: true,
   dreamJobStoreFull: false,
 })
 
@@ -111,7 +124,7 @@ const needsPlacement = computed(() => {
 })
 
 const canPlaceInDreamJob = computed(() => {
-  return needsPlacement.value && !props.dreamJobStoreFull
+  return needsPlacement.value && props.dreamJobStoreBuilt && !props.dreamJobStoreFull
 })
 
 const statusBorderColor = computed(() => {
@@ -122,6 +135,14 @@ const statusBorderColor = computed(() => {
     return 'border-green-500 dark:border-green-600' // In dream job
   }
   return 'border-yellow-500 dark:border-yellow-600' // Needs placement
+})
+
+const avatarClass = computed(() => {
+  const border = statusBorderColor.value.replace('border-l-4', 'border-2')
+  return [
+    border,
+    'motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:animate-jiggle',
+  ]
 })
 
 const displayName = computed(() => formatResidentName(props.resident.name))

@@ -6,6 +6,7 @@
     @update:model-value="handleValueChange"
   >
     <SelectTrigger
+      ref="triggerEl"
       class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
     >
       <SelectValue :placeholder="placeholder" />
@@ -132,6 +133,7 @@ const query = ref('')
 const debouncedQuery = ref('')
 const open = ref(false)
 const searchInput = ref<{ focus?: () => void; blur?: () => void } | null>(null)
+const triggerEl = ref<HTMLElement | null>(null)
 
 let debounceTimer: number | undefined
 watch(
@@ -196,6 +198,23 @@ function handleOpenChange(isOpen: boolean) {
   open.value = isOpen
 }
 
+async function openMenu() {
+  open.value = true
+  await nextTick()
+  // If the menu is already open, radix may keep focus elsewhere; ensure the search is ready on desktop.
+  if (!isMobile()) {
+    searchInput.value?.focus?.()
+  }
+}
+
+function closeMenu() {
+  open.value = false
+}
+
+function focusTrigger() {
+  triggerEl.value?.focus()
+}
+
 function handleValueChange(value: string) {
   emit('update:modelValue', value)
   // On mobile, blur the input after selection to close keyboard
@@ -227,5 +246,11 @@ onUnmounted(() => {
   if (debounceTimer) {
     window.clearTimeout(debounceTimer)
   }
+})
+
+defineExpose({
+  openMenu,
+  closeMenu,
+  focusTrigger,
 })
 </script>

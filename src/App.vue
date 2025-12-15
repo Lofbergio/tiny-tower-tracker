@@ -13,8 +13,8 @@
           <nav class="sticky top-0 border-b bg-background/80 backdrop-blur-sm">
             <div class="container mx-auto px-4">
               <div class="flex h-16 items-center justify-between">
-                <div class="group flex items-center gap-2 select-none">
-                  <div aria-hidden="true" class="text-2xl motion-safe:group-hover:animate-jiggle">
+                <div class="group flex select-none items-center gap-2">
+                  <div aria-hidden="true" class="motion-safe:group-hover:animate-jiggle text-2xl">
                     🏢
                   </div>
                   <h1
@@ -48,7 +48,7 @@
                     >
                       <span
                         aria-hidden="true"
-                        class="mr-1 inline-block motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:animate-jiggle motion-safe:group-active:scale-110"
+                        class="motion-safe:group-hover:animate-jiggle mr-1 inline-block motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-active:scale-110"
                       >
                         {{ navRoute.icon }}
                       </span>

@@ -53,7 +53,7 @@
               ref="nameInput"
               v-model="newResidentName"
               placeholder="e.g., John Smith"
-              @keydown.enter="focusDreamJobSelect"
+              @keydown.enter.prevent="handleNameEnter"
             />
           </div>
           <div>
@@ -62,6 +62,7 @@
               <span class="text-destructive">*</span>
             </Label>
             <SearchableSelect
+              ref="dreamJobSelect"
               v-model="newResidentDreamJob"
               :items="storeItems"
               placeholder="Choose their dream job..."
@@ -79,7 +80,7 @@
             <span v-if="!newResidentName || !newResidentDreamJob">Add Resident</span>
             <span v-else>Add {{ newResidentName }}</span>
           </Button>
-          <Button variant="ghost" class="w-full" @click="showAddDialog = false">Cancel</Button>
+          <Button variant="outline" class="w-full" @click="showAddDialog = false">Cancel</Button>
         </div>
       </DialogContent>
     </Dialog>
@@ -105,6 +106,7 @@
         :resident="resident"
         :stores="allStores ?? []"
         :current-store="residentsStore.getCurrentStore(resident.id)"
+        :dream-job-store-built="isDreamJobStoreBuilt(resident.dreamJob)"
         :dream-job-store-full="isDreamJobStoreFull(resident.dreamJob)"
         @remove-resident="handleRemoveResident(resident.id)"
         @place-in-dream-job="handlePlaceInDreamJob(resident.id)"
@@ -162,6 +164,11 @@ const showImportDialog = ref(false)
 const newResidentName = ref('')
 const newResidentDreamJob = ref('')
 const nameInput = ref<HTMLInputElement | null>(null)
+const dreamJobSelect = ref<{
+  openMenu?: () => void
+  closeMenu?: () => void
+  focusTrigger?: () => void
+} | null>(null)
 
 const storeItems = computed(() => {
   if (!allStores.value) {
@@ -179,15 +186,21 @@ function handleDialogOpenChange(isOpen: boolean) {
         nameInput.value?.focus()
       }
     }, 100)
+    return
   }
+
+  // Reset draft values when closing (consistent with other dialogs)
+  newResidentName.value = ''
+  newResidentDreamJob.value = ''
 }
 
-function focusDreamJobSelect() {
-  // If name is filled and user presses enter, we could add logic here
-  // For now, just prevent form submission
+function handleNameEnter() {
   if (newResidentName.value && newResidentDreamJob.value) {
     handleAddResident()
+    return
   }
+  // If they haven't picked a dream job yet, open the picker.
+  dreamJobSelect.value?.openMenu?.()
 }
 
 function handleAddResident() {
@@ -213,6 +226,10 @@ function isDreamJobStoreFull(dreamJobStoreId: string): boolean {
   )
   if (!userStore) return false
   return storesStore.isStoreFull(dreamJobStoreId)
+}
+
+function isDreamJobStoreBuilt(dreamJobStoreId: string): boolean {
+  return userStores.value.some((us: UserStore & { store: Store }) => us.storeId === dreamJobStoreId)
 }
 
 function handlePlaceInDreamJob(residentId: string) {

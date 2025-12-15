@@ -1,7 +1,7 @@
-import type { TesseractLine } from './types'
+import type { OcrLine } from './types'
 
 export function columnForLine(
-  line: TesseractLine,
+  line: OcrLine,
   inferredWidth: number
 ): 'left' | 'middle' | 'right' {
   const x = line.bbox.x0
@@ -13,9 +13,9 @@ export function columnForLine(
 }
 
 export function splitRowIntoColumns(params: {
-  rowLines: TesseractLine[]
+  rowLines: OcrLine[]
   inferredWidth: number
-}): Array<{ lines: TesseractLine[] }> {
+}): Array<{ lines: OcrLine[] }> {
   const { rowLines, inferredWidth } = params
   const lines = rowLines.filter(l => l.text.trim() !== '')
   if (lines.length === 0) return []
@@ -37,9 +37,9 @@ export function splitRowIntoColumns(params: {
     const split1 = (xs[split1Idx - 1] + xs[split1Idx]) / 2
     const split2 = (xs[split2Idx - 1] + xs[split2Idx]) / 2
 
-    const c1: TesseractLine[] = []
-    const c2: TesseractLine[] = []
-    const c3: TesseractLine[] = []
+    const c1: OcrLine[] = []
+    const c2: OcrLine[] = []
+    const c3: OcrLine[] = []
     for (const l of lines) {
       if (l.bbox.x0 < split1) c1.push(l)
       else if (l.bbox.x0 < split2) c2.push(l)
@@ -51,8 +51,8 @@ export function splitRowIntoColumns(params: {
   if (bigGaps.length === 1) {
     const splitIdx = bigGaps[0].idx
     const split = (xs[splitIdx - 1] + xs[splitIdx]) / 2
-    const left: TesseractLine[] = []
-    const right: TesseractLine[] = []
+    const left: OcrLine[] = []
+    const right: OcrLine[] = []
     for (const l of lines) {
       if (l.bbox.x0 < split) left.push(l)
       else right.push(l)
@@ -60,9 +60,9 @@ export function splitRowIntoColumns(params: {
     return [{ lines: left }, { lines: right }]
   }
 
-  const left: TesseractLine[] = []
-  const middle: TesseractLine[] = []
-  const right: TesseractLine[] = []
+  const left: OcrLine[] = []
+  const middle: OcrLine[] = []
+  const right: OcrLine[] = []
   for (const l of lines) {
     const col = columnForLine(l, inferredWidth)
     if (col === 'left') left.push(l)
@@ -73,10 +73,10 @@ export function splitRowIntoColumns(params: {
 }
 
 export function groupLinesIntoRows(
-  lines: TesseractLine[]
-): Array<{ y0: number; lines: TesseractLine[] }> {
+  lines: OcrLine[]
+): Array<{ y0: number; lines: OcrLine[] }> {
   const sorted = [...lines].sort((a, b) => a.bbox.y0 - b.bbox.y0)
-  const rows: Array<{ y0: number; lines: TesseractLine[] }> = []
+  const rows: Array<{ y0: number; lines: OcrLine[] }> = []
 
   const heights = sorted
     .map(l => Math.max(0, l.bbox.y1 - l.bbox.y0))

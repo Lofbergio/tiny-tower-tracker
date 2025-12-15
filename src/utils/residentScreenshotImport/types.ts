@@ -1,7 +1,7 @@
 import type { Store } from '@/types'
 
-export type TesseractBBox = { x0: number; y0: number; x1: number; y1: number }
-export type TesseractLine = { text: string; bbox: TesseractBBox }
+export type OcrBBox = { x0: number; y0: number; x1: number; y1: number }
+export type OcrLine = { text: string; bbox: OcrBBox }
 
 export interface ScreenshotResidentCandidate {
   nameRaw: string

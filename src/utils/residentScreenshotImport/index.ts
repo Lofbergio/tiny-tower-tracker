@@ -5,8 +5,8 @@ import { extractCandidatesVerticalPair } from './extractors/verticalPair'
 import { recognizeWithGoogleVision } from './ocr/googleVision'
 import type {
   ExtractResidentsFromScreenshotsParams,
+  OcrLine,
   ScreenshotResidentCandidate,
-  TesseractLine,
 } from './types'
 
 export type { ScreenshotResidentCandidate } from './types'
@@ -23,10 +23,10 @@ export async function extractResidentsFromScreenshots(
 
   function parseResultForFile(p: {
     fileName: string
-    page: { lines?: TesseractLine[]; text?: string }
+    page: { lines?: OcrLine[]; text?: string }
   }): ScreenshotResidentCandidate[] {
     const { fileName, page } = p
-    const lines: TesseractLine[] = page.lines ?? []
+    const lines: OcrLine[] = page.lines ?? []
     const inferredWidth = Math.max(1, ...lines.map(l => l.bbox.x1))
 
     const threeCol = extractCandidatesThreeColumn({

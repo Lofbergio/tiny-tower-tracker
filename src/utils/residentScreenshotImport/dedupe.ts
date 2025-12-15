@@ -6,6 +6,10 @@ export function dedupe(candidates: ScreenshotResidentCandidate[]): ScreenshotRes
     return normalizeForMatch(c.name)
   }
 
+  function rawKey(input?: string): string {
+    return input ? normalizeForMatch(input) : ''
+  }
+
   function currentKeyFor(c: ScreenshotResidentCandidate): string {
     if (c.currentJobStoreId) return c.currentJobStoreId
     if (c.currentJobRaw) {
@@ -27,25 +31,30 @@ export function dedupe(candidates: ScreenshotResidentCandidate[]): ScreenshotRes
 
   function shouldMerge(a: ScreenshotResidentCandidate, b: ScreenshotResidentCandidate): boolean {
     // Since candidates are already grouped by name, we should merge unless there are conflicts.
-    // Check for conflicting dream job store IDs
     const aDreamId = a.dreamJobStoreId
     const bDreamId = b.dreamJobStoreId
-    if (aDreamId && bDreamId && aDreamId !== bDreamId) {
-      // Different dream job IDs - only skip merge if they're clearly different stores
-      return false
-    }
-
-    // Check for conflicting current job store IDs
     const aCurrentId = a.currentJobStoreId
     const bCurrentId = b.currentJobStoreId
-    if (aCurrentId && bCurrentId && aCurrentId !== bCurrentId) {
-      // Different current job IDs - might be job changes or errors
-      // Continue to check text matches
-    }
 
     // If we have any matching store IDs, definitely merge
     if (aDreamId && bDreamId && aDreamId === bDreamId) return true
     if (aCurrentId && bCurrentId && aCurrentId === bCurrentId) return true
+
+    // Cross-match: one extractor sometimes mis-assigns current job as dream job (or vice versa)
+    if (aDreamId && bCurrentId && aDreamId === bCurrentId) return true
+    if (aCurrentId && bDreamId && aCurrentId === bDreamId) return true
+
+    // If dream IDs conflict but one matches the other's current job, merge; otherwise treat as a potential real conflict.
+    if (aDreamId && bDreamId && aDreamId !== bDreamId) {
+      const aHasCurrent = hasMeaningfulCurrent(a)
+      const bHasCurrent = hasMeaningfulCurrent(b)
+
+      // If either side has no meaningful current job, it's very likely a partial OCR duplicate.
+      if (!aHasCurrent || !bHasCurrent) return true
+
+      // If both have meaningful current jobs and those conflict too, avoid merging to prevent collapsing distinct residents.
+      if (aCurrentId && bCurrentId && aCurrentId !== bCurrentId) return false
+    }
 
     // Text-based matching for when store IDs aren't available
     const aDream = dreamKeyFor(a)
@@ -137,6 +146,75 @@ export function dedupe(candidates: ScreenshotResidentCandidate[]): ScreenshotRes
     }
     if (!base.matchedCurrentStoreName && other.matchedCurrentStoreName) {
       base.matchedCurrentStoreName = other.matchedCurrentStoreName
+    }
+
+    // Resolve the common extractor error where a resident's current job is captured as their dream job.
+    // If both sides have dream IDs but they differ, and one side's dream matches the other side's current,
+    // prefer the dream job from the candidate whose dream does NOT look like a current job.
+    {
+      const baseDreamId = base.dreamJobStoreId
+      const otherDreamId = other.dreamJobStoreId
+      const baseCurrentId = base.currentJobStoreId
+      const otherCurrentId = other.currentJobStoreId
+
+      if (baseDreamId && otherDreamId && baseDreamId !== otherDreamId) {
+        const baseDreamLooksLikeCurrent = Boolean(otherCurrentId && baseDreamId === otherCurrentId)
+        const otherDreamLooksLikeCurrent = Boolean(baseCurrentId && otherDreamId === baseCurrentId)
+
+        const baseDreamKey = dreamKeyFor(base)
+        const otherDreamKey = dreamKeyFor(other)
+        const baseCurrentKey = currentKeyFor(base)
+        const otherCurrentKey = currentKeyFor(other)
+
+        const baseDreamTextLooksLikeCurrent = Boolean(
+          otherCurrentKey && baseDreamKey && baseDreamKey === otherCurrentKey
+        )
+        const otherDreamTextLooksLikeCurrent = Boolean(
+          baseCurrentKey && otherDreamKey && otherDreamKey === baseCurrentKey
+        )
+
+        const shouldPreferOtherDream =
+          (baseDreamLooksLikeCurrent || baseDreamTextLooksLikeCurrent) &&
+          !(otherDreamLooksLikeCurrent || otherDreamTextLooksLikeCurrent)
+
+        if (shouldPreferOtherDream) {
+          base.dreamJobStoreId = other.dreamJobStoreId
+          if (other.dreamJobRaw) base.dreamJobRaw = other.dreamJobRaw
+          if (other.matchedStoreName) base.matchedStoreName = other.matchedStoreName
+          if (
+            typeof other.matchConfidence === 'number' &&
+            (typeof base.matchConfidence !== 'number' ||
+              other.matchConfidence > base.matchConfidence)
+          ) {
+            base.matchConfidence = other.matchConfidence
+          }
+        }
+      }
+
+      // Also handle the case where IDs aren't available but the raw text indicates a swap.
+      const baseDreamText = rawKey(base.matchedStoreName ?? base.dreamJobRaw)
+      const otherDreamText = rawKey(other.matchedStoreName ?? other.dreamJobRaw)
+      const baseCurrentText = rawKey(base.matchedCurrentStoreName ?? base.currentJobRaw)
+      const otherCurrentText = rawKey(other.matchedCurrentStoreName ?? other.currentJobRaw)
+
+      if (baseDreamText && otherDreamText && baseDreamText !== otherDreamText) {
+        const shouldPreferOtherDreamText =
+          otherCurrentText &&
+          baseDreamText === otherCurrentText &&
+          !(baseCurrentText && otherDreamText === baseCurrentText)
+
+        if (shouldPreferOtherDreamText) {
+          if (other.dreamJobRaw) base.dreamJobRaw = other.dreamJobRaw
+          if (other.matchedStoreName) base.matchedStoreName = other.matchedStoreName
+          if (
+            typeof other.matchConfidence === 'number' &&
+            (typeof base.matchConfidence !== 'number' ||
+              other.matchConfidence > base.matchConfidence)
+          ) {
+            base.matchConfidence = other.matchConfidence
+          }
+        }
+      }
     }
 
     // Keep issues minimal: if base has none, don't add more; otherwise union unique issues.

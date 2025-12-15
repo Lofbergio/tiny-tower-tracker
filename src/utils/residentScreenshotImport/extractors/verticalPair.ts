@@ -8,10 +8,10 @@ import {
   looksLikeHeaderOrNoise,
   sanitizeResidentName,
 } from '../textUtils'
-import type { ScreenshotResidentCandidate, TesseractLine } from '../types'
+import type { ScreenshotResidentCandidate, OcrLine } from '../types'
 
 export function extractCandidatesVerticalPair(params: {
-  lines: TesseractLine[]
+  lines: OcrLine[]
   inferredWidth: number
   stores: Store[]
   sourceFileName: string

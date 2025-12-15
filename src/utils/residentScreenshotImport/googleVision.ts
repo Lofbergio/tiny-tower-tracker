@@ -1,4 +1,4 @@
-import type { TesseractLine } from '../types'
+import type { OcrLine } from './types'
 
 async function fileToBase64(file: File): Promise<string> {
   const dataUrl = await new Promise<string>((resolve, reject) => {
@@ -15,7 +15,7 @@ async function fileToBase64(file: File): Promise<string> {
 
 export async function recognizeWithGoogleVision(
   file: File
-): Promise<{ lines: TesseractLine[]; text: string }> {
+): Promise<{ lines: OcrLine[]; text: string }> {
   const endpoint = '/.netlify/functions/google-vision-ocr'
   const imageBase64 = await fileToBase64(file)
 
@@ -56,7 +56,7 @@ export async function recognizeWithGoogleVision(
     lines?: Array<{ text: string; bbox: { x0: number; y0: number; x1: number; y1: number } }>
   }
 
-  const lines: TesseractLine[] = (data.lines ?? [])
+  const lines: OcrLine[] = (data.lines ?? [])
     .filter(l => typeof l?.text === 'string')
     .map(l => ({ text: l.text, bbox: l.bbox }))
   const text = typeof data.text === 'string' ? data.text : ''

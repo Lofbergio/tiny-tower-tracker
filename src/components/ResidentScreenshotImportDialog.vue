@@ -10,68 +10,42 @@
 
       <div class="space-y-4">
         <p class="text-sm text-muted-foreground">
-          Upload one or more screenshots of your Tiny Tower resident list. We'll OCR the images and
-          extract resident names + dream jobs.
+          Upload one or more screenshots of your Tiny Tower resident list. We'll use Google Vision
+          OCR to extract resident names + dream jobs.
         </p>
 
-        <div v-if="importCandidates.length === 0" class="space-y-2">
-          <Label class="text-sm font-medium">OCR engine</Label>
-          <div class="flex flex-col gap-2 sm:flex-row">
-            <Button
-              variant="outline"
-              class="w-full sm:w-auto"
-              :class="ocrEngine === 'local' ? 'border-primary' : ''"
-              :disabled="isImporting"
-              @click="ocrEngine = 'local'"
-            >
-              On-device
-            </Button>
-            <Button
-              variant="outline"
-              class="w-full sm:w-auto"
-              :class="ocrEngine === 'google' ? 'border-primary' : ''"
-              :disabled="isImporting || !isOnline"
-              @click="ocrEngine = 'google'"
-            >
-              Google Vision
-            </Button>
-          </div>
-          <p v-if="ocrEngine === 'google'" class="text-xs text-muted-foreground">
-            Uses a Netlify Function and Google Vision API key.
-          </p>
-          <p v-if="ocrEngine === 'google' && !isOnline" class="text-xs text-destructive">
-            You're offline. Cloud OCR requires an internet connection.
-          </p>
+        <p v-if="!isOnline" class="text-xs text-destructive">
+          You're offline. Google Vision OCR requires an internet connection.
+        </p>
 
-          <div
-            v-if="ocrEngine === 'google' && isLikelyViteDev"
-            class="rounded-md border bg-muted p-3 text-xs text-muted-foreground"
-          >
-            <div class="font-medium text-foreground">Local dev note</div>
-            <div class="mt-1">
-              You're currently on the Vite dev server (port 5173). Netlify Functions only work when
-              running Netlify Dev (port 8888).
-            </div>
-            <div class="mt-2 flex flex-col gap-2 sm:flex-row">
-              <Button
-                variant="outline"
-                size="sm"
-                class="w-full sm:w-auto"
-                :disabled="isImporting"
-                @click="copyNetlifyDevCommand"
-              >
-                Copy yarn dev:netlify
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                class="w-full sm:w-auto"
-                :disabled="isImporting"
-                @click="openNetlifyDevUrl"
-              >
-                Open localhost:8888
-              </Button>
-            </div>
+        <div
+          v-if="isLikelyViteDev"
+          class="rounded-md border bg-muted p-3 text-xs text-muted-foreground"
+        >
+          <div class="font-medium text-foreground">Local dev note</div>
+          <div class="mt-1">
+            You're currently on the Vite dev server (port 5173). Netlify Functions only work when
+            running Netlify Dev (port 8888).
+          </div>
+          <div class="mt-2 flex flex-col gap-2 sm:flex-row">
+            <Button
+              variant="outline"
+              size="sm"
+              class="w-full sm:w-auto"
+              :disabled="isImporting"
+              @click="copyNetlifyDevCommand"
+            >
+              Copy yarn dev:netlify
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              class="w-full sm:w-auto"
+              :disabled="isImporting"
+              @click="openNetlifyDevUrl"
+            >
+              Open localhost:8888
+            </Button>
           </div>
         </div>
 
@@ -114,6 +88,7 @@
         </div>
 
         <div class="h-2">
+          <!-- Determinate progress bar when we have actual progress -->
           <div v-if="overallOcrProgress !== null" class="h-2 overflow-hidden rounded bg-muted">
             <div
               class="h-2 bg-primary transition-[width]"
@@ -121,6 +96,10 @@
                 width: `${Math.max(0, Math.min(100, Math.round(overallOcrProgress * 100)))}%`,
               }"
             />
+          </div>
+          <!-- Indeterminate progress bar when processing without progress info -->
+          <div v-else-if="isImporting" class="h-2 overflow-hidden rounded bg-muted">
+            <div class="h-2 w-full bg-primary animate-pulse" />
           </div>
         </div>
 
@@ -281,7 +260,6 @@ import Button from '@/components/ui/Button.vue'
 import Dialog from '@/components/ui/Dialog.vue'
 import DialogContent from '@/components/ui/DialogContent.vue'
 import DialogTitle from '@/components/ui/DialogTitle.vue'
-import Label from '@/components/ui/Label.vue'
 import { APP_CONSTANTS } from '@/constants'
 import { useResidentsStore, useStoresStore } from '@/stores'
 import type { Store, UserStore } from '@/types'
@@ -322,7 +300,6 @@ const isDragOver = ref(false)
 const ocrFileProgress = ref<number | null>(null)
 const ocrFileIndex = ref<number | null>(null)
 const ocrFileCount = ref<number | null>(null)
-const ocrEngine = ref<'local' | 'google'>('local')
 
 const hasChosenScreenshots = computed(() => screenshotFiles.value.length > 0)
 const selectedScreenshotCountText = computed(() => {
@@ -337,8 +314,7 @@ const isOnline = ref(typeof navigator !== 'undefined' ? navigator.onLine : true)
 
 const canRunOcr = computed(() => {
   if (!props.stores || !hasChosenScreenshots.value || isImporting.value) return false
-  if (ocrEngine.value === 'google') return isOnline.value
-  return true
+  return isOnline.value
 })
 
 const importStatusText = computed(() => {
@@ -475,34 +451,11 @@ async function runScreenshotOcr() {
     const candidates = await extractResidentsFromScreenshots({
       files: screenshotFiles.value,
       stores: props.stores,
-      ocrEngine: ocrEngine.value,
       onProgress: info => {
-        if (info.phase === 'loading') {
-          importProgressText.value = 'Loading OCR engine…'
-          ocrFileProgress.value = null
-          return
-        }
-        if (info.phase === 'cloud') {
-          const count = info.fileCount ?? screenshotFiles.value.length
-          const idx = (info.fileIndex ?? 0) + 1
-          const filePart = count > 1 ? ` (${idx}/${count})` : ''
-          importProgressText.value = `Cloud OCR${filePart}…`
-          if (typeof info.fileIndex === 'number') {
-            ocrFileIndex.value = info.fileIndex
-          }
-          if (typeof info.fileCount === 'number') {
-            ocrFileCount.value = info.fileCount
-          }
-          if (typeof info.progress === 'number') {
-            ocrFileProgress.value = info.progress
-          } else {
-            ocrFileProgress.value = null
-          }
-          return
-        }
-        if (typeof info.progress === 'number') {
-          ocrFileProgress.value = info.progress
-        }
+        const count = info.fileCount ?? screenshotFiles.value.length
+        const idx = (info.fileIndex ?? 0) + 1
+        const filePart = count > 1 ? ` (${idx}/${count})` : ''
+
         if (typeof info.fileIndex === 'number') {
           ocrFileIndex.value = info.fileIndex
         }
@@ -510,11 +463,14 @@ async function runScreenshotOcr() {
           ocrFileCount.value = info.fileCount
         }
 
-        const count = info.fileCount ?? screenshotFiles.value.length
-        const idx = (info.fileIndex ?? 0) + 1
-        const pct = info.progress !== undefined ? ` (${Math.round(info.progress * 100)}%)` : ''
-        const filePart = count > 1 ? ` (${idx}/${count})` : ''
-        importProgressText.value = `Recognizing ${info.fileName ?? 'image'}${filePart}${pct}…`
+        // Handle progress: undefined for indeterminate (processing), number for determinate
+        if (typeof info.progress === 'number') {
+          ocrFileProgress.value = info.progress
+          importProgressText.value = `Processing${filePart}…`
+        } else {
+          ocrFileProgress.value = null
+          importProgressText.value = `Running Google Vision OCR${filePart}…`
+        }
       },
     })
 

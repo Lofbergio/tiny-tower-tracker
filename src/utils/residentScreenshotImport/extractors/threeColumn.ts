@@ -4,10 +4,10 @@ import { groupLinesIntoRows, splitRowIntoColumns } from '../layout'
 import { pickBestName } from '../namePicking'
 import { findEmbeddedStoresInText, pickBestStoreMatch } from '../storeMatching'
 import { isUnemployedText, looksLikeHeaderOrNoise, normalizeForMatch } from '../textUtils'
-import type { ScreenshotResidentCandidate, TesseractLine } from '../types'
+import type { ScreenshotResidentCandidate, OcrLine } from '../types'
 
 export function extractCandidatesThreeColumn(params: {
-  lines: TesseractLine[]
+  lines: OcrLine[]
   inferredWidth: number
   stores: Store[]
   sourceFileName: string

@@ -88,6 +88,7 @@
         </div>
 
         <div class="h-2">
+          <!-- Determinate progress bar when we have actual progress -->
           <div v-if="overallOcrProgress !== null" class="h-2 overflow-hidden rounded bg-muted">
             <div
               class="h-2 bg-primary transition-[width]"
@@ -95,6 +96,10 @@
                 width: `${Math.max(0, Math.min(100, Math.round(overallOcrProgress * 100)))}%`,
               }"
             />
+          </div>
+          <!-- Indeterminate progress bar when processing without progress info -->
+          <div v-else-if="isImporting" class="h-2 overflow-hidden rounded bg-muted">
+            <div class="h-2 w-full bg-primary animate-pulse" />
           </div>
         </div>
 
@@ -447,28 +452,24 @@ async function runScreenshotOcr() {
       files: screenshotFiles.value,
       stores: props.stores,
       onProgress: info => {
-        if (info.phase === 'loading') {
-          importProgressText.value = 'Loading OCR engine…'
-          ocrFileProgress.value = null
-          return
+        const count = info.fileCount ?? screenshotFiles.value.length
+        const idx = (info.fileIndex ?? 0) + 1
+        const filePart = count > 1 ? ` (${idx}/${count})` : ''
+
+        if (typeof info.fileIndex === 'number') {
+          ocrFileIndex.value = info.fileIndex
         }
-        if (info.phase === 'cloud') {
-          const count = info.fileCount ?? screenshotFiles.value.length
-          const idx = (info.fileIndex ?? 0) + 1
-          const filePart = count > 1 ? ` (${idx}/${count})` : ''
+        if (typeof info.fileCount === 'number') {
+          ocrFileCount.value = info.fileCount
+        }
+
+        // Handle progress: undefined for indeterminate (processing), number for determinate
+        if (typeof info.progress === 'number') {
+          ocrFileProgress.value = info.progress
+          importProgressText.value = `Processing${filePart}…`
+        } else {
+          ocrFileProgress.value = null
           importProgressText.value = `Running Google Vision OCR${filePart}…`
-          if (typeof info.fileIndex === 'number') {
-            ocrFileIndex.value = info.fileIndex
-          }
-          if (typeof info.fileCount === 'number') {
-            ocrFileCount.value = info.fileCount
-          }
-          if (typeof info.progress === 'number') {
-            ocrFileProgress.value = info.progress
-          } else {
-            ocrFileProgress.value = null
-          }
-          return
         }
       },
     })

@@ -1,4 +1,4 @@
-import type { OcrLine } from '../types'
+import type { OcrLine } from './types'
 
 async function fileToBase64(file: File): Promise<string> {
   const dataUrl = await new Promise<string>((resolve, reject) => {

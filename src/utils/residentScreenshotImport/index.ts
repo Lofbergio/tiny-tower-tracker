@@ -2,7 +2,7 @@ import { dedupe } from './dedupe'
 import { extractCandidatesFromPlainText } from './extractors/plainText'
 import { extractCandidatesThreeColumn } from './extractors/threeColumn'
 import { extractCandidatesVerticalPair } from './extractors/verticalPair'
-import { recognizeWithGoogleVision } from './ocr/googleVision'
+import { recognizeWithGoogleVision } from './googleVision'
 import type {
   ExtractResidentsFromScreenshotsParams,
   OcrLine,
@@ -18,8 +18,6 @@ export async function extractResidentsFromScreenshots(
   const fileCount = files.length
 
   if (fileCount === 0) return []
-
-  onProgress?.({ phase: 'loading', progress: 0 })
 
   function parseResultForFile(p: {
     fileName: string
@@ -59,15 +57,17 @@ export async function extractResidentsFromScreenshots(
   for (let i = 0; i < files.length; i++) {
     const file = files[i]
 
-    onProgress?.({ phase: 'cloud', fileName: file.name, progress: 0, fileIndex: i, fileCount })
+    // Start processing with indeterminate progress
+    onProgress?.({ phase: 'processing', fileName: file.name, progress: undefined, fileIndex: i, fileCount })
     const cloud = await recognizeWithGoogleVision(file)
-    onProgress?.({ phase: 'cloud', fileName: file.name, progress: 1, fileIndex: i, fileCount })
+    // Mark as complete for this file
+    onProgress?.({ phase: 'processing', fileName: file.name, progress: 1, fileIndex: i, fileCount })
 
     const candidates = parseResultForFile({
       fileName: file.name,
       page: { lines: cloud.lines, text: cloud.text },
     })
-    allCandidates.push(...dedupe(candidates))
+    allCandidates.push(...candidates)
   }
 
   return dedupe(allCandidates)

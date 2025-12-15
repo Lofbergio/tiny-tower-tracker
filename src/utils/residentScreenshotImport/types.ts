@@ -20,9 +20,9 @@ export interface ScreenshotResidentCandidate {
 }
 
 export type ExtractProgressInfo = {
-  phase: 'loading' | 'cloud'
+  phase: 'processing'
   fileName?: string
-  progress?: number
+  progress?: number // 0-1 for determinate progress, undefined for indeterminate
   fileIndex?: number
   fileCount?: number
 }

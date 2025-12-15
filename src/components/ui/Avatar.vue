@@ -1,5 +1,5 @@
 <template>
-  <AvatarRoot :class="['relative flex shrink-0 overflow-hidden rounded-full', sizeClasses[size], $attrs.class]">
+  <AvatarRoot :class="['relative flex shrink-0 overflow-hidden rounded-full', sizeClasses[size]]">
     <AvatarImage v-if="src" :src="src" :alt="alt" class="aspect-square h-full w-full object-cover" />
     <AvatarFallback :class="['flex h-full w-full items-center justify-center rounded-full bg-muted text-muted-foreground', fallbackClass]">
       <slot name="fallback">
@@ -27,10 +27,6 @@ const props = withDefaults(defineProps<Props>(), {
   fallback: '',
   size: 'md',
   fallbackClass: '',
-})
-
-defineOptions({
-  inheritAttrs: false,
 })
 
 const sizeClasses = {

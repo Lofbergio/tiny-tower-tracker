@@ -4,8 +4,7 @@
     :decorative="decorative"
     :class="[
       'shrink-0 bg-border',
-      orientation === 'horizontal' ? 'h-px w-full' : 'h-full w-px',
-      $attrs.class
+      orientation === 'horizontal' ? 'h-px w-full' : 'h-full w-px'
     ]"
   />
 </template>
@@ -21,9 +20,5 @@ interface Props {
 withDefaults(defineProps<Props>(), {
   orientation: 'horizontal',
   decorative: true,
-})
-
-defineOptions({
-  inheritAttrs: false,
 })
 </script>

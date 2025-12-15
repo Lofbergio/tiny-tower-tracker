@@ -63,44 +63,155 @@
 - Use Tailwind utilities over custom CSS
 - Follow mobile-first responsive design
 
-## Vue-Specific Patterns (CRITICAL)
+## Vue-Specific Patterns (CRITICAL - READ THIS)
 
-**This is a Vue 3 project. DO NOT use React patterns or conventions.**
+**This is a Vue 3 project. DO NOT use React patterns, conventions, or utilities.**
 
 ### ✅ DO (Vue Way):
-- **Class binding:** Use Vue's native `:class` with arrays and objects
+
+**Styling & Classes:**
+- Use `:class` with arrays and computed properties:
   ```vue
-  :class="['base-class', { 'active': isActive }, $attrs.class]"
+  const buttonClass = computed(() => [baseClasses, variantClasses[props.variant]])
+  <button :class="buttonClass">
   ```
-- **Attribute inheritance:** Use `$attrs.class` and `defineOptions({ inheritAttrs: false })`
-- **Props:** Accept `class` naturally via `$attrs`, no need for `className` prop
-- **Conditional classes:** Use objects `{ 'text-red': isError }` or ternary in arrays
-- **Component patterns:** Follow Vue 3 + Composition API conventions
+- **Vue automatically merges classes** - NO need for `$attrs.class` or `inheritAttrs: false`!
+- Conditional classes: `{ 'active': isActive }` or ternary in arrays
+- Only use `defineOptions({ inheritAttrs: false })` when you need to pass attrs to a non-root element
+
+**Props & Events:**
+- Props: Just define them normally, no `className` or special handling needed
+- Events: Use `@click`, `@change`, etc. (kebab-case in templates)
+- Emit events with `defineEmits<{ (e: 'update:modelValue', value: string): void }>()`
+
+**Slots & Composition:**
+- Content composition: Use `<slot />` (default) or named `<slot name="header" />`
+- Scoped slots: `<slot :item="item" />` not render props
+- Composables: `useMyFeature()` not HOCs or hooks
+
+**Reactivity:**
+- State: `ref()`, `reactive()`, `computed()`
+- Side effects: `watch()`, `watchEffect()`, not `useEffect`
+- Computed values: `computed(() => ...)` not `useMemo`
 
 ### ❌ DO NOT (React Anti-Patterns):
-- **NO `cn()` utility functions** - This is a React/shadcn-ui pattern
-- **NO `className` props** - Vue supports `class` natively via `$attrs`
-- **NO manual class string merging** - Use Vue's `:class` binding
-- **NO JSX-style patterns** - Use Vue SFC templates
-- **NO React hooks naming** - Use Vue composables (useX not useX hook patterns)
 
-### Example of Proper Vue Class Binding:
+**NEVER use these React patterns:**
+- ❌ `cn()` or any class merging utility functions → Use `:class` arrays
+- ❌ `className` props → Use `class` via `$attrs`
+- ❌ `children` prop → Use `<slot />`
+- ❌ `onClick` props → Use `@click` directive
+- ❌ camelCase event props (`onChange`, `onSubmit`) → Use `@change`, `@submit`
+- ❌ `style` object props → Use `:style` binding
+- ❌ Render props → Use scoped slots
+- ❌ HOCs (Higher Order Components) → Use composables
+- ❌ `useState`/`useEffect` → Use `ref`/`watch`/`watchEffect`
+- ❌ Props drilling → Use `provide`/`inject`
+- ❌ `forwardRef` → Vue template refs work differently
+- ❌ `React.memo` → Use `computed()`
+- ❌ `useCallback`/`useMemo` → Use `computed()`
+- ❌ Fragment wrappers → Templates don't need them
+- ❌ `dangerouslySetInnerHTML` → Use `v-html`
+- ❌ `htmlFor` → Use `for` directly
+- ❌ Manual class string concatenation → Use `:class` binding
+- ❌ Spreading props like `{...props}` → Use `v-bind="$attrs"`
+- ❌ Using `$attrs.class` with `inheritAttrs: false` for basic components → Vue merges classes automatically!
+- ❌ Disabling `inheritAttrs` when you don't need to → Let Vue handle it naturally
+
+### Correct Vue Examples:
+
+**Class Binding (Study Existing Components):**
 ```vue
+<!-- Simple: Computed class array -->
+<script setup lang="ts">
+import { computed } from 'vue'
+
+const props = defineProps<{ variant?: 'default' | 'destructive' }>()
+
+const baseClasses = 'inline-flex items-center rounded-md'
+const variantClasses = {
+  default: 'bg-primary text-white',
+  destructive: 'bg-red-500 text-white',
+}
+
+const buttonClass = computed(() => [
+  baseClasses,
+  variantClasses[props.variant ?? 'default'],
+])
+</script>
+
 <template>
-  <!-- Base classes + conditional + inherited -->
-  <div :class="['flex items-center', { 'bg-red': hasError }, $attrs.class]">
-    Content
+  <button :class="buttonClass">
+    <slot />
+  </button>
+</template>
+```
+
+**Class Merging (Automatic in Vue!):**
+```vue
+<!-- Vue automatically merges parent classes with component classes -->
+<template>
+  <!-- Component defines base classes -->
+  <div class="flex items-center gap-2">
+    <slot />
   </div>
 </template>
 
-<script setup lang="ts">
-defineOptions({
-  inheritAttrs: false, // Prevents automatic class inheritance on root
-})
-</script>
+<!-- Usage: Parent passes additional classes -->
+<!-- <MyComponent class="mt-4 bg-red-500" /> -->
+<!-- Result: div will have "flex items-center gap-2 mt-4 bg-red-500" -->
+
+<!-- NO $attrs.class needed! NO inheritAttrs: false needed! Vue does this automatically! -->
 ```
 
-**If you catch yourself writing a `cn()` function or `className` prop, STOP and use Vue patterns instead.**
+**Only use `inheritAttrs: false` when you have a non-root target:**
+```vue
+<!-- Example: Passing attrs to a child element, not root -->
+<script setup lang="ts">
+defineOptions({ inheritAttrs: false })
+</script>
+
+<template>
+  <div class="wrapper">
+    <!-- Attrs go here, not on wrapper -->
+    <button v-bind="$attrs">
+      <slot />
+    </button>
+  </div>
+</template>
+```
+
+**Events:**
+```vue
+<!-- Emit properly typed events -->
+<script setup lang="ts">
+interface Emits {
+  (e: 'update:modelValue', value: string): void
+  (e: 'change', value: string): void
+}
+const emit = defineEmits<Emits>()
+
+function handleChange(value: string) {
+  emit('update:modelValue', value)
+  emit('change', value)
+}
+</script>
+
+<template>
+  <input @input="handleChange($event.target.value)" />
+</template>
+```
+
+### How to Spot React Code:
+
+**RED FLAGS - If you see ANY of these, it's React code:**
+1. Function calls for class merging: `cn(...)`, `clsx(...)`, `classNames(...)`
+2. Props named `className`, `onClick`, `onChange`, `children`
+3. Utility functions that filter/join classes
+4. Template code that looks like JSX
+5. Comments mentioning React, shadcn/ui (React version), or Next.js
+
+**When in doubt:** Look at existing components (`Button.vue`, `Badge.vue`, `Card.vue`) and follow those patterns exactly.
 
 ---
 

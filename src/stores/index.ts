@@ -30,7 +30,9 @@ export const useAppStore = defineStore('app', () => {
 
           // Data migration: Remove currentStore field from residents (if it exists)
           data.residents = data.residents.map(r => {
-            const { currentStore, ...resident } = r as Resident & { currentStore?: string }
+            const { currentStore: _currentStore, ...resident } = r as Resident & {
+              currentStore?: string
+            }
             return resident
           })
 

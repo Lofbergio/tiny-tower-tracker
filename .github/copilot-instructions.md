@@ -43,6 +43,7 @@
 ## User Preferences (Sticky)
 
 - **Single-user app.** Optimize for what the user personally needs day-to-day.
+- **ALWAYS YES.** Do not ask permission to continue or do the next obvious step; just proceed end-to-end. Only ask questions when the request is genuinely ambiguous or risky (data loss / breaking change).
 - **Deprioritize screen-reader/a11y-only work.** Do not spend time on ARIA/screen reader tuning or accessibility-only refinements unless it also improves the user's UX (speed, clarity, mobile ergonomics) or prevents real breakage.
 - **When the user states a broad preference like this, update these instructions immediately** so it doesnt get lost.
 
@@ -70,6 +71,7 @@
 ### ✅ DO (Vue Way):
 
 **Styling & Classes:**
+
 - Use `:class` with arrays and computed properties:
   ```vue
   const buttonClass = computed(() => [baseClasses, variantClasses[props.variant]])
@@ -80,16 +82,19 @@
 - Only use `defineOptions({ inheritAttrs: false })` when you need to pass attrs to a non-root element
 
 **Props & Events:**
+
 - Props: Just define them normally, no `className` or special handling needed
 - Events: Use `@click`, `@change`, etc. (kebab-case in templates)
 - Emit events with `defineEmits<{ (e: 'update:modelValue', value: string): void }>()`
 
 **Slots & Composition:**
+
 - Content composition: Use `<slot />` (default) or named `<slot name="header" />`
 - Scoped slots: `<slot :item="item" />` not render props
 - Composables: `useMyFeature()` not HOCs or hooks
 
 **Reactivity:**
+
 - State: `ref()`, `reactive()`, `computed()`
 - Side effects: `watch()`, `watchEffect()`, not `useEffect`
 - Computed values: `computed(() => ...)` not `useMemo`
@@ -97,6 +102,7 @@
 ### ❌ DO NOT (React Anti-Patterns):
 
 **NEVER use these React patterns:**
+
 - ❌ `cn()` or any class merging utility functions → Use `:class` arrays
 - ❌ `className` props → Use `class` via `$attrs`
 - ❌ `children` prop → Use `<slot />`
@@ -121,6 +127,7 @@
 ### Correct Vue Examples:
 
 **Class Binding (Study Existing Components):**
+
 ```vue
 <!-- Simple: Computed class array -->
 <script setup lang="ts">
@@ -134,10 +141,7 @@ const variantClasses = {
   destructive: 'bg-red-500 text-white',
 }
 
-const buttonClass = computed(() => [
-  baseClasses,
-  variantClasses[props.variant ?? 'default'],
-])
+const buttonClass = computed(() => [baseClasses, variantClasses[props.variant ?? 'default']])
 </script>
 
 <template>
@@ -148,6 +152,7 @@ const buttonClass = computed(() => [
 ```
 
 **Class Merging (Automatic in Vue!):**
+
 ```vue
 <!-- Vue automatically merges parent classes with component classes -->
 <template>
@@ -165,6 +170,7 @@ const buttonClass = computed(() => [
 ```
 
 **Only use `inheritAttrs: false` when you have a non-root target:**
+
 ```vue
 <!-- Example: Passing attrs to a child element, not root -->
 <script setup lang="ts">
@@ -182,6 +188,7 @@ defineOptions({ inheritAttrs: false })
 ```
 
 **Events:**
+
 ```vue
 <!-- Emit properly typed events -->
 <script setup lang="ts">
@@ -205,6 +212,7 @@ function handleChange(value: string) {
 ### How to Spot React Code:
 
 **RED FLAGS - If you see ANY of these, it's React code:**
+
 1. Function calls for class merging: `cn(...)`, `clsx(...)`, `classNames(...)`
 2. Props named `className`, `onClick`, `onChange`, `children`
 3. Utility functions that filter/join classes

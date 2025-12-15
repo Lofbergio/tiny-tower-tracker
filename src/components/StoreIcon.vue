@@ -5,10 +5,9 @@
     viewBox="0 0 64 64"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    :class="className"
   >
     <!-- Food Category -->
-    <g v-if="category === 'food'">
+    <g v-if="categoryKey === 'food'">
       <rect x="8" y="20" width="48" height="36" rx="4" :fill="colors.food" />
       <rect x="12" y="24" width="40" height="28" rx="2" fill="#fff" opacity="0.9" />
       <circle cx="24" cy="36" r="4" fill="#F59E0B" />
@@ -18,7 +17,7 @@
     </g>
 
     <!-- Service Category -->
-    <g v-else-if="category === 'service'">
+    <g v-else-if="categoryKey === 'service'">
       <rect x="8" y="20" width="48" height="36" rx="4" :fill="colors.service" />
       <rect x="12" y="24" width="40" height="28" rx="2" fill="#fff" opacity="0.9" />
       <rect x="20" y="32" width="24" height="3" rx="1.5" fill="#3B82F6" />
@@ -30,7 +29,7 @@
     </g>
 
     <!-- Recreation Category -->
-    <g v-else-if="category === 'recreation'">
+    <g v-else-if="categoryKey === 'recreation'">
       <rect x="8" y="20" width="48" height="36" rx="4" :fill="colors.recreation" />
       <rect x="12" y="24" width="40" height="28" rx="2" fill="#fff" opacity="0.9" />
       <circle cx="32" cy="38" r="8" fill="#A78BFA" />
@@ -40,7 +39,7 @@
     </g>
 
     <!-- Retail Category -->
-    <g v-else-if="category === 'retail'">
+    <g v-else-if="categoryKey === 'retail'">
       <rect x="8" y="20" width="48" height="36" rx="4" :fill="colors.retail" />
       <rect x="12" y="24" width="40" height="28" rx="2" fill="#fff" opacity="0.9" />
       <rect x="18" y="30" width="8" height="8" rx="1" fill="#EC4899" />
@@ -53,7 +52,7 @@
     </g>
 
     <!-- Creative Category -->
-    <g v-else-if="category === 'creative'">
+    <g v-else-if="categoryKey === 'creative'">
       <rect x="8" y="20" width="48" height="36" rx="4" :fill="colors.creative" />
       <rect x="12" y="24" width="40" height="28" rx="2" fill="#fff" opacity="0.9" />
       <path
@@ -87,11 +86,9 @@ const props = withDefaults(
   defineProps<{
     category: string
     size?: number
-    className?: string
   }>(),
   {
     size: 48,
-    className: '',
   }
 )
 
@@ -128,5 +125,5 @@ const colors = computed(() => {
   }
 })
 
-const category = computed(() => categoryType.value)
+const categoryKey = computed(() => categoryType.value)
 </script>

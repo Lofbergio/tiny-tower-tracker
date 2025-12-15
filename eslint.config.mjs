@@ -14,6 +14,7 @@ export default [
   {
     ignores: [
       'dist',
+      '.netlify',
       '.tmp',
       'node_modules',
       'build',
@@ -57,6 +58,15 @@ export default [
       '@typescript-eslint': typescript,
     },
     rules: {
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+
       // Vue specific rules
       'vue/multi-word-component-names': 'off',
       'vue/no-v-html': 'warn',

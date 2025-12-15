@@ -1,8 +1,8 @@
 <template>
   <DropdownMenuItem
     :class="[
-      'relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-      { 'text-destructive focus:text-destructive': variant === 'destructive' }
+      'pressable relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-[transform,background-color,color,opacity] duration-200 ease-out focus:bg-accent focus:text-accent-foreground active:scale-[0.99] data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      { 'text-destructive focus:text-destructive': variant === 'destructive' },
     ]"
     :disabled="disabled"
     @select="handleSelect"

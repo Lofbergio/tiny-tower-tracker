@@ -2,153 +2,157 @@
   <ErrorBoundary>
     <TooltipProvider>
       <div class="relative min-h-screen bg-background">
-      <div class="bg-grid-pattern pointer-events-none fixed inset-0" aria-hidden="true" />
-      <div class="relative">
-        <a
-          href="#main-content"
-          class="sr-only z-50 rounded-md bg-background px-3 py-2 text-sm font-medium text-foreground ring-2 ring-ring ring-offset-2 ring-offset-background focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
-        >
-          Skip to content
-        </a>
-        <nav class="sticky top-0 border-b bg-background/80 backdrop-blur-sm">
-          <div class="container mx-auto px-4">
-            <div class="flex h-16 items-center justify-between">
-              <div class="flex items-center gap-2">
-                <div class="text-2xl">🏢</div>
-                <h1
-                  class="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-xl font-bold text-transparent"
-                >
-                  Tiny Tower Tracker
-                </h1>
-              </div>
-              <div class="flex items-center gap-2">
-                <DarkModeToggle class="md:hidden" />
-                <div class="flex gap-2 md:hidden">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    aria-label="Toggle menu"
-                    aria-controls="mobile-menu"
-                    :aria-expanded="showMobileMenu"
-                    @click="showMobileMenu = !showMobileMenu"
+        <div class="bg-grid-pattern pointer-events-none fixed inset-0" aria-hidden="true" />
+        <div class="relative">
+          <a
+            href="#main-content"
+            class="sr-only z-50 rounded-md bg-background px-3 py-2 text-sm font-medium text-foreground ring-2 ring-ring ring-offset-2 ring-offset-background focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
+          >
+            Skip to content
+          </a>
+          <nav class="sticky top-0 border-b bg-background/80 backdrop-blur-sm">
+            <div class="container mx-auto px-4">
+              <div class="flex h-16 items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="text-2xl">🏢</div>
+                  <h1
+                    class="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-xl font-bold text-transparent"
                   >
-                    Menu
-                  </Button>
+                    Tiny Tower Tracker
+                  </h1>
                 </div>
-                <div class="hidden items-center gap-2 md:flex">
-                  <DarkModeToggle />
+                <div class="flex items-center gap-2">
+                  <DarkModeToggle class="md:hidden" />
+                  <div class="flex gap-2 md:hidden">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      aria-label="Toggle menu"
+                      aria-controls="mobile-menu"
+                      :aria-expanded="showMobileMenu"
+                      @click="showMobileMenu = !showMobileMenu"
+                    >
+                      Menu
+                    </Button>
+                  </div>
+                  <div class="hidden items-center gap-2 md:flex">
+                    <DarkModeToggle />
+                    <Button
+                      v-for="navRoute in routes"
+                      :key="navRoute.path"
+                      :variant="currentRoute === navRoute.path ? 'default' : 'ghost'"
+                      class="relative"
+                      @click="$router.push(navRoute.path)"
+                    >
+                      <span aria-hidden="true" class="mr-1">{{ navRoute.icon }}</span>
+                      {{ navRoute.name }}
+                      <CountBadge
+                        v-if="getPendingCount(navRoute.path) > 0"
+                        :count="getPendingCount(navRoute.path)"
+                        class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground"
+                      />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <Transition name="mobile-menu">
+              <div v-if="showMobileMenu" id="mobile-menu" class="border-t md:hidden">
+                <div class="container mx-auto space-y-1 px-4 py-2">
                   <Button
-                    v-for="navRoute in routes"
-                    :key="navRoute.path"
-                    :variant="currentRoute === navRoute.path ? 'default' : 'ghost'"
-                    class="relative"
-                    @click="$router.push(navRoute.path)"
+                    v-for="menuRoute in routes"
+                    :key="menuRoute.path"
+                    variant="ghost"
+                    class="relative w-full justify-start"
+                    @click="handleNavClick(menuRoute.path)"
                   >
-                    <span aria-hidden="true" class="mr-1">{{ navRoute.icon }}</span>
-                    {{ navRoute.name }}
+                    <span aria-hidden="true" class="mr-2">{{ menuRoute.icon }}</span>
+                    {{ menuRoute.name }}
                     <CountBadge
-                      v-if="getPendingCount(navRoute.path) > 0"
-                      :count="getPendingCount(navRoute.path)"
-                      class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground"
+                      v-if="getPendingCount(menuRoute.path) > 0"
+                      :count="getPendingCount(menuRoute.path)"
+                      class="absolute right-2 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground"
                     />
                   </Button>
                 </div>
               </div>
-            </div>
-          </div>
-          <div v-if="showMobileMenu" id="mobile-menu" class="border-t md:hidden">
-            <div class="container mx-auto space-y-1 px-4 py-2">
-              <Button
-                v-for="menuRoute in routes"
-                :key="menuRoute.path"
-                variant="ghost"
-                class="relative w-full justify-start"
-                @click="handleNavClick(menuRoute.path)"
-              >
-                <span aria-hidden="true" class="mr-2">{{ menuRoute.icon }}</span>
-                {{ menuRoute.name }}
-                <CountBadge
-                  v-if="getPendingCount(menuRoute.path) > 0"
-                  :count="getPendingCount(menuRoute.path)"
-                  class="absolute right-2 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground"
-                />
-              </Button>
-            </div>
-          </div>
-        </nav>
-
-        <main id="main-content" tabindex="-1" class="min-h-[calc(100vh-4rem)]">
-          <div
-            v-if="hasLoadError"
-            class="container mx-auto flex min-h-[calc(100vh-4rem)] items-center justify-center px-4"
-          >
-            <EmptyState
-              title="⚠️ Couldn't load game data"
-              description="The store/mission database didn't load. Check your connection and try again."
-            >
-              <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-                <Button class="w-full sm:w-auto" @click="retryLoad">Retry</Button>
-                <Button variant="outline" class="w-full sm:w-auto" @click="reloadPage">
-                  Reload
-                </Button>
-              </div>
-              <p v-if="loadErrorMessage" class="mt-3 text-xs text-muted-foreground">
-                {{ loadErrorMessage }}
-              </p>
-            </EmptyState>
-          </div>
-          <div
-            v-else-if="isLoading"
-            class="flex min-h-[calc(100vh-4rem)] items-center justify-center"
-            role="status"
-            aria-live="polite"
-          >
-            <div class="text-center">
-              <div
-                class="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent motion-reduce:animate-none"
-              />
-              <p class="text-muted-foreground">Loading your tower...</p>
-            </div>
-          </div>
-          <RouterView v-else v-slot="{ Component }">
-            <Transition name="page" mode="out-in">
-              <component :is="Component" :key="route.fullPath" />
             </Transition>
-          </RouterView>
-        </main>
+          </nav>
 
-        <!-- Mobile Bottom Navigation -->
-        <div
-          class="fixed bottom-0 left-0 right-0 border-t bg-background/95 backdrop-blur-sm md:hidden"
-        >
-          <div class="grid grid-cols-4 gap-1 p-2">
-            <button
-              v-for="mobileRoute in routes"
-              :key="mobileRoute.path"
-              :class="[
-                'pressable relative flex min-h-[60px] flex-col items-center justify-center rounded-md p-3 text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                currentRoute === mobileRoute.path
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground active:bg-accent',
-              ]"
-              :aria-label="`Navigate to ${mobileRoute.name}`"
-              :aria-current="currentRoute === mobileRoute.path ? 'page' : undefined"
-              @click="$router.push(mobileRoute.path)"
+          <main id="main-content" tabindex="-1" class="min-h-[calc(100vh-4rem)]">
+            <div
+              v-if="hasLoadError"
+              class="container mx-auto flex min-h-[calc(100vh-4rem)] items-center justify-center px-4"
             >
-              <span aria-hidden="true" class="text-base leading-none">{{ mobileRoute.icon }}</span>
-              <span>{{ mobileRoute.name }}</span>
-              <CountBadge
-                v-if="getPendingCount(mobileRoute.path) > 0"
-                :count="getPendingCount(mobileRoute.path)"
-                class="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground"
-              />
-            </button>
+              <EmptyState
+                title="⚠️ Couldn't load game data"
+                description="The store/mission database didn't load. Check your connection and try again."
+              >
+                <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+                  <Button class="w-full sm:w-auto" @click="retryLoad">Retry</Button>
+                  <Button variant="outline" class="w-full sm:w-auto" @click="reloadPage">
+                    Reload
+                  </Button>
+                </div>
+                <p v-if="loadErrorMessage" class="mt-3 text-xs text-muted-foreground">
+                  {{ loadErrorMessage }}
+                </p>
+              </EmptyState>
+            </div>
+            <div
+              v-else-if="isLoading"
+              class="flex min-h-[calc(100vh-4rem)] items-center justify-center"
+              role="status"
+              aria-live="polite"
+            >
+              <div class="text-center">
+                <div
+                  class="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent motion-reduce:animate-none"
+                />
+                <p class="text-muted-foreground">Loading your tower...</p>
+              </div>
+            </div>
+            <RouterView v-else v-slot="{ Component }">
+              <Transition name="page" mode="out-in">
+                <component :is="Component" :key="route.fullPath" />
+              </Transition>
+            </RouterView>
+          </main>
+
+          <!-- Mobile Bottom Navigation -->
+          <div
+            class="fixed bottom-0 left-0 right-0 border-t bg-background/95 backdrop-blur-sm md:hidden"
+          >
+            <div class="grid grid-cols-4 gap-1 p-2">
+              <button
+                v-for="mobileRoute in routes"
+                :key="mobileRoute.path"
+                :class="[
+                  'pressable relative flex min-h-[60px] flex-col items-center justify-center rounded-md p-3 text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  currentRoute === mobileRoute.path
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground active:bg-accent',
+                ]"
+                :aria-label="`Navigate to ${mobileRoute.name}`"
+                :aria-current="currentRoute === mobileRoute.path ? 'page' : undefined"
+                @click="$router.push(mobileRoute.path)"
+              >
+                <span aria-hidden="true" class="text-base leading-none">{{
+                  mobileRoute.icon
+                }}</span>
+                <span>{{ mobileRoute.name }}</span>
+                <CountBadge
+                  v-if="getPendingCount(mobileRoute.path) > 0"
+                  :count="getPendingCount(mobileRoute.path)"
+                  class="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground"
+                />
+              </button>
+            </div>
           </div>
+          <div class="h-[72px] md:hidden" />
+          <!-- Spacer for mobile nav -->
         </div>
-        <div class="h-[72px] md:hidden" />
-        <!-- Spacer for mobile nav -->
-      </div>
-      <Toast />
+        <Toast />
       </div>
     </TooltipProvider>
   </ErrorBoundary>

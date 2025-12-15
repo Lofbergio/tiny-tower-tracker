@@ -53,16 +53,18 @@ const toastClasses = {
 <style scoped>
 .toast-enter-active,
 .toast-leave-active {
-  transition: all 0.3s ease;
+  transition:
+    opacity 140ms ease,
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .toast-enter-from {
   opacity: 0;
-  transform: translateX(100%);
+  transform: translateX(120%) scale(0.96);
 }
 
 .toast-leave-to {
   opacity: 0;
-  transform: translateY(-20px);
+  transform: translateY(-12px) scale(0.97);
 }
 </style>

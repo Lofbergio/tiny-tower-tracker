@@ -15,7 +15,7 @@
         <TowerIllustration
           :width="120"
           :height="180"
-          class="opacity-70 transition-opacity hover:opacity-100"
+          class="motion-safe:animate-float-slow opacity-70 transition-opacity hover:opacity-100"
         />
       </template>
     </PageHeader>

@@ -4,6 +4,26 @@ export default {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-6px)' },
+        },
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(-1deg)' },
+          '50%': { transform: 'rotate(1deg)' },
+        },
+        pop: {
+          '0%': { transform: 'scale(0.96)', opacity: '0' },
+          '60%': { transform: 'scale(1.03)', opacity: '1' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+      },
+      animation: {
+        'float-slow': 'float 6.5s ease-in-out infinite',
+        'wiggle-slow': 'wiggle 1.8s ease-in-out infinite',
+        pop: 'pop 220ms cubic-bezier(0.16, 1, 0.3, 1)',
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

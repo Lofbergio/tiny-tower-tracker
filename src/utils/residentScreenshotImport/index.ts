@@ -50,7 +50,8 @@ export async function extractResidentsFromScreenshots(
         : []
     }
 
-    return [...threeCol, ...legacy]
+    // Dedupe the combined results from both extractors to avoid duplicates
+    return dedupe([...threeCol, ...legacy])
   }
 
   const allCandidates: ScreenshotResidentCandidate[] = []

@@ -26,19 +26,56 @@ export function dedupe(candidates: ScreenshotResidentCandidate[]): ScreenshotRes
   }
 
   function shouldMerge(a: ScreenshotResidentCandidate, b: ScreenshotResidentCandidate): boolean {
+    // Since candidates are already grouped by name, we should merge unless there are conflicts.
+    // Check for conflicting dream job store IDs
+    const aDreamId = a.dreamJobStoreId
+    const bDreamId = b.dreamJobStoreId
+    if (aDreamId && bDreamId && aDreamId !== bDreamId) {
+      // Different dream job IDs - only skip merge if they're clearly different stores
+      return false
+    }
+
+    // Check for conflicting current job store IDs
+    const aCurrentId = a.currentJobStoreId
+    const bCurrentId = b.currentJobStoreId
+    if (aCurrentId && bCurrentId && aCurrentId !== bCurrentId) {
+      // Different current job IDs - might be job changes or errors
+      // Continue to check text matches
+    }
+
+    // If we have any matching store IDs, definitely merge
+    if (aDreamId && bDreamId && aDreamId === bDreamId) return true
+    if (aCurrentId && bCurrentId && aCurrentId === bCurrentId) return true
+
+    // Text-based matching for when store IDs aren't available
     const aDream = dreamKeyFor(a)
     const bDream = dreamKeyFor(b)
     const aCurrent = currentKeyFor(a)
     const bCurrent = currentKeyFor(b)
 
+    // Same dream job text
     if (aDream && bDream && aDream === bDream) return true
 
-    // Same explicit current job match.
+    // Same explicit current job match
     if (aCurrent && bCurrent && aCurrent === bCurrent) return true
 
-    // Cross-match: one extractor sometimes mis-assigns current job as dream job.
+    // Cross-match: one extractor sometimes mis-assigns current job as dream job
     if (aDream && bCurrent && aDream === bCurrent) return true
     if (aCurrent && bDream && aCurrent === bDream) return true
+
+    // If one candidate has information and the other is mostly empty, merge them
+    // This catches cases where OCR picked up the same person but with partial info
+    const aHasInfo = Boolean(aDreamId || aDream || aCurrentId || aCurrent)
+    const bHasInfo = Boolean(bDreamId || bDream || bCurrentId || bCurrent)
+
+    // If one has no job info at all, merge (it's likely a poor OCR read)
+    if (!aHasInfo || !bHasInfo) return true
+
+    // If both have dream jobs but one is missing current job, merge
+    if ((aDreamId || aDream) && (bDreamId || bDream)) {
+      if (!aCurrent && !bCurrent) return true // Both have dream, neither has current
+      if (!aCurrent || !bCurrent) return true // One missing current
+    }
 
     return false
   }

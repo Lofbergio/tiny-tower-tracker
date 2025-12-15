@@ -37,11 +37,11 @@
           <p class="text-xs text-muted-foreground md:text-sm">Not placed in any store</p>
         </div>
         <div
-          v-if="needsPlacement && !dreamJobStoreBuilt"
+          v-if="needsPlacement && !dreamJobStoreBuilt && dreamJobDemandCount >= 3"
           class="motion-safe:animate-pop rounded bg-blue-50 p-1.5 dark:bg-blue-950/20 md:rounded-md md:p-2"
         >
           <p class="text-xs font-medium text-blue-800 dark:text-blue-200 md:text-sm">
-            🏗️ Dream job store not built yet
+            🏗️ Build dream job store ({{ dreamJobDemandCount }}/3 want it)
           </p>
         </div>
         <div
@@ -115,12 +115,14 @@ interface Props {
   currentStore?: string
   dreamJobStoreBuilt?: boolean
   dreamJobStoreFull?: boolean
+  dreamJobDemandCount?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
   currentStore: undefined,
   dreamJobStoreBuilt: true,
   dreamJobStoreFull: false,
+  dreamJobDemandCount: 0,
 })
 
 defineEmits<{

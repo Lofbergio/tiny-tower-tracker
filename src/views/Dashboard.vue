@@ -46,10 +46,14 @@
 
     <DashboardStats />
 
+    <Separator v-if="!hasNoData" class="my-8" />
+
     <PendingChanges />
 
-    <div class="mt-8">
-      <h2 class="mb-3 text-base font-semibold text-muted-foreground">Data</h2>
+    <Separator v-if="!hasNoData" class="my-8" />
+
+    <div>
+      <h2 class="mb-3 text-base font-semibold text-muted-foreground">Data Management</h2>
       <DataManagement />
     </div>
   </div>
@@ -62,6 +66,7 @@ import PageHeader from '@/components/PageHeader.vue'
 import PendingChanges from '@/components/PendingChanges.vue'
 import TowerIllustration from '@/components/TowerIllustration.vue'
 import Button from '@/components/ui/Button.vue'
+import Separator from '@/components/ui/Separator.vue'
 import { APP_CONSTANTS } from '@/constants'
 import { useUserMissionsWithData, useUserStoresWithData } from '@/queries'
 import { useResidentsStore } from '@/stores'

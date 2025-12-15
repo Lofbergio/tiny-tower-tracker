@@ -32,10 +32,10 @@
             class="flex min-h-[44px] items-center justify-between gap-3 border-b px-3 last:border-b-0"
           >
             <div class="flex min-w-0 flex-1 items-center gap-2">
-              <img
+              <Avatar
                 :src="getResidentAvatarUrl(residentId)"
                 :alt="getResidentName(residentId)"
-                class="h-7 w-7 shrink-0 rounded-full border"
+                size="sm"
               />
               <span class="min-w-0 flex-1 truncate text-sm">{{ getResidentName(residentId) }}</span>
             </div>
@@ -52,7 +52,9 @@
       </div>
       <div v-else class="text-sm text-muted-foreground">No residents assigned</div>
 
-      <div class="mt-auto pt-3 md:pt-4">
+      <Separator class="my-3 md:my-4" />
+
+      <div class="mt-auto">
         <div v-if="capacity < 3" class="space-y-2">
           <Button variant="outline" size="sm" class="w-full" @click="$emit('add-resident')">
             Add Resident ({{ capacity }}/3)
@@ -80,9 +82,11 @@ import { getCategoryColors } from '@/utils/categoryColors'
 import { formatResidentName } from '@/utils/residentName'
 import { computed } from 'vue'
 import StoreIcon from './StoreIcon.vue'
+import Avatar from './ui/Avatar.vue'
 import Badge from './ui/Badge.vue'
 import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
+import Separator from './ui/Separator.vue'
 
 interface Props {
   userStore: UserStore & { store: Store }

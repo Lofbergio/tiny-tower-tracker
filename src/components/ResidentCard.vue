@@ -5,12 +5,7 @@
   >
     <div class="flex flex-col space-y-1 p-3 md:space-y-1.5 md:p-6">
       <div class="flex items-center gap-3">
-        <img
-          :src="avatarUrl"
-          :alt="displayName"
-          class="h-12 w-12 shrink-0 rounded-full border-2"
-          :class="statusBorderColor.replace('border-l-4', 'border')"
-        />
+        <Avatar :src="avatarUrl" :alt="displayName" size="lg" :class="statusBorderColor.replace('border-l-4', 'border-2')" />
         <h3
           class="flex-1 text-lg font-semibold leading-tight md:text-2xl md:leading-none md:tracking-tight"
         >
@@ -49,7 +44,9 @@
         </div>
       </div>
 
-      <div class="mt-3 space-y-2 md:mt-4">
+      <Separator class="my-3 md:my-4" />
+
+      <div class="space-y-2">
         <Button
           v-if="needsPlacement && canPlaceInDreamJob"
           variant="default"
@@ -86,8 +83,10 @@ import type { Resident, Store } from '@/types'
 import { getResidentAvatarUrl } from '@/utils/avatar'
 import { formatResidentName } from '@/utils/residentName'
 import { computed } from 'vue'
+import Avatar from './ui/Avatar.vue'
 import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
+import Separator from './ui/Separator.vue'
 
 interface Props {
   resident: Resident

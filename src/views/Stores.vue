@@ -141,15 +141,25 @@
           name="list"
           class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
         >
-          <StoreCard
+          <div
             v-for="item in activeStores"
+            :id="getStoreAnchorId(item.userStore.storeId)"
             :key="item.userStore.storeId"
-            :user-store="item.userStore"
-            :residents="residents"
-            :is-complete="false"
-            @remove-resident="handleRemoveResident(item.userStore.storeId, $event)"
-            @add-resident="handleAddResidentToStore(item.userStore.storeId)"
-          />
+            :class="[
+              'scroll-mt-20',
+              focusedStoreId === item.userStore.storeId
+                ? 'rounded-lg ring-2 ring-primary ring-offset-2 ring-offset-background'
+                : '',
+            ]"
+          >
+            <StoreCard
+              :user-store="item.userStore"
+              :residents="residents"
+              :is-complete="false"
+              @remove-resident="handleRemoveResident(item.userStore.storeId, $event)"
+              @add-resident="handleAddResidentToStore(item.userStore.storeId)"
+            />
+          </div>
         </TransitionGroup>
       </div>
 
@@ -165,15 +175,25 @@
           name="list"
           class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
         >
-          <StoreCard
+          <div
             v-for="item in completeStores"
+            :id="getStoreAnchorId(item.userStore.storeId)"
             :key="item.userStore.storeId"
-            :user-store="item.userStore"
-            :residents="residents"
-            :is-complete="true"
-            @remove-resident="handleRemoveResident(item.userStore.storeId, $event)"
-            @add-resident="handleAddResidentToStore(item.userStore.storeId)"
-          />
+            :class="[
+              'scroll-mt-20',
+              focusedStoreId === item.userStore.storeId
+                ? 'rounded-lg ring-2 ring-primary ring-offset-2 ring-offset-background'
+                : '',
+            ]"
+          >
+            <StoreCard
+              :user-store="item.userStore"
+              :residents="residents"
+              :is-complete="true"
+              @remove-resident="handleRemoveResident(item.userStore.storeId, $event)"
+              @add-resident="handleAddResidentToStore(item.userStore.storeId)"
+            />
+          </div>
         </TransitionGroup>
       </div>
     </div>
@@ -277,7 +297,8 @@ import type { Resident, Store, UserStore } from '@/types'
 import { getCategoryColors } from '@/utils/categoryColors'
 import { formatResidentName } from '@/utils/residentName'
 import { useToast } from '@/utils/toast'
-import { computed, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 const storesStore = useStoresStore()
 const residentsStore = useResidentsStore()
@@ -286,6 +307,44 @@ const { residents } = residentsStore
 const toast = useToast()
 const { showConfirmDialog, confirmDialogData, confirm } = useConfirmDialog()
 const { isDark } = useDarkMode()
+const route = useRoute()
+const router = useRouter()
+
+const focusedStoreId = computed(() => {
+  const value = route.query.focusStoreId
+  return typeof value === 'string' && value.trim() ? value : undefined
+})
+
+function getStoreAnchorId(storeId: string) {
+  return `store-${storeId}`
+}
+
+async function focusStoreIfNeeded() {
+  const storeId = focusedStoreId.value
+  if (!storeId) return
+
+  await nextTick()
+
+  const el = document.getElementById(getStoreAnchorId(storeId))
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  // Clear query param after a short moment so the highlight doesn't stick.
+  window.setTimeout(() => {
+    const nextQuery = { ...route.query }
+    delete nextQuery.focusStoreId
+    router.replace({ query: nextQuery })
+  }, 1200)
+}
+
+onMounted(() => {
+  focusStoreIfNeeded()
+})
+
+watch(focusedStoreId, () => {
+  focusStoreIfNeeded()
+})
 
 const residentById = computed(() => {
   const map = new Map<string, Resident>()

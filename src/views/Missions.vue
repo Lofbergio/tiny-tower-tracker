@@ -69,7 +69,7 @@
       <TabsList>
         <TabsTrigger value="pending"> Pending ({{ pendingMissions.length }}) </TabsTrigger>
         <TabsTrigger value="completed"> Completed ({{ completedMissions.length }}) </TabsTrigger>
-        <TabsTrigger value="all"> All ({{ userMissions.length }}) </TabsTrigger>
+        <TabsTrigger value="all"> Tracked ({{ userMissions.length }}) </TabsTrigger>
       </TabsList>
       <TabsContent value="pending">
         <EmptyState
@@ -354,7 +354,7 @@ const sortedCompletableMissions = computed(() => {
 
 const sortedNonCompletableMissions = computed(() => {
   const stores = userStores.value.map(us => ({ storeId: us.storeId, residents: us.residents }))
-  if (stores.length === 0 || allStores.value.length === 0) {
+  if (allStores.value.length === 0) {
     return [] as Array<{ mission: Mission; missingStores: string[] }>
   }
 

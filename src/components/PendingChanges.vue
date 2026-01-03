@@ -45,7 +45,17 @@
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ placement.resident.name }}</h4>
                 <p class="text-sm text-muted-foreground">
-                  Should be placed in <strong>{{ placement.storeName }}</strong> (dream job)
+                  Should be placed in
+                  <strong class="inline-flex items-center gap-1.5">
+                    <StoreIcon
+                      v-if="storeById.get(placement.storeId)"
+                      :category="storeById.get(placement.storeId)?.category ?? ''"
+                      :size="16"
+                      class="shrink-0"
+                    />
+                    {{ placement.storeName }}
+                  </strong>
+                  (dream job)
                 </p>
                 <p
                   v-if="placement.isFull"
@@ -54,13 +64,22 @@
                   ⚠️ Store is full (3/3). You may need to evict a resident.
                 </p>
               </div>
-              <Button
-                class="w-full sm:w-auto"
-                :disabled="placement.isFull"
-                @click="handlePlaceResident(placement.resident.id, placement.storeId)"
-              >
-                Place Here
-              </Button>
+              <div class="flex w-full flex-col gap-2 sm:w-auto">
+                <Button
+                  class="w-full sm:w-auto"
+                  :disabled="placement.isFull"
+                  @click="handlePlaceResident(placement.resident.id, placement.storeId)"
+                >
+                  Place Here
+                </Button>
+                <Button
+                  variant="outline"
+                  class="w-full sm:w-auto"
+                  @click="goToStore(placement.storeId)"
+                >
+                  Open Store
+                </Button>
+              </div>
             </div>
           </div>
         </Card>
@@ -80,16 +99,34 @@
           class="border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20"
         >
           <div class="p-4 sm:p-6">
-            <div class="flex items-start justify-between">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div class="flex-1">
                 <h4 class="mb-1 font-semibold">{{ warning.resident.name }}</h4>
                 <p class="text-sm text-muted-foreground">
-                  Dream job is <strong>{{ warning.storeName }}</strong
-                  >, but store is full (3/3)
+                  Dream job is
+                  <strong class="inline-flex items-center gap-1.5">
+                    <StoreIcon
+                      v-if="storeById.get(warning.storeId)"
+                      :category="storeById.get(warning.storeId)?.category ?? ''"
+                      :size="16"
+                      class="shrink-0"
+                    />
+                    {{ warning.storeName }}
+                  </strong>
+                  , but store is full (3/3)
                 </p>
                 <p class="mt-1 text-sm text-muted-foreground">
                   Consider evicting a resident from this store
                 </p>
+              </div>
+              <div class="flex w-full flex-col gap-2 sm:w-auto">
+                <Button
+                  variant="outline"
+                  class="w-full sm:w-auto"
+                  @click="goToStore(warning.storeId)"
+                >
+                  Open Store
+                </Button>
               </div>
             </div>
           </div>
@@ -110,9 +147,17 @@
           class="border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-900/20"
         >
           <div class="p-4 sm:p-6">
-            <div class="flex items-start justify-between">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div class="flex-1">
-                <h4 class="mb-1 font-semibold">{{ opportunity.storeName }}</h4>
+                <h4 class="mb-1 inline-flex items-center gap-2 font-semibold">
+                  <StoreIcon
+                    v-if="storeById.get(opportunity.storeId)"
+                    :category="storeById.get(opportunity.storeId)?.category ?? ''"
+                    :size="18"
+                    class="shrink-0"
+                  />
+                  <span>{{ opportunity.storeName }}</span>
+                </h4>
                 <p class="text-sm text-muted-foreground">
                   {{ opportunity.residents.length }} resident(s) have this as their dream job:
                 </p>
@@ -121,6 +166,11 @@
                     • {{ resident.name }}
                   </li>
                 </ul>
+              </div>
+              <div class="flex w-full flex-col gap-2 sm:w-auto">
+                <Button class="w-full sm:w-auto" @click="handleAddStore(opportunity.storeId)">
+                  Add Store
+                </Button>
               </div>
             </div>
           </div>
@@ -143,6 +193,8 @@ import { useMissionsStore, useResidentsStore, useStoresStore } from '@/stores'
 import type { Resident, Store } from '@/types'
 import { useToast } from '@/utils/toast'
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import StoreIcon from './StoreIcon.vue'
 import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
 import EmptyState from './ui/EmptyState.vue'
@@ -153,6 +205,7 @@ const missionsStore = useMissionsStore()
 const { userStores, allStores } = useUserStoresWithData()
 const { completableMissions } = useCompletableMissions()
 const toast = useToast()
+const router = useRouter()
 
 const storeById = computed(() => {
   const map = new Map<string, Store>()
@@ -303,5 +356,25 @@ function handlePlaceResident(residentId: string, storeId: string) {
   } else {
     toast.error(result.error ?? 'Failed to place resident')
   }
+}
+
+function goToStore(storeId: string) {
+  router.push({
+    path: '/stores',
+    query: {
+      focusStoreId: storeId,
+    },
+  })
+}
+
+function handleAddStore(storeId: string) {
+  const store = storeById.value.get(storeId)
+  const added = storesStore.addStore(storeId)
+  if (added) {
+    toast.success(`Added ${store?.name ?? 'store'}`)
+    goToStore(storeId)
+    return
+  }
+  toast.info('Store already added')
 }
 </script>

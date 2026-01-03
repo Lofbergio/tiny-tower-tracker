@@ -98,6 +98,16 @@ export function useUserMissionsWithData() {
   const missionsStore = useMissionsStore()
   const { data: allMissions } = useMissionsQuery()
 
+  function placeholderMission(id: string): Mission {
+    return {
+      id,
+      name: `Unknown mission (${id})`,
+      description: 'Mission data is unavailable right now.',
+      requirements: [],
+      reward: 0,
+    }
+  }
+
   const missionsById = computed(() => {
     const map = new Map<string, Mission>()
     for (const mission of allMissions.value ?? []) {
@@ -107,21 +117,13 @@ export function useUserMissionsWithData() {
   })
 
   const userMissionsWithData = computed(() => {
-    if (!allMissions.value) {
-      return []
-    }
-
-    return missionsStore.userMissions
-      .map((um: UserMission) => {
-        const mission = missionsById.value.get(um.missionId)
-        return mission
-          ? {
-              ...um,
-              mission,
-            }
-          : null
-      })
-      .filter((m): m is UserMission & { mission: Mission } => m !== null)
+    return missionsStore.userMissions.map((um: UserMission) => {
+      const mission = missionsById.value.get(um.missionId) ?? placeholderMission(um.missionId)
+      return {
+        ...um,
+        mission,
+      }
+    })
   })
 
   const pendingMissions = computed(() => {

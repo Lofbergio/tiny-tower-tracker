@@ -13,7 +13,7 @@
         <TowerIllustration
           :width="110"
           :height="165"
-          class="motion-safe:animate-float-slow opacity-70 transition-opacity hover:opacity-100"
+          class="opacity-70 transition-opacity hover:opacity-100 motion-safe:animate-float-slow"
         />
       </template>
     </PageHeader>
@@ -217,27 +217,29 @@
         class="relative grid gap-3 md:grid-cols-2 lg:grid-cols-3"
       >
         <Card
-          v-for="mission in sortedNonCompletableMissions"
-          :key="mission.id"
+          v-for="entry in sortedNonCompletableMissions"
+          :key="entry.mission.id"
           class="pressable group relative cursor-pointer touch-manipulation overflow-hidden border-l-4 border-gray-400 opacity-70 transition-all hover:opacity-90 active:opacity-95 dark:border-gray-600"
-          @click="handleAddMission(mission.id)"
+          @click="handleAddMission(entry.mission.id)"
         >
           <div class="relative flex flex-col space-y-1 p-3 md:p-4">
             <div class="flex items-center justify-between gap-2">
               <h3 class="text-base font-semibold leading-tight md:text-lg">
-                {{ mission.name }}
+                {{ entry.mission.name }}
               </h3>
-              <Badge variant="outline" class="shrink-0 text-xs">💰 {{ mission.reward }}</Badge>
+              <Badge variant="outline" class="shrink-0 text-xs"
+                >💰 {{ entry.mission.reward }}</Badge
+              >
             </div>
             <p class="line-clamp-1 text-xs text-muted-foreground md:line-clamp-2">
-              {{ mission.description }}
+              {{ entry.mission.description }}
             </p>
           </div>
           <div class="p-3 pt-0 md:p-4 md:pt-0">
             <div class="space-y-2">
               <ul class="space-y-0.5 text-xs">
                 <li
-                  v-for="(req, index) in mission.requirements"
+                  v-for="(req, index) in entry.mission.requirements"
                   :key="index"
                   class="flex items-center gap-1.5"
                 >
@@ -246,11 +248,11 @@
                 </li>
               </ul>
               <div
-                v-if="getMissingStores(mission).length > 0"
+                v-if="entry.missingStores.length > 0"
                 class="rounded bg-yellow-50 p-1.5 dark:bg-yellow-900/20 md:p-2"
               >
                 <p class="text-xs font-medium text-yellow-800 dark:text-yellow-200">
-                  Need: {{ getMissingStores(mission).join(', ') }}
+                  Need: {{ entry.missingStores.join(', ') }}
                 </p>
               </div>
             </div>
@@ -297,7 +299,11 @@ import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { useCompletableMissions, useUserMissionsWithData, useUserStoresWithData } from '@/queries'
 import { useMissionsStore } from '@/stores'
 import type { Mission, UserMission } from '@/types'
-import { getMissionCoverage } from '@/utils/missionMatcher'
+import {
+  createMissionMatcherContext,
+  getMissingStoresWithContext,
+  getMissionCoverageWithContext,
+} from '@/utils/missionMatcher'
 import { useToast } from '@/utils/toast'
 import { computed, ref } from 'vue'
 
@@ -317,6 +323,22 @@ const availableMissions = computed(() => {
   return allMissions.value.filter(m => !userMissionIds.has(m.id))
 })
 
+const missionById = computed(() => {
+  const map = new Map<string, Mission>()
+  for (const mission of allMissions.value) {
+    map.set(mission.id, mission)
+  }
+  return map
+})
+
+const userMissionById = computed(() => {
+  const map = new Map<string, UserMission & { mission: Mission }>()
+  for (const um of userMissions.value) {
+    map.set(um.missionId, um)
+  }
+  return map
+})
+
 const availableCompletableMissions = computed(() => {
   return availableMissions.value.filter(m => isMissionCompletable(m.id))
 })
@@ -332,22 +354,32 @@ const sortedCompletableMissions = computed(() => {
 
 const sortedNonCompletableMissions = computed(() => {
   const stores = userStores.value.map(us => ({ storeId: us.storeId, residents: us.residents }))
+  if (stores.length === 0 || allStores.value.length === 0) {
+    return [] as Array<{ mission: Mission; missingStores: string[] }>
+  }
 
-  return [...availableNonCompletableMissions.value].sort((a, b) => {
-    const aCoverage = getMissionCoverage(a, stores, allStores.value)
-    const bCoverage = getMissionCoverage(b, stores, allStores.value)
+  const context = createMissionMatcherContext(stores, allStores.value)
 
-    if (bCoverage.ratio !== aCoverage.ratio) {
-      return bCoverage.ratio - aCoverage.ratio
-    }
-    if (bCoverage.satisfied !== aCoverage.satisfied) {
-      return bCoverage.satisfied - aCoverage.satisfied
-    }
-    if (b.reward !== a.reward) {
-      return b.reward - a.reward
-    }
-    return a.name.localeCompare(b.name)
+  const meta = availableNonCompletableMissions.value.map(mission => {
+    const coverage = getMissionCoverageWithContext(mission, context)
+    const missingStores = getMissingStoresWithContext(mission, context)
+    return { mission, coverage, missingStores }
   })
+
+  meta.sort((a, b) => {
+    if (b.coverage.ratio !== a.coverage.ratio) {
+      return b.coverage.ratio - a.coverage.ratio
+    }
+    if (b.coverage.satisfied !== a.coverage.satisfied) {
+      return b.coverage.satisfied - a.coverage.satisfied
+    }
+    if (b.mission.reward !== a.mission.reward) {
+      return b.mission.reward - a.mission.reward
+    }
+    return a.mission.name.localeCompare(b.mission.name)
+  })
+
+  return meta.map(({ mission, missingStores }) => ({ mission, missingStores }))
 })
 
 // Stats for banner
@@ -370,30 +402,12 @@ const stats = computed(() => {
   }
 })
 
-// Get missing stores for a mission
-function getMissingStores(mission: Mission): string[] {
-  if (!allStores.value || userStores.value.length === 0) {
-    return []
-  }
-
-  const userStoreIds = new Set(userStores.value.map((us: { storeId: string }) => us.storeId))
-  const requiredStores = new Set(mission.requirements.map(req => req.store))
-
-  const missing: string[] = []
-  for (const storeName of requiredStores) {
-    const store = allStores.value.find((s: { name: string }) => s.name === storeName)
-    if (store && !userStoreIds.has(store.id)) {
-      missing.push(storeName)
-    }
-  }
-
-  return missing
-}
+// Missing stores are precomputed for non-completable missions (see sortedNonCompletableMissions)
 
 function handleAddMission(missionId: string) {
   const success = missionsStore.addMission(missionId)
   if (success) {
-    const mission = allMissions.value.find(m => m.id === missionId)
+    const mission = missionById.value.get(missionId)
     toast.success(`✓ Added ${mission?.name} (${mission?.reward} Bux)`)
   } else {
     toast.error('Mission already added')
@@ -401,9 +415,7 @@ function handleAddMission(missionId: string) {
 }
 
 function handleCompleteMission(missionId: string) {
-  const mission = userMissions.value.find(
-    (um: UserMission & { mission: Mission }) => um.missionId === missionId
-  )
+  const mission = userMissionById.value.get(missionId)
   if (!mission) {
     return
   }
@@ -417,9 +429,7 @@ function handleCompleteMission(missionId: string) {
 }
 
 function handleReopenMission(missionId: string) {
-  const mission = userMissions.value.find(
-    (um: UserMission & { mission: Mission }) => um.missionId === missionId
-  )
+  const mission = userMissionById.value.get(missionId)
   if (!mission) {
     return
   }
@@ -433,9 +443,7 @@ function handleReopenMission(missionId: string) {
 }
 
 function handleRemoveMission(missionId: string) {
-  const mission = userMissions.value.find(
-    (um: UserMission & { mission: Mission }) => um.missionId === missionId
-  )
+  const mission = userMissionById.value.get(missionId)
   if (!mission) {
     return
   }

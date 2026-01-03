@@ -9,6 +9,44 @@ import {
   similarityNoSpace,
 } from './textUtils'
 
+type StoreMatchIndex = {
+  byLowerName: Map<string, Store>
+  byNormalizedName: Map<string, Store>
+  byNoSpaceName: Map<string, Store>
+  embeddedNeedles: Array<{ store: Store; needle: string }>
+}
+
+const storeMatchIndexCache = new WeakMap<Store[], StoreMatchIndex>()
+
+function getStoreMatchIndex(stores: Store[]): StoreMatchIndex {
+  const cached = storeMatchIndexCache.get(stores)
+  if (cached) return cached
+
+  const byLowerName = new Map<string, Store>()
+  const byNormalizedName = new Map<string, Store>()
+  const byNoSpaceName = new Map<string, Store>()
+  const embeddedNeedles: Array<{ store: Store; needle: string }> = []
+
+  for (const store of stores) {
+    byLowerName.set(store.name.toLowerCase(), store)
+
+    const normalized = normalizeForMatch(store.name)
+    if (normalized) {
+      byNormalizedName.set(normalized, store)
+    }
+
+    const noSpace = normalizeForNoSpaceMatch(store.name)
+    if (noSpace) {
+      byNoSpaceName.set(noSpace, store)
+      embeddedNeedles.push({ store, needle: noSpace })
+    }
+  }
+
+  const index: StoreMatchIndex = { byLowerName, byNormalizedName, byNoSpaceName, embeddedNeedles }
+  storeMatchIndexCache.set(stores, index)
+  return index
+}
+
 export function matchStore(
   dreamJobRaw: string,
   stores: Store[]
@@ -17,6 +55,8 @@ export function matchStore(
   storeName?: string
   confidence: number
 } {
+  const index = getStoreMatchIndex(stores)
+
   const raw = dreamJobRaw.trim()
   if (!raw) return { confidence: 0 }
   if (isUnemployedText(raw)) return { confidence: 0 }
@@ -24,24 +64,24 @@ export function matchStore(
   const collapsedNoSpace = collapseImmediateDuplicateNoSpace(raw)
   const rawNoSpace = normalizeForNoSpaceMatch(raw)
 
-  const exact = stores.find(s => s.name.toLowerCase() === raw.toLowerCase())
+  const exact = index.byLowerName.get(raw.toLowerCase())
   if (exact) return { storeId: exact.id, storeName: exact.name, confidence: 1 }
 
   const normalizedRaw = normalizeForMatch(raw)
-  const normalizedExact = stores.find(s => normalizeForMatch(s.name) === normalizedRaw)
+  const normalizedExact = normalizedRaw ? index.byNormalizedName.get(normalizedRaw) : undefined
   if (normalizedExact) {
     return { storeId: normalizedExact.id, storeName: normalizedExact.name, confidence: 0.98 }
   }
 
   if (rawNoSpace) {
-    const noSpaceExact = stores.find(s => normalizeForNoSpaceMatch(s.name) === rawNoSpace)
+    const noSpaceExact = index.byNoSpaceName.get(rawNoSpace)
     if (noSpaceExact) {
       return { storeId: noSpaceExact.id, storeName: noSpaceExact.name, confidence: 0.98 }
     }
   }
 
   if (collapsedNoSpace) {
-    const collapsedExact = stores.find(s => normalizeForNoSpaceMatch(s.name) === collapsedNoSpace)
+    const collapsedExact = index.byNoSpaceName.get(collapsedNoSpace)
     if (collapsedExact) {
       return { storeId: collapsedExact.id, storeName: collapsedExact.name, confidence: 0.98 }
     }
@@ -128,13 +168,13 @@ export function findEmbeddedStoresInText(
   text: string,
   stores: Store[]
 ): Array<{ store: Store; index: number }> {
+  const index = getStoreMatchIndex(stores)
   const hay = normalizeForNoSpaceMatch(text)
   if (!hay) return []
 
   const hits: Array<{ store: Store; index: number }> = []
-  for (const store of stores) {
-    const needle = normalizeForNoSpaceMatch(store.name)
-    if (!needle || needle.length < 4) continue
+  for (const { store, needle } of index.embeddedNeedles) {
+    if (needle.length < 4) continue
     const idx = hay.indexOf(needle)
     if (idx >= 0) {
       hits.push({ store, index: idx })

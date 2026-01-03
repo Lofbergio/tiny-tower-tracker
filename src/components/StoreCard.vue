@@ -107,10 +107,18 @@ const store = computed(() => props.userStore.store)
 const residents = computed(() => props.userStore.residents)
 const capacity = computed(() => residents.value.length)
 
+const residentById = computed(() => {
+  const map = new Map<string, Resident>()
+  for (const resident of props.residents) {
+    map.set(resident.id, resident)
+  }
+  return map
+})
+
 const categoryColors = computed(() => getCategoryColors(store.value.category, isDark.value))
 
 function getResidentName(residentId: string) {
-  const resident = props.residents.find(r => r.id === residentId)
+  const resident = residentById.value.get(residentId)
   return resident ? formatResidentName(resident.name) : 'Unknown'
 }
 

@@ -23,6 +23,14 @@ export function useScreenshotResidentImport(options: {
   const ocrFileCount = ref<number | null>(null)
   const lastOcrPages = ref<OcrPage[]>([])
 
+  const ocrPageByFileName = computed(() => {
+    const map = new Map<string, OcrPage>()
+    for (const page of lastOcrPages.value) {
+      map.set(page.fileName, page)
+    }
+    return map
+  })
+
   const isOnline = ref(typeof navigator !== 'undefined' ? navigator.onLine : true)
 
   const hasChosenScreenshots = computed(() => screenshotFiles.value.length > 0)
@@ -131,7 +139,7 @@ export function useScreenshotResidentImport(options: {
   }
 
   async function copyOcrFixtureToClipboard(fileName: string) {
-    const page = lastOcrPages.value.find(p => p.fileName === fileName)
+    const page = ocrPageByFileName.value.get(fileName)
     if (!page) {
       options.toast.error('No OCR fixture found for that file yet')
       return

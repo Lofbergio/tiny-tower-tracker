@@ -151,6 +151,24 @@ export const useResidentsStore = defineStore('residents', () => {
 
   const residents = computed(() => appStore.data.residents)
 
+  const residentById = computed(() => {
+    const map = new Map<string, Resident>()
+    for (const resident of appStore.data.residents) {
+      map.set(resident.id, resident)
+    }
+    return map
+  })
+
+  const currentStoreByResidentId = computed(() => {
+    const map = new Map<string, string>()
+    for (const userStore of appStore.data.stores) {
+      for (const residentId of userStore.residents) {
+        map.set(residentId, userStore.storeId)
+      }
+    }
+    return map
+  })
+
   function createResident(
     name: string,
     dreamJob: string
@@ -220,7 +238,7 @@ export const useResidentsStore = defineStore('residents', () => {
   }
 
   function updateResident(residentId: string, updates: Partial<Resident>): boolean {
-    const resident = appStore.data.residents.find(r => r.id === residentId)
+    const resident = residentById.value.get(residentId)
     if (resident) {
       // Validate name if it's being updated
       if (updates.name !== undefined) {
@@ -239,17 +257,14 @@ export const useResidentsStore = defineStore('residents', () => {
   }
 
   function getCurrentStore(residentId: string): string | undefined {
-    const userStore = appStore.data.stores.find(us => us.residents.includes(residentId))
-    return userStore?.storeId
+    return currentStoreByResidentId.value.get(residentId)
   }
 
   function getResidentsNotInDreamJob() {
+    const map = currentStoreByResidentId.value
     return appStore.data.residents.filter(r => {
-      const currentStore = getCurrentStore(r.id)
-      if (!currentStore) {
-        return true
-      }
-      return currentStore !== r.dreamJob
+      const currentStore = map.get(r.id)
+      return !currentStore || currentStore !== r.dreamJob
     })
   }
 
@@ -273,6 +288,24 @@ export const useStoresStore = defineStore('stores', () => {
   const appStore = useAppStore()
 
   const userStores = computed(() => appStore.data.stores)
+
+  const userStoreById = computed(() => {
+    const map = new Map<string, { storeId: string; residents: string[] }>()
+    for (const us of appStore.data.stores) {
+      map.set(us.storeId, us)
+    }
+    return map
+  })
+
+  const storeIdByResidentId = computed(() => {
+    const map = new Map<string, string>()
+    for (const us of appStore.data.stores) {
+      for (const residentId of us.residents) {
+        map.set(residentId, us.storeId)
+      }
+    }
+    return map
+  })
 
   function addStore(storeId: string): boolean {
     if (appStore.data.stores.some(us => us.storeId === storeId)) {
@@ -300,7 +333,7 @@ export const useStoresStore = defineStore('stores', () => {
     storeId: string,
     residentId: string
   ): { success: boolean; error?: string } {
-    const userStore = appStore.data.stores.find(us => us.storeId === storeId)
+    const userStore = userStoreById.value.get(storeId)
     if (!userStore) {
       return { success: false, error: 'Store not found' }
     }
@@ -311,13 +344,17 @@ export const useStoresStore = defineStore('stores', () => {
       return { success: false, error: 'Resident already in store' }
     }
 
-    // Remove resident from previous store if any
-    appStore.data.stores.forEach(us => {
-      const index = us.residents.indexOf(residentId)
-      if (index !== -1) {
-        us.residents.splice(index, 1)
+    // Remove resident from previous store (avoid scanning all stores)
+    const previousStoreId = storeIdByResidentId.value.get(residentId)
+    if (previousStoreId && previousStoreId !== storeId) {
+      const previousStore = userStoreById.value.get(previousStoreId)
+      if (previousStore) {
+        const index = previousStore.residents.indexOf(residentId)
+        if (index !== -1) {
+          previousStore.residents.splice(index, 1)
+        }
       }
-    })
+    }
 
     userStore.residents.push(residentId)
     appStore.saveDataDebounced()
@@ -325,7 +362,7 @@ export const useStoresStore = defineStore('stores', () => {
   }
 
   function removeResidentFromStore(storeId: string, residentId: string): boolean {
-    const userStore = appStore.data.stores.find(us => us.storeId === storeId)
+    const userStore = userStoreById.value.get(storeId)
     if (!userStore) {
       return false
     }
@@ -340,8 +377,7 @@ export const useStoresStore = defineStore('stores', () => {
   }
 
   function getStoreCapacity(storeId: string): number {
-    const userStore = appStore.data.stores.find(us => us.storeId === storeId)
-    return userStore ? userStore.residents.length : 0
+    return userStoreById.value.get(storeId)?.residents.length ?? 0
   }
 
   function isStoreFull(storeId: string): boolean {
@@ -364,6 +400,17 @@ export const useMissionsStore = defineStore('missions', () => {
 
   const userMissions = computed(() => appStore.data.missions)
 
+  const userMissionById = computed(() => {
+    const map = new Map<
+      string,
+      { missionId: string; status: 'pending' | 'completed'; addedAt: number }
+    >()
+    for (const um of appStore.data.missions) {
+      map.set(um.missionId, um)
+    }
+    return map
+  })
+
   function addMission(missionId: string): boolean {
     if (appStore.data.missions.some(um => um.missionId === missionId)) {
       return false // Mission already added
@@ -378,7 +425,7 @@ export const useMissionsStore = defineStore('missions', () => {
   }
 
   function markMissionCompleted(missionId: string): boolean {
-    const userMission = appStore.data.missions.find(um => um.missionId === missionId)
+    const userMission = userMissionById.value.get(missionId)
     if (userMission) {
       userMission.status = 'completed'
       appStore.saveDataDebounced()
@@ -388,7 +435,7 @@ export const useMissionsStore = defineStore('missions', () => {
   }
 
   function markMissionPending(missionId: string): boolean {
-    const userMission = appStore.data.missions.find(um => um.missionId === missionId)
+    const userMission = userMissionById.value.get(missionId)
     if (userMission) {
       userMission.status = 'pending'
       appStore.saveDataDebounced()

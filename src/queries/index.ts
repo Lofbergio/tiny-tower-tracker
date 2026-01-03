@@ -1,7 +1,7 @@
 import { APP_CONSTANTS } from '@/constants'
 import { useMissionsStore, useStoresStore } from '@/stores'
 import type { Mission, Store, UserMission, UserStore } from '@/types'
-import { canCompleteMission, getCompletableMissions } from '@/utils/missionMatcher'
+import { canCompleteMissionWithContext, createMissionMatcherContext } from '@/utils/missionMatcher'
 import { useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'
 
@@ -61,6 +61,14 @@ export function useUserStoresWithData() {
   const storesStore = useStoresStore()
   const { data: allStores } = useStoresQuery()
 
+  const storesById = computed(() => {
+    const map = new Map<string, Store>()
+    for (const store of allStores.value ?? []) {
+      map.set(store.id, store)
+    }
+    return map
+  })
+
   const userStoresWithData = computed(() => {
     if (!allStores.value) {
       return []
@@ -68,7 +76,7 @@ export function useUserStoresWithData() {
 
     return storesStore.userStores
       .map((us: UserStore) => {
-        const store = allStores.value.find(s => s.id === us.storeId)
+        const store = storesById.value.get(us.storeId)
         return store
           ? {
               ...us,
@@ -90,6 +98,14 @@ export function useUserMissionsWithData() {
   const missionsStore = useMissionsStore()
   const { data: allMissions } = useMissionsQuery()
 
+  const missionsById = computed(() => {
+    const map = new Map<string, Mission>()
+    for (const mission of allMissions.value ?? []) {
+      map.set(mission.id, mission)
+    }
+    return map
+  })
+
   const userMissionsWithData = computed(() => {
     if (!allMissions.value) {
       return []
@@ -97,7 +113,7 @@ export function useUserMissionsWithData() {
 
     return missionsStore.userMissions
       .map((um: UserMission) => {
-        const mission = allMissions.value.find((m: Mission) => m.id === um.missionId)
+        const mission = missionsById.value.get(um.missionId)
         return mission
           ? {
               ...um,
@@ -134,39 +150,47 @@ export function useCompletableMissions() {
   const { pendingMissions } = useUserMissionsWithData()
   const { data: allMissionsData } = useMissionsQuery()
 
+  const compactUserStores = computed(() => {
+    return userStores.value.map((us: UserStore & { store: Store }) => ({
+      storeId: us.storeId,
+      residents: us.residents,
+    }))
+  })
+
+  const matcherContext = computed(() => {
+    if (compactUserStores.value.length === 0 || allStores.value.length === 0) {
+      return null
+    }
+    return createMissionMatcherContext(compactUserStores.value, allStores.value)
+  })
+
+  const completableByMissionId = computed(() => {
+    const context = matcherContext.value
+    if (!context || !allMissionsData.value) {
+      return new Map<string, boolean>()
+    }
+
+    const map = new Map<string, boolean>()
+    for (const mission of allMissionsData.value) {
+      map.set(mission.id, canCompleteMissionWithContext(mission, context))
+    }
+    return map
+  })
+
   const completableMissions = computed(() => {
     if (userStores.value.length === 0 || allStores.value.length === 0) {
       return []
     }
 
-    const stores = userStores.value.map((us: UserStore & { store: Store }) => ({
-      storeId: us.storeId,
-      residents: us.residents,
-    }))
+    const pending = pendingMissions.value
+      .map((um: UserMission & { mission: Mission }) => um.mission)
+      .filter(m => completableByMissionId.value.get(m.id) === true)
 
-    return getCompletableMissions(
-      pendingMissions.value.map((um: UserMission & { mission: Mission }) => um.mission),
-      stores,
-      allStores.value
-    )
+    return pending
   })
 
   function isMissionCompletable(missionId: string): boolean {
-    if (!allMissionsData.value || userStores.value.length === 0 || allStores.value.length === 0) {
-      return false
-    }
-
-    const mission = allMissionsData.value.find((m: Mission) => m.id === missionId)
-    if (!mission) {
-      return false
-    }
-
-    const stores = userStores.value.map((us: UserStore & { store: Store }) => ({
-      storeId: us.storeId,
-      residents: us.residents,
-    }))
-
-    return canCompleteMission(mission, stores, allStores.value)
+    return completableByMissionId.value.get(missionId) === true
   }
 
   return {

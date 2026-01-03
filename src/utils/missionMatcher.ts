@@ -6,35 +6,44 @@ export type MissionCoverage = {
   ratio: number
 }
 
-export function canCompleteMission(
-  mission: Mission,
+export type MissionMatcherContext = {
+  builtStoreIds: Set<string>
+  storeByName: Map<string, { id: string; products: Set<string> }>
+}
+
+export function createMissionMatcherContext(
   userStores: UserStore[],
   allStores: Store[]
-): boolean {
-  // Get store IDs that user has built
+): MissionMatcherContext {
   const builtStoreIds = new Set(userStores.map(us => us.storeId))
+  const storeByName = new Map<string, { id: string; products: Set<string> }>()
 
-  // Check if all mission requirements can be fulfilled
+  for (const store of allStores) {
+    storeByName.set(store.name, {
+      id: store.id,
+      products: new Set(store.products),
+    })
+  }
+
+  return { builtStoreIds, storeByName }
+}
+
+export function canCompleteMissionWithContext(
+  mission: Mission,
+  context: MissionMatcherContext
+): boolean {
   return mission.requirements.every(req => {
-    // Find the store that produces this product
-    const store = allStores.find(s => s.name === req.store)
+    const store = context.storeByName.get(req.store)
     if (!store) return false
-
-    // Check if user has built this store
-    if (!builtStoreIds.has(store.id)) return false
-
-    // Check if the store produces this product
-    return store.products.includes(req.product)
+    if (!context.builtStoreIds.has(store.id)) return false
+    return store.products.has(req.product)
   })
 }
 
-export function getMissionCoverage(
+export function getMissionCoverageWithContext(
   mission: Mission,
-  userStores: UserStore[],
-  allStores: Store[]
+  context: MissionMatcherContext
 ): MissionCoverage {
-  const builtStoreIds = new Set(userStores.map(us => us.storeId))
-
   const total = mission.requirements.length
   if (total === 0) {
     return { satisfied: 0, total: 0, ratio: 0 }
@@ -42,16 +51,10 @@ export function getMissionCoverage(
 
   let satisfied = 0
   for (const req of mission.requirements) {
-    const store = allStores.find(s => s.name === req.store)
-    if (!store) {
-      continue
-    }
-    if (!builtStoreIds.has(store.id)) {
-      continue
-    }
-    if (!store.products.includes(req.product)) {
-      continue
-    }
+    const store = context.storeByName.get(req.store)
+    if (!store) continue
+    if (!context.builtStoreIds.has(store.id)) continue
+    if (!store.products.has(req.product)) continue
     satisfied += 1
   }
 
@@ -62,12 +65,47 @@ export function getMissionCoverage(
   }
 }
 
+export function getMissingStoresWithContext(
+  mission: Mission,
+  context: MissionMatcherContext
+): string[] {
+  const requiredStoreNames = new Set(mission.requirements.map(r => r.store))
+  const missing: string[] = []
+
+  for (const storeName of requiredStoreNames) {
+    const store = context.storeByName.get(storeName)
+    if (!store) continue
+    if (!context.builtStoreIds.has(store.id)) {
+      missing.push(storeName)
+    }
+  }
+
+  return missing
+}
+
+export function canCompleteMission(
+  mission: Mission,
+  userStores: UserStore[],
+  allStores: Store[]
+): boolean {
+  return canCompleteMissionWithContext(mission, createMissionMatcherContext(userStores, allStores))
+}
+
+export function getMissionCoverage(
+  mission: Mission,
+  userStores: UserStore[],
+  allStores: Store[]
+): MissionCoverage {
+  return getMissionCoverageWithContext(mission, createMissionMatcherContext(userStores, allStores))
+}
+
 export function getCompletableMissions(
   missions: Mission[],
   userStores: UserStore[],
   allStores: Store[]
 ): Mission[] {
-  return missions.filter(mission => canCompleteMission(mission, userStores, allStores))
+  const context = createMissionMatcherContext(userStores, allStores)
+  return missions.filter(mission => canCompleteMissionWithContext(mission, context))
 }
 
 export function getMissionsForNewStore(
@@ -76,7 +114,11 @@ export function getMissionsForNewStore(
   userStores: UserStore[],
   allStores: Store[]
 ): Mission[] {
-  const newStore = allStores.find(s => s.id === newStoreId)
+  const storeById = new Map<string, Store>()
+  for (const store of allStores) {
+    storeById.set(store.id, store)
+  }
+  const newStore = storeById.get(newStoreId)
   if (!newStore) return []
 
   // Get missions that require products from this store
@@ -85,5 +127,6 @@ export function getMissionsForNewStore(
   )
 
   // Check which of these missions are now completable
-  return relevantMissions.filter(mission => canCompleteMission(mission, userStores, allStores))
+  const context = createMissionMatcherContext(userStores, allStores)
+  return relevantMissions.filter(mission => canCompleteMissionWithContext(mission, context))
 }

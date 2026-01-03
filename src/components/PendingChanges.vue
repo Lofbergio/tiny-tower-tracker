@@ -154,6 +154,30 @@ const { userStores, allStores } = useUserStoresWithData()
 const { completableMissions } = useCompletableMissions()
 const toast = useToast()
 
+const storeById = computed(() => {
+  const map = new Map<string, Store>()
+  for (const store of allStores.value) {
+    map.set(store.id, store)
+  }
+  return map
+})
+
+const userStoreById = computed(() => {
+  const map = new Map<string, { storeId: string; residents: string[] }>()
+  for (const us of userStores.value) {
+    map.set(us.storeId, us)
+  }
+  return map
+})
+
+const residentById = computed(() => {
+  const map = new Map<string, Resident>()
+  for (const r of residentsStore.residents) {
+    map.set(r.id, r)
+  }
+  return map
+})
+
 interface ResidentPlacement {
   resident: Resident
   storeId: string
@@ -178,13 +202,13 @@ const residentPlacements = computed<ResidentPlacement[]>(() => {
   const residentsNotPlaced = residentsStore.getResidentsNotInDreamJob()
 
   residentsNotPlaced.forEach((resident: Resident) => {
-    const store = allStores.value.find((s: Store) => s.id === resident.dreamJob)
+    const store = storeById.value.get(resident.dreamJob)
     if (!store) {
       return
     }
 
     // Check if user has this store
-    const userStore = userStores.value.find((us: { storeId: string }) => us.storeId === store.id)
+    const userStore = userStoreById.value.get(store.id)
     if (!userStore) {
       return
     }
@@ -207,12 +231,12 @@ const overcapacityWarnings = computed<OvercapacityWarning[]>(() => {
   const warnings: OvercapacityWarning[] = []
 
   residentsStore.residents.forEach((resident: Resident) => {
-    const store = allStores.value.find((s: Store) => s.id === resident.dreamJob)
+    const store = storeById.value.get(resident.dreamJob)
     if (!store) {
       return
     }
 
-    const userStore = userStores.value.find((us: { storeId: string }) => us.storeId === store.id)
+    const userStore = userStoreById.value.get(store.id)
     if (!userStore) {
       return
     }
@@ -273,8 +297,8 @@ function handleCompleteMission(missionId: string) {
 function handlePlaceResident(residentId: string, storeId: string) {
   const result = storesStore.addResidentToStore(storeId, residentId)
   if (result.success) {
-    const resident = residentsStore.residents.find((r: Resident) => r.id === residentId)
-    const store = allStores.value.find(s => s.id === storeId)
+    const resident = residentById.value.get(residentId)
+    const store = storeById.value.get(storeId)
     toast.success(`Placed ${resident?.name} in ${store?.name}`)
   } else {
     toast.error(result.error ?? 'Failed to place resident')

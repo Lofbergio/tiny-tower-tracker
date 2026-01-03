@@ -13,7 +13,7 @@
         <TowerIllustration
           :width="110"
           :height="165"
-          class="motion-safe:animate-float-slow opacity-70 transition-opacity hover:opacity-100"
+          class="opacity-70 transition-opacity hover:opacity-100 motion-safe:animate-float-slow"
         />
       </template>
     </PageHeader>
@@ -287,6 +287,30 @@ const toast = useToast()
 const { showConfirmDialog, confirmDialogData, confirm } = useConfirmDialog()
 const { isDark } = useDarkMode()
 
+const residentById = computed(() => {
+  const map = new Map<string, Resident>()
+  for (const resident of residentsStore.residents) {
+    map.set(resident.id, resident)
+  }
+  return map
+})
+
+const storeById = computed(() => {
+  const map = new Map<string, Store>()
+  for (const store of allStores.value) {
+    map.set(store.id, store)
+  }
+  return map
+})
+
+const residentIdsByStoreId = computed(() => {
+  const map = new Map<string, Set<string>>()
+  for (const us of userStoresWithData.value) {
+    map.set(us.storeId, new Set(us.residents))
+  }
+  return map
+})
+
 const showAddDialog = ref(false)
 const searchQuery = ref('')
 const selectedCategory = ref<string | null>(null)
@@ -300,7 +324,7 @@ function isStoreComplete(storeId: string, assignedResidentIds: string[]): boolea
     return false
   }
   return assignedResidentIds.every(residentId => {
-    const resident = residents.find((r: Resident) => r.id === residentId)
+    const resident = residentById.value.get(residentId)
     if (!resident) {
       return false
     }
@@ -363,7 +387,7 @@ function handleDialogOpenChange(isOpen: boolean) {
 function handleAddStore(storeId: string) {
   const success = storesStore.addStore(storeId)
   if (success) {
-    const store = allStores.value.find(s => s.id === storeId)
+    const store = storeById.value.get(storeId)
     toast.success(`✓ Added ${store?.name} (${store?.category})`)
     showAddDialog.value = false
   } else {
@@ -373,13 +397,9 @@ function handleAddStore(storeId: string) {
 
 function handleAddResidentToStore(storeId: string) {
   // Find available residents (not in this store, ideally with this as dream job)
-  const store = allStores.value.find(s => s.id === storeId)
-  const availableResidents = residents.filter((r: Resident) => {
-    const inThisStore = userStoresWithData.value
-      .find((us: UserStore & { store: Store }) => us.storeId === storeId)
-      ?.residents.includes(r.id)
-    return !inThisStore
-  })
+  const store = storeById.value.get(storeId)
+  const residentIdsInStore = residentIdsByStoreId.value.get(storeId) ?? new Set<string>()
+  const availableResidents = residents.filter((r: Resident) => !residentIdsInStore.has(r.id))
 
   if (availableResidents.length === 0) {
     toast.info('No available residents to assign')
@@ -399,7 +419,7 @@ function handleAddResidentToStore(storeId: string) {
 }
 
 function handleRemoveResident(storeId: string, residentId: string) {
-  const resident = residents.find((r: Resident) => r.id === residentId)
+  const resident = residentById.value.get(residentId)
   if (!resident) {
     return
   }

@@ -49,30 +49,83 @@
           </div>
         </div>
 
-        <div
-          v-if="isDev && lastOcrPages.length > 0"
-          class="rounded-md border bg-muted p-3 text-xs text-muted-foreground"
-        >
-          <div class="font-medium text-foreground">Dev: Save OCR fixture</div>
-          <div class="mt-1">
-            Copy the raw Google Vision OCR JSON for a screenshot, then save it as
-            <span class="font-mono">tests/fixtures/ocr/&lt;name&gt;.json</span>.
-          </div>
-          <div class="mt-2 flex flex-col gap-2">
-            <div
-              v-for="page in lastOcrPages"
-              :key="page.fileName"
-              class="flex items-center justify-between gap-2"
+        <div v-if="isDev" class="rounded-md border bg-muted p-3 text-xs text-muted-foreground">
+          <div class="font-medium text-foreground">Dev: Fixture workflow</div>
+          <div class="mt-1">Goal: add a screenshot sample once, then keep it from regressing.</div>
+
+          <ol class="mt-2 list-decimal space-y-1 pl-4">
+            <li>Choose screenshots</li>
+            <li>Run OCR (sends to Google Vision)</li>
+            <li>Copy the OCR JSON output for each screenshot</li>
+            <li>
+              Save it under <span class="font-mono">tests/fixtures/ocr/</span> as a
+              <span class="font-mono">.json</span> file
+            </li>
+            <li>
+              Run <span class="font-mono">yarn test:update</span> once to lock in the snapshot
+            </li>
+          </ol>
+
+          <div class="mt-2 flex flex-col gap-2 sm:flex-row">
+            <Button
+              variant="outline"
+              size="sm"
+              class="w-full sm:w-auto"
+              :disabled="isImporting"
+              @click="copyFixturesFolderPath"
             >
-              <div class="min-w-0 truncate">{{ page.fileName }}</div>
-              <Button
-                variant="outline"
-                size="sm"
-                :disabled="isImporting"
-                @click="copyOcrFixtureToClipboard(page.fileName)"
+              Copy fixtures folder
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              class="w-full sm:w-auto"
+              :disabled="isImporting"
+              @click="copyTestUpdateCommand"
+            >
+              Copy yarn test:update
+            </Button>
+          </div>
+
+          <div v-if="lastOcrPages.length === 0" class="mt-2">
+            Run OCR to enable the copy buttons below.
+          </div>
+
+          <div v-else class="mt-3 border-t pt-3">
+            <div class="font-medium text-foreground">OCR outputs</div>
+            <div class="mt-2 flex flex-col gap-2">
+              <div
+                v-for="page in lastOcrPages"
+                :key="page.fileName"
+                class="flex flex-col gap-2 rounded-md border bg-background p-2 sm:flex-row sm:items-center sm:justify-between"
               >
-                Copy OCR JSON
-              </Button>
+                <div class="min-w-0">
+                  <div class="truncate text-foreground">{{ page.fileName }}</div>
+                  <div class="mt-0.5 truncate">
+                    Save as:
+                    <span class="font-mono">{{ fixtureFilePathFor(page.fileName) }}</span>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-2 sm:flex-row">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    :disabled="isImporting"
+                    @click="copySuggestedFixturePath(page.fileName)"
+                  >
+                    Copy path
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    :disabled="isImporting"
+                    @click="copyOcrFixtureToClipboard(page.fileName)"
+                  >
+                    Copy OCR JSON
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -252,6 +305,42 @@ const {
 
 const isDev = computed(() => Boolean((import.meta as any)?.env?.DEV))
 
+function fixtureFilePathFor(fileName: string): string {
+  const base = fileName
+    .trim()
+    .replace(/^.*[\\/]/, '')
+    .replace(/\.[a-zA-Z0-9]+$/, '')
+    .replace(/[^a-zA-Z0-9._-]+/g, '_')
+  return `tests/fixtures/ocr/${base || 'fixture'}.json`
+}
+
+async function copyFixturesFolderPath() {
+  try {
+    await navigator.clipboard.writeText('tests/fixtures/ocr')
+    toast.success('Copied: tests/fixtures/ocr')
+  } catch {
+    toast.error('Could not copy to clipboard')
+  }
+}
+
+async function copyTestUpdateCommand() {
+  try {
+    await navigator.clipboard.writeText('yarn test:update')
+    toast.success('Copied: yarn test:update')
+  } catch {
+    toast.error('Could not copy to clipboard')
+  }
+}
+
+async function copySuggestedFixturePath(fileName: string) {
+  try {
+    await navigator.clipboard.writeText(fixtureFilePathFor(fileName))
+    toast.success('Copied fixture path')
+  } catch {
+    toast.error('Could not copy to clipboard')
+  }
+}
+
 function handleOpenChange(isOpen: boolean) {
   emit('update:open', isOpen)
 }
@@ -279,8 +368,16 @@ function openNetlifyDevUrl() {
   window.open('http://localhost:8888', '_blank', 'noopener,noreferrer')
 }
 
+const storeNameById = computed(() => {
+  const map = new Map<string, string>()
+  for (const store of props.stores ?? []) {
+    map.set(store.id, store.name)
+  }
+  return map
+})
+
 function getStoreName(storeId: string): string {
-  return props.stores?.find(s => s.id === storeId)?.name ?? storeId
+  return storeNameById.value.get(storeId) ?? storeId
 }
 
 function buildScreenshotImportPreview(selected: ScreenshotResidentCandidate[]): {

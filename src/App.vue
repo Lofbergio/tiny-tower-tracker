@@ -4,17 +4,35 @@
       <div class="relative min-h-screen bg-background">
         <div class="bg-grid-pattern pointer-events-none fixed inset-0" aria-hidden="true" />
         <div class="relative">
+          <div
+            v-show="isRouteNavigating"
+            class="pointer-events-none fixed left-0 right-0 top-0 z-50"
+          >
+            <div
+              class="h-0.5 w-full bg-transparent"
+              role="progressbar"
+              aria-label="Page loading"
+              :aria-valuenow="Math.round(routeProgress)"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              <div
+                class="h-full bg-gradient-to-r from-primary via-primary/80 to-primary transition-[width] duration-200 ease-out"
+                :style="{ width: `${routeProgress}%` }"
+              />
+            </div>
+          </div>
           <a
             href="#main-content"
             class="sr-only z-50 rounded-md bg-background px-3 py-2 text-sm font-medium text-foreground ring-2 ring-ring ring-offset-2 ring-offset-background focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
           >
             Skip to content
           </a>
-          <nav class="sticky top-0 border-b bg-background/80 backdrop-blur-sm">
+          <nav :class="topNavClass">
             <div class="container mx-auto px-4">
               <div class="flex h-16 items-center justify-between">
                 <div class="group flex select-none items-center gap-2">
-                  <div aria-hidden="true" class="motion-safe:group-hover:animate-jiggle text-2xl">
+                  <div aria-hidden="true" class="text-2xl motion-safe:group-hover:animate-jiggle">
                     🏢
                   </div>
                   <h1
@@ -48,7 +66,7 @@
                     >
                       <span
                         aria-hidden="true"
-                        class="motion-safe:group-hover:animate-jiggle mr-1 inline-block motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-active:scale-110"
+                        class="mr-1 inline-block motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:animate-jiggle motion-safe:group-active:scale-110"
                       >
                         {{ navRoute.icon }}
                       </span>
@@ -91,7 +109,7 @@
             </Transition>
           </nav>
 
-          <main id="main-content" tabindex="-1" class="min-h-[calc(100vh-4rem)]">
+          <main id="main-content" tabindex="-1" class="min-h-[calc(100vh-4rem)]" :style="mainStyle">
             <div
               v-if="hasLoadError"
               class="container mx-auto flex min-h-[calc(100vh-4rem)] items-center justify-center px-4"
@@ -125,7 +143,7 @@
               </div>
             </div>
             <RouterView v-else v-slot="{ Component }">
-              <Transition name="page" mode="out-in">
+              <Transition name="page">
                 <component :is="Component" :key="route.fullPath" />
               </Transition>
             </RouterView>
@@ -133,7 +151,7 @@
 
           <!-- Mobile Bottom Navigation -->
           <div
-            class="fixed bottom-0 left-0 right-0 border-t bg-background/95 backdrop-blur-sm md:hidden"
+            class="fixed bottom-0 left-0 right-0 z-40 border-t bg-background/95 backdrop-blur-sm md:hidden"
           >
             <div class="grid grid-cols-4 gap-1 p-2">
               <button
@@ -195,6 +213,79 @@ const router = useRouter()
 const route = useRoute()
 const showMobileMenu = ref(false)
 
+const isRouteNavigating = ref(false)
+const routeProgress = ref(0)
+const routeNavStartedAt = ref<number | null>(null)
+
+let progressTimer: number | null = null
+let finishTimer: number | null = null
+
+function clearRouteTimers() {
+  if (progressTimer !== null) {
+    window.clearInterval(progressTimer)
+    progressTimer = null
+  }
+  if (finishTimer !== null) {
+    window.clearTimeout(finishTimer)
+    finishTimer = null
+  }
+}
+
+function startRouteProgress() {
+  clearRouteTimers()
+  isRouteNavigating.value = true
+  routeNavStartedAt.value = Date.now()
+  routeProgress.value = 12
+
+  progressTimer = window.setInterval(() => {
+    // Ease toward 90% while navigation is pending
+    const current = routeProgress.value
+    if (current >= 90) return
+    const next = current + (90 - current) * 0.12
+    routeProgress.value = Math.min(90, Math.max(current + 0.6, next))
+  }, 120)
+}
+
+function finishRouteProgress() {
+  const startedAt = routeNavStartedAt.value
+  const elapsed = startedAt ? Date.now() - startedAt : 0
+  const minVisibleMs = 180
+  const delay = Math.max(0, minVisibleMs - elapsed)
+
+  clearRouteTimers()
+
+  finishTimer = window.setTimeout(() => {
+    routeProgress.value = 100
+    window.setTimeout(() => {
+      isRouteNavigating.value = false
+      routeProgress.value = 0
+      routeNavStartedAt.value = null
+    }, 180)
+  }, delay)
+}
+
+const showTopNav = ref(true)
+const lastScrollY = ref(0)
+
+const TOP_NAV_HEIGHT_PX = 64
+const HIDE_AFTER_SCROLL_Y = 72
+const SCROLL_DELTA_PX = 10
+
+const topNavClass = computed(() => [
+  'top-0 z-40 border-b bg-background md:bg-background/80 md:backdrop-blur-sm',
+  // Fixed so we can animate it away without leaving a layout gap
+  'fixed inset-x-0',
+  // Slide away on scroll-down, reappear on scroll-up
+  'transform-gpu transition-transform duration-200 ease-out',
+  showTopNav.value ? 'translate-y-0' : '-translate-y-full',
+])
+
+const mainStyle = computed(() => {
+  return {
+    paddingTop: `${TOP_NAV_HEIGHT_PX}px`,
+  }
+})
+
 // Preload data using Vue Query
 const {
   isLoading: storesLoading,
@@ -232,6 +323,65 @@ function retryLoad() {
 function reloadPage() {
   window.location.reload()
 }
+
+function handleScroll() {
+  if (showMobileMenu.value) {
+    showTopNav.value = true
+    lastScrollY.value = window.scrollY
+    return
+  }
+
+  const currentY = window.scrollY
+  const delta = currentY - lastScrollY.value
+
+  if (currentY <= 0) {
+    showTopNav.value = true
+    lastScrollY.value = currentY
+    return
+  }
+
+  if (Math.abs(delta) < SCROLL_DELTA_PX) return
+
+  // Scrolling down
+  if (delta > 0 && currentY > HIDE_AFTER_SCROLL_Y) {
+    showTopNav.value = false
+  }
+
+  // Scrolling up
+  if (delta < 0) {
+    showTopNav.value = true
+  }
+
+  lastScrollY.value = currentY
+}
+
+watch(showMobileMenu, isOpen => {
+  if (isOpen) showTopNav.value = true
+})
+
+onMounted(() => {
+  lastScrollY.value = window.scrollY
+  window.addEventListener('scroll', handleScroll, { passive: true })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
+
+const removeBeforeEach = router.beforeEach((to, from) => {
+  if (to.fullPath !== from.fullPath) {
+    startRouteProgress()
+  }
+  return true
+})
+
+const removeAfterEach = router.afterEach(() => {
+  finishRouteProgress()
+})
+
+router.onError(() => {
+  finishRouteProgress()
+})
 
 // Get pending counts for navigation badges
 const { pendingMissions } = useUserMissionsWithData()
@@ -279,21 +429,25 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('keydown', handleGlobalKeydown)
   window.removeEventListener('pointerdown', handleGlobalPointerDown)
+  removeBeforeEach()
+  removeAfterEach()
+  clearRouteTimers()
+})
+
+const residentsNeedingPlacementCount = computed(
+  () => residentsStore.getResidentsNotInDreamJob().length
+)
+
+const pendingCountByPath = computed<Record<string, number>>(() => {
+  return {
+    '/missions': pendingMissions.value.length,
+    '/residents': residentsNeedingPlacementCount.value,
+    '/': completableMissions.value.length + residentsNeedingPlacementCount.value,
+  }
 })
 
 function getPendingCount(path: string): number {
-  if (path === '/missions') {
-    return pendingMissions.value.length
-  }
-  if (path === '/residents') {
-    return residentsStore.getResidentsNotInDreamJob().length
-  }
-  if (path === '/') {
-    // Dashboard: completable missions + residents needing placement
-    const residentsNeedingPlacement = residentsStore.getResidentsNotInDreamJob().length
-    return completableMissions.value.length + residentsNeedingPlacement
-  }
-  return 0
+  return pendingCountByPath.value[path] ?? 0
 }
 
 function handleNavClick(path: string) {

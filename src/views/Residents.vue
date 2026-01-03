@@ -22,7 +22,7 @@
         <TowerIllustration
           :width="110"
           :height="165"
-          class="motion-safe:animate-float-slow opacity-70 transition-opacity hover:opacity-100"
+          class="opacity-70 transition-opacity hover:opacity-100 motion-safe:animate-float-slow"
         />
       </template>
     </PageHeader>
@@ -223,8 +223,8 @@
             :resident="item.resident"
             :stores="allStores ?? []"
             :current-store="item.currentStore"
-            :dream-job-store-built="isDreamJobStoreBuilt(item.resident.dreamJob)"
-            :dream-job-store-full="isDreamJobStoreFull(item.resident.dreamJob)"
+            :dream-job-store-built="item.dreamJobStoreBuilt"
+            :dream-job-store-full="item.dreamJobStoreFull"
             :dream-job-demand-count="dreamJobDemandCount.get(item.resident.dreamJob) ?? 0"
             @remove-resident="handleRemoveResident(item.resident.id)"
             @place-in-dream-job="handlePlaceInDreamJob(item.resident.id)"
@@ -251,8 +251,8 @@
             :resident="item.resident"
             :stores="allStores ?? []"
             :current-store="item.currentStore"
-            :dream-job-store-built="isDreamJobStoreBuilt(item.resident.dreamJob)"
-            :dream-job-store-full="isDreamJobStoreFull(item.resident.dreamJob)"
+            :dream-job-store-built="item.dreamJobStoreBuilt"
+            :dream-job-store-full="item.dreamJobStoreFull"
             :dream-job-demand-count="dreamJobDemandCount.get(item.resident.dreamJob) ?? 0"
             @remove-resident="handleRemoveResident(item.resident.id)"
             @place-in-dream-job="handlePlaceInDreamJob(item.resident.id)"
@@ -279,8 +279,8 @@
             :resident="item.resident"
             :stores="allStores ?? []"
             :current-store="item.currentStore"
-            :dream-job-store-built="isDreamJobStoreBuilt(item.resident.dreamJob)"
-            :dream-job-store-full="isDreamJobStoreFull(item.resident.dreamJob)"
+            :dream-job-store-built="item.dreamJobStoreBuilt"
+            :dream-job-store-full="item.dreamJobStoreFull"
             :dream-job-demand-count="dreamJobDemandCount.get(item.resident.dreamJob) ?? 0"
             @remove-resident="handleRemoveResident(item.resident.id)"
             @place-in-dream-job="handlePlaceInDreamJob(item.resident.id)"
@@ -319,6 +319,7 @@ import Input from '@/components/ui/Input.vue'
 import Label from '@/components/ui/Label.vue'
 import SearchableSelect from '@/components/ui/SearchableSelect.vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
+import { APP_CONSTANTS } from '@/constants'
 import { useStoresQuery, useUserStoresWithData } from '@/queries'
 import { useResidentsStore, useStoresStore } from '@/stores'
 import type { Resident, Store, UserStore } from '@/types'
@@ -384,26 +385,55 @@ const storeNameById = computed(() => {
   return map
 })
 
+const residentById = computed(() => {
+  const map = new Map<string, Resident>()
+  for (const resident of residents) {
+    map.set(resident.id, resident)
+  }
+  return map
+})
+
+const builtStoreIds = computed(() => {
+  return new Set(userStores.value.map((us: UserStore & { store: Store }) => us.storeId))
+})
+
+const storeOccupancyCountById = computed(() => {
+  const map = new Map<string, number>()
+  for (const us of userStores.value) {
+    map.set(us.storeId, us.residents.length)
+  }
+  return map
+})
+
 const residentsWithState = computed(() => {
   return residents.map((resident: Resident) => {
     const currentStore = residentsStore.getCurrentStore(resident.id)
     const isSettled = !!currentStore && currentStore === resident.dreamJob
     const needsPlacement = !currentStore || currentStore !== resident.dreamJob
-    const built = isDreamJobStoreBuilt(resident.dreamJob)
-    const full = isDreamJobStoreFull(resident.dreamJob)
+    const dreamJobStoreBuilt = builtStoreIds.value.has(resident.dreamJob)
+    const dreamJobStoreFull =
+      (storeOccupancyCountById.value.get(resident.dreamJob) ?? 0) >=
+      APP_CONSTANTS.MAX_STORE_CAPACITY
     const demand = dreamJobDemandCount.value.get(resident.dreamJob) ?? 0
 
     // "Needs Attention" should be actionable/meaningful:
     // - Place in dream job now (built + has room)
     // - Dream job store not built, but you have a full crew ready (3)
     // - Dream job store is built but full (blocked)
-    const canPlaceInDreamJob = needsPlacement && built && !full
-    const shouldBuildDreamStore = needsPlacement && !built && demand >= 3
-    const dreamStoreFull = needsPlacement && built && full
+    const canPlaceInDreamJob = needsPlacement && dreamJobStoreBuilt && !dreamJobStoreFull
+    const shouldBuildDreamStore = needsPlacement && !dreamJobStoreBuilt && demand >= 3
+    const dreamStoreFull = needsPlacement && dreamJobStoreBuilt && dreamJobStoreFull
     const needsAttention =
       !isSettled && (canPlaceInDreamJob || shouldBuildDreamStore || dreamStoreFull)
 
-    return { resident, currentStore, isSettled, needsAttention }
+    return {
+      resident,
+      currentStore,
+      isSettled,
+      needsAttention,
+      dreamJobStoreBuilt,
+      dreamJobStoreFull,
+    }
   })
 })
 
@@ -466,7 +496,7 @@ function handleEditDialogOpenChange(isOpen: boolean) {
 }
 
 function openEditResident(residentId: string) {
-  const resident = residents.find((r: Resident) => r.id === residentId)
+  const resident = residentById.value.get(residentId)
   if (!resident) {
     return
   }
@@ -484,7 +514,7 @@ function handleSaveResidentEdits() {
     return
   }
 
-  const resident = residents.find((r: Resident) => r.id === editingResidentId.value)
+  const resident = residentById.value.get(editingResidentId.value)
   if (!resident) {
     toast.error('Resident not found')
     return
@@ -558,9 +588,10 @@ function handleAddResident() {
   if (newResidentName.value && newResidentDreamJob.value) {
     const result = residentsStore.addResident(newResidentName.value, newResidentDreamJob.value)
     if (result.success) {
-      const dreamJobStore = allStores.value?.find(s => s.id === newResidentDreamJob.value)
+      const dreamJobStoreName =
+        storeNameById.value.get(newResidentDreamJob.value) ?? newResidentDreamJob.value
       toast.success(
-        `✓ Added ${formatResidentName(newResidentName.value)} (wants ${dreamJobStore?.name})`
+        `✓ Added ${formatResidentName(newResidentName.value)} (wants ${dreamJobStoreName})`
       )
       newResidentName.value = ''
       newResidentDreamJob.value = ''
@@ -571,35 +602,21 @@ function handleAddResident() {
   }
 }
 
-function isDreamJobStoreFull(dreamJobStoreId: string): boolean {
-  const userStore = userStores.value.find(
-    (us: UserStore & { store: Store }) => us.storeId === dreamJobStoreId
-  )
-  if (!userStore) return false
-  return storesStore.isStoreFull(dreamJobStoreId)
-}
-
-function isDreamJobStoreBuilt(dreamJobStoreId: string): boolean {
-  return userStores.value.some((us: UserStore & { store: Store }) => us.storeId === dreamJobStoreId)
-}
-
 function handlePlaceInDreamJob(residentId: string) {
-  const resident = residents.find((r: Resident) => r.id === residentId)
+  const resident = residentById.value.get(residentId)
   if (!resident) return
 
   const result = storesStore.addResidentToStore(resident.dreamJob, residentId)
   if (result.success) {
-    const store = allStores.value?.find(s => s.id === resident.dreamJob)
-    toast.success(
-      `✨ Placed ${formatResidentName(resident.name)} in their dream job: ${store?.name}`
-    )
+    const storeName = storeNameById.value.get(resident.dreamJob) ?? resident.dreamJob
+    toast.success(`✨ Placed ${formatResidentName(resident.name)} in their dream job: ${storeName}`)
   } else {
     toast.error(result.error ?? 'Failed to place resident')
   }
 }
 
 function handleRemoveResident(id: string) {
-  const resident = residents.find((r: { id: string }) => r.id === id)
+  const resident = residentById.value.get(id)
   if (!resident) {
     return
   }

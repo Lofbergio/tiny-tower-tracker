@@ -38,7 +38,7 @@
         </div>
         <div
           v-if="needsPlacement && !dreamJobStoreBuilt && dreamJobDemandCount >= 3"
-          class="motion-safe:animate-pop rounded bg-blue-50 p-1.5 dark:bg-blue-950/20 md:rounded-md md:p-2"
+          class="rounded bg-blue-50 p-1.5 motion-safe:animate-pop dark:bg-blue-950/20 md:rounded-md md:p-2"
         >
           <p class="text-xs font-medium text-blue-800 dark:text-blue-200 md:text-sm">
             🏗️ Build dream job store ({{ dreamJobDemandCount }}/3 want it)
@@ -46,7 +46,7 @@
         </div>
         <div
           v-else-if="needsPlacement && canPlaceInDreamJob"
-          class="motion-safe:animate-pop rounded bg-yellow-50 p-1.5 dark:bg-yellow-900/20 md:rounded-md md:p-2"
+          class="rounded bg-yellow-50 p-1.5 motion-safe:animate-pop dark:bg-yellow-900/20 md:rounded-md md:p-2"
         >
           <p class="text-xs font-medium text-yellow-800 dark:text-yellow-200 md:text-sm">
             Needs placement in dream job store
@@ -54,7 +54,7 @@
         </div>
         <div
           v-else-if="needsPlacement && dreamJobStoreBuilt && !canPlaceInDreamJob"
-          class="motion-safe:animate-pop rounded bg-orange-50 p-1.5 dark:bg-orange-900/20 md:rounded-md md:p-2"
+          class="rounded bg-orange-50 p-1.5 motion-safe:animate-pop dark:bg-orange-900/20 md:rounded-md md:p-2"
         >
           <p class="text-xs font-medium text-orange-800 dark:text-orange-200 md:text-sm">
             ⚠️ Dream job store is full (3/3)
@@ -72,7 +72,7 @@
           class="w-full"
           @click="$emit('place-in-dream-job')"
         >
-          <span aria-hidden="true" class="motion-safe:group-hover:animate-jiggle mr-1 inline-block"
+          <span aria-hidden="true" class="mr-1 inline-block motion-safe:group-hover:animate-jiggle"
             >✨</span
           >
           Place in Dream Job
@@ -163,18 +163,26 @@ const avatarClass = computed(() => {
 
 const displayName = computed(() => formatResidentName(props.resident.name))
 
+const storeById = computed(() => {
+  const map = new Map<string, Store>()
+  for (const store of props.stores) {
+    map.set(store.id, store)
+  }
+  return map
+})
+
 // Generate avatar using DiceBear API
 const avatarUrl = computed(() => {
   return getResidentAvatarUrl(displayName.value)
 })
 
 function getDreamJobName() {
-  const store = props.stores.find(s => s.id === props.resident.dreamJob)
+  const store = storeById.value.get(props.resident.dreamJob)
   return store?.name || props.resident.dreamJob
 }
 
 function getCurrentStoreName() {
-  const store = props.stores.find(s => s.id === props.currentStore)
+  const store = props.currentStore ? storeById.value.get(props.currentStore) : undefined
   return store?.name || props.currentStore
 }
 </script>

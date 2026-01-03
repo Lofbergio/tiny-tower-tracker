@@ -34,7 +34,7 @@
         <Card
           v-for="store in availableStores.slice(0, 6)"
           :key="store.id"
-          class="pressable group cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg"
+          class="pressable card-game group cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:shadow-lg"
           :style="{ borderLeftColor: categoryColors(store.category).border }"
           @click="handleAddStore(store.id)"
         >
@@ -85,7 +85,7 @@
           <Card
             v-for="store in availableStores.slice(0, 9)"
             :key="store.id"
-            class="pressable group cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-lg"
+            class="pressable card-game group cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:shadow-lg"
             :style="{ borderLeftColor: categoryColors(store.category).border }"
             @click="handleAddStore(store.id)"
           >
@@ -237,7 +237,7 @@
           <Card
             v-for="store in filteredStores"
             :key="store.id"
-            class="pressable cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:scale-[1.02] hover:shadow-md"
+            class="pressable card-game cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:shadow-md"
             :style="{ borderLeftColor: categoryColors(store.category).border }"
             @click="handleAddStore(store.id)"
           >

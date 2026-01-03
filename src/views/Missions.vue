@@ -166,7 +166,7 @@
         <Card
           v-for="mission in sortedCompletableMissions"
           :key="mission.id"
-          class="pressable group relative cursor-pointer touch-manipulation overflow-hidden border-l-4 border-green-500 transition-all hover:scale-[1.02] hover:shadow-lg dark:border-green-600"
+          class="pressable card-game group relative flex h-full cursor-pointer touch-manipulation flex-col overflow-hidden border-l-4 border-green-500 transition-all hover:shadow-xl hover:ring-1 hover:ring-ring/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-green-600"
           @click="handleAddMission(mission.id)"
         >
           <div
@@ -185,15 +185,18 @@
               {{ mission.description }}
             </p>
           </div>
-          <div class="p-3 pt-0 md:p-4 md:pt-0">
-            <div class="space-y-1">
-              <ul class="space-y-0.5 text-xs">
+          <div class="flex flex-1 flex-col p-3 pt-0 md:p-4 md:pt-0">
+            <div class="flex flex-1 flex-col">
+              <ul class="min-h-[56px] space-y-0.5 text-xs">
                 <li
                   v-for="(req, index) in mission.requirements"
                   :key="index"
-                  class="flex items-center gap-1.5"
+                  class="grid grid-cols-[6ch_1ch_1fr] items-baseline gap-1.5"
                 >
-                  <span class="text-muted-foreground">{{ req.quantity }}x</span>
+                  <span class="text-right tabular-nums text-muted-foreground">{{
+                    req.quantity
+                  }}</span>
+                  <span class="text-muted-foreground" aria-hidden="true">×</span>
                   <span>{{ req.product }}</span>
                 </li>
               </ul>
@@ -219,7 +222,7 @@
         <Card
           v-for="entry in sortedNonCompletableMissions"
           :key="entry.mission.id"
-          class="pressable group relative cursor-pointer touch-manipulation overflow-hidden border-l-4 border-gray-400 opacity-70 transition-all hover:opacity-90 active:opacity-95 dark:border-gray-600"
+          class="pressable card-game group relative flex h-full cursor-pointer touch-manipulation flex-col overflow-hidden border-l-4 border-gray-400 opacity-80 transition-all hover:opacity-100 hover:shadow-xl hover:ring-1 hover:ring-ring/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:opacity-95 dark:border-gray-600"
           @click="handleAddMission(entry.mission.id)"
         >
           <div class="relative flex flex-col space-y-1 p-3 md:p-4">
@@ -235,21 +238,24 @@
               {{ entry.mission.description }}
             </p>
           </div>
-          <div class="p-3 pt-0 md:p-4 md:pt-0">
-            <div class="space-y-2">
-              <ul class="space-y-0.5 text-xs">
+          <div class="flex flex-1 flex-col p-3 pt-0 md:p-4 md:pt-0">
+            <div class="flex flex-1 flex-col gap-2">
+              <ul class="min-h-[56px] space-y-0.5 text-xs">
                 <li
                   v-for="(req, index) in entry.mission.requirements"
                   :key="index"
-                  class="flex items-center gap-1.5"
+                  class="grid grid-cols-[6ch_1ch_1fr] items-baseline gap-1.5"
                 >
-                  <span class="text-muted-foreground">{{ req.quantity }}x</span>
+                  <span class="text-right tabular-nums text-muted-foreground">{{
+                    req.quantity
+                  }}</span>
+                  <span class="text-muted-foreground" aria-hidden="true">×</span>
                   <span>{{ req.product }}</span>
                 </li>
               </ul>
               <div
                 v-if="entry.missingStores.length > 0"
-                class="rounded bg-yellow-50 p-1.5 dark:bg-yellow-900/20 md:p-2"
+                class="mt-auto rounded bg-yellow-50 p-1.5 dark:bg-yellow-900/20 md:p-2"
               >
                 <p class="text-xs font-medium text-yellow-800 dark:text-yellow-200">
                   Need: {{ entry.missingStores.join(', ') }}

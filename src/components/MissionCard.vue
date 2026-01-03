@@ -39,9 +39,10 @@
           <li
             v-for="(req, index) in userMission.mission.requirements"
             :key="index"
-            class="flex items-center gap-1.5"
+            class="grid grid-cols-[6ch_1ch_1fr] items-baseline gap-1.5"
           >
-            <span class="text-muted-foreground">{{ req.quantity }}x</span>
+            <span class="text-right tabular-nums text-muted-foreground">{{ req.quantity }}</span>
+            <span class="text-muted-foreground" aria-hidden="true">×</span>
             <span>{{ req.product }}</span>
           </li>
         </ul>

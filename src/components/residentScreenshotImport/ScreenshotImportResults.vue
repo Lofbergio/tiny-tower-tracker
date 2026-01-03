@@ -13,7 +13,7 @@
     @before-leave="onResultsBeforeLeave"
     @leave="onResultsLeave"
   >
-    <div v-if="visible" class="space-y-3">
+    <div v-if="visible" class="w-full min-w-0 space-y-3">
       <div class="rounded-md bg-muted p-3">
         <div class="flex flex-col gap-1 text-sm sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -42,9 +42,10 @@
         </div>
       </div>
 
-      <div class="overflow-hidden rounded-md border">
+      <div class="w-full min-w-0 overflow-hidden rounded-md border">
         <TransitionGroup
           tag="div"
+          class="w-full min-w-0"
           enter-active-class="transition duration-200 ease-out"
           enter-from-class="opacity-0 translate-y-1"
           enter-to-class="opacity-100 translate-y-0"
@@ -56,7 +57,7 @@
           <label
             v-for="(c, idx) in candidates"
             :key="`${c.sourceFileName}-${idx}`"
-            class="flex items-start gap-3 border-b p-4 transition-colors duration-150 last:border-b-0 sm:p-3"
+            class="flex min-w-0 items-start gap-3 border-b p-4 transition-colors duration-150 last:border-b-0 sm:p-3"
             :style="{ transitionDelay: `${Math.min(idx, 12) * 25}ms` }"
             :class="
               !c.name || !c.dreamJobStoreId
@@ -78,18 +79,22 @@
             </div>
             <div class="min-w-0 flex-1">
               <div class="flex flex-wrap items-center gap-2">
-                <span class="font-medium">{{ c.name || c.nameRaw }}</span>
-                <span v-if="showImportSourceFile" class="text-xs text-muted-foreground"
+                <span class="break-words font-medium">{{ c.name || c.nameRaw }}</span>
+                <span
+                  v-if="showImportSourceFile"
+                  class="min-w-0 break-all text-xs text-muted-foreground"
                   >({{ c.sourceFileName }})</span
                 >
               </div>
               <div class="text-sm">
                 <span class="text-muted-foreground">Dream job:</span>
-                <span class="ml-1 font-medium">{{ c.matchedStoreName ?? c.dreamJobRaw }}</span>
+                <span class="ml-1 break-words font-medium">
+                  {{ c.matchedStoreName ?? c.dreamJobRaw }}
+                </span>
               </div>
               <div v-if="c.currentJobRaw || c.currentJobStoreId" class="text-sm">
                 <span class="text-muted-foreground">Current job:</span>
-                <span class="ml-1 font-medium">
+                <span class="ml-1 break-words font-medium">
                   {{ c.matchedCurrentStoreName ?? c.currentJobRaw ?? 'Unknown' }}
                 </span>
               </div>

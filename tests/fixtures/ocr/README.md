@@ -15,6 +15,10 @@ Drop Google Vision OCR responses in this folder as `.json` files.
 Tip: when running in dev, the screenshot import dialog includes a **Dev: Fixture workflow** box
 with one-click buttons to copy the OCR JSON and suggested fixture path.
 
+If you don't see that box while running locally, you can force it on by setting:
+
+- `VITE_SHOW_OCR_DEV_TOOLS=1` in your `.env`
+
 ## Expected JSON shape
 
 The Netlify function returns something like:

@@ -1,0 +1,644 @@
+{
+  "text": "*170\nJOB\nDREAM JOBS: 77\n92\nA. MCKINNEY\nUNEMPLOYED\nTOMMY MAY\nUNEMPLOYED\nRONNIE WADE\nUNEMPLOYED\nV. FLEMING\n36925\nBOWLING ALLEY\n15934\nCINEPLEX\n36925\nNIGHT CLUB\n62840\nCINEPLEX\nUNEMPLOYED\nISAAC FRANKLIN\n53726\nUNEMPLOYED PAINTBALL ARENA\nBRYAN PEARSON\n98321\nBBQ PLACE\nSMOOTHIE SHOP\nVICTOR MASON\n91357\nAIRLINE FOOD\nAIRLINE FOOD\nANNA BRYANT\n86420\nMEXICAN FOOD\nSKY BURGER\nRAMON STONE\n98768\nVEGAN FOOD\nVEGAN FOOD\nLAURIE CHAVEZ\nPUB\nBOB MARTIN\nCHEESE SHOP\nB. CUNNINGHAM\n86085\nPUB\n74741\nNIGHT CLUB\n98327\nPUB\nPUB\nAMBER MILLER\n86082\nDONUT SHOP\nDONUT SHOP\nANDY BELL\nSEAFOOD\nRENE HART\nDONUT SHOP\nNATHAN FLEMING\nAIRLINE COOD\n98327\nSEAFOOD\n91353\nDONUT SHOP\n91021\nAIRLING GOOD\n1,092,001\n284\n):\n):",
+  "lines": [
+    {
+      "text": "* 170",
+      "bbox": {
+        "x0": 93,
+        "y0": 63,
+        "x1": 218,
+        "y1": 96
+      }
+    },
+    {
+      "text": "JOB",
+      "bbox": {
+        "x0": 322,
+        "y0": 271,
+        "x1": 403,
+        "y1": 297
+      }
+    },
+    {
+      "text": "DREAM JOBS : 77",
+      "bbox": {
+        "x0": 462,
+        "y0": 168,
+        "x1": 834,
+        "y1": 198
+      }
+    },
+    {
+      "text": "92",
+      "bbox": {
+        "x0": 1115,
+        "y0": 65,
+        "x1": 1171,
+        "y1": 98
+      }
+    },
+    {
+      "text": "A. MCKINNEY",
+      "bbox": {
+        "x0": 283,
+        "y0": 385,
+        "x1": 580,
+        "y1": 413
+      }
+    },
+    {
+      "text": "UNEMPLOYED",
+      "bbox": {
+        "x0": 282,
+        "y0": 424,
+        "x1": 580,
+        "y1": 457
+      }
+    },
+    {
+      "text": "TOMMY MAY",
+      "bbox": {
+        "x0": 283,
+        "y0": 529,
+        "x1": 564,
+        "y1": 559
+      }
+    },
+    {
+      "text": "UNEMPLOYED",
+      "bbox": {
+        "x0": 282,
+        "y0": 569,
+        "x1": 579,
+        "y1": 601
+      }
+    },
+    {
+      "text": "RONNIE WADE",
+      "bbox": {
+        "x0": 284,
+        "y0": 671,
+        "x1": 586,
+        "y1": 704
+      }
+    },
+    {
+      "text": "UNEMPLOYED",
+      "bbox": {
+        "x0": 283,
+        "y0": 714,
+        "x1": 578,
+        "y1": 743
+      }
+    },
+    {
+      "text": "V. FLEMING",
+      "bbox": {
+        "x0": 280,
+        "y0": 816,
+        "x1": 533,
+        "y1": 847
+      }
+    },
+    {
+      "text": "36925",
+      "bbox": {
+        "x0": 826,
+        "y0": 385,
+        "x1": 995,
+        "y1": 411
+      }
+    },
+    {
+      "text": "BOWLING ALLEY",
+      "bbox": {
+        "x0": 656,
+        "y0": 427,
+        "x1": 1005,
+        "y1": 455
+      }
+    },
+    {
+      "text": "15934",
+      "bbox": {
+        "x0": 828,
+        "y0": 525,
+        "x1": 995,
+        "y1": 560
+      }
+    },
+    {
+      "text": "CINEPLEX",
+      "bbox": {
+        "x0": 794,
+        "y0": 571,
+        "x1": 1001,
+        "y1": 600
+      }
+    },
+    {
+      "text": "36925",
+      "bbox": {
+        "x0": 825,
+        "y0": 674,
+        "x1": 996,
+        "y1": 703
+      }
+    },
+    {
+      "text": "NIGHT CLUB",
+      "bbox": {
+        "x0": 745,
+        "y0": 715,
+        "x1": 1004,
+        "y1": 743
+      }
+    },
+    {
+      "text": "62840",
+      "bbox": {
+        "x0": 826,
+        "y0": 818,
+        "x1": 998,
+        "y1": 846
+      }
+    },
+    {
+      "text": "CINEPLEX",
+      "bbox": {
+        "x0": 795,
+        "y0": 859,
+        "x1": 1002,
+        "y1": 888
+      }
+    },
+    {
+      "text": "UNEMPLOYED",
+      "bbox": {
+        "x0": 282,
+        "y0": 857,
+        "x1": 579,
+        "y1": 889
+      }
+    },
+    {
+      "text": "ISAAC FRANKLIN",
+      "bbox": {
+        "x0": 281,
+        "y0": 960,
+        "x1": 649,
+        "y1": 993
+      }
+    },
+    {
+      "text": "53726",
+      "bbox": {
+        "x0": 823,
+        "y0": 957,
+        "x1": 997,
+        "y1": 991
+      }
+    },
+    {
+      "text": "UNEMPLOYED PAINTBALL ARENA",
+      "bbox": {
+        "x0": 282,
+        "y0": 1002,
+        "x1": 1007,
+        "y1": 1032
+      }
+    },
+    {
+      "text": "BRYAN PEARSON",
+      "bbox": {
+        "x0": 284,
+        "y0": 1105,
+        "x1": 668,
+        "y1": 1135
+      }
+    },
+    {
+      "text": "98321",
+      "bbox": {
+        "x0": 827,
+        "y0": 1104,
+        "x1": 995,
+        "y1": 1137
+      }
+    },
+    {
+      "text": "BBQ PLACE",
+      "bbox": {
+        "x0": 284,
+        "y0": 1142,
+        "x1": 526,
+        "y1": 1180
+      }
+    },
+    {
+      "text": "SMOOTHIE SHOP",
+      "bbox": {
+        "x0": 655,
+        "y0": 1145,
+        "x1": 1000,
+        "y1": 1177
+      }
+    },
+    {
+      "text": "VICTOR MASON",
+      "bbox": {
+        "x0": 282,
+        "y0": 1247,
+        "x1": 619,
+        "y1": 1281
+      }
+    },
+    {
+      "text": "91357",
+      "bbox": {
+        "x0": 826,
+        "y0": 1246,
+        "x1": 997,
+        "y1": 1280
+      }
+    },
+    {
+      "text": "AIRLINE FOOD",
+      "bbox": {
+        "x0": 284,
+        "y0": 1289,
+        "x1": 579,
+        "y1": 1320
+      }
+    },
+    {
+      "text": "AIRLINE FOOD",
+      "bbox": {
+        "x0": 708,
+        "y0": 1289,
+        "x1": 1004,
+        "y1": 1320
+      }
+    },
+    {
+      "text": "ANNA BRYANT",
+      "bbox": {
+        "x0": 284,
+        "y0": 1391,
+        "x1": 617,
+        "y1": 1423
+      }
+    },
+    {
+      "text": "86420",
+      "bbox": {
+        "x0": 826,
+        "y0": 1392,
+        "x1": 1000,
+        "y1": 1425
+      }
+    },
+    {
+      "text": "MEXICAN FOOD",
+      "bbox": {
+        "x0": 284,
+        "y0": 1433,
+        "x1": 614,
+        "y1": 1465
+      }
+    },
+    {
+      "text": "SKY BURGER",
+      "bbox": {
+        "x0": 721,
+        "y0": 1433,
+        "x1": 1007,
+        "y1": 1465
+      }
+    },
+    {
+      "text": "RAMON STONE",
+      "bbox": {
+        "x0": 283,
+        "y0": 1534,
+        "x1": 604,
+        "y1": 1567
+      }
+    },
+    {
+      "text": "98768",
+      "bbox": {
+        "x0": 826,
+        "y0": 1535,
+        "x1": 1000,
+        "y1": 1568
+      }
+    },
+    {
+      "text": "VEGAN FOOD",
+      "bbox": {
+        "x0": 283,
+        "y0": 1579,
+        "x1": 568,
+        "y1": 1608
+      }
+    },
+    {
+      "text": "VEGAN FOOD",
+      "bbox": {
+        "x0": 721,
+        "y0": 1576,
+        "x1": 1004,
+        "y1": 1608
+      }
+    },
+    {
+      "text": "LAURIE CHAVEZ",
+      "bbox": {
+        "x0": 283,
+        "y0": 1679,
+        "x1": 623,
+        "y1": 1712
+      }
+    },
+    {
+      "text": "PUB",
+      "bbox": {
+        "x0": 282,
+        "y0": 1722,
+        "x1": 368,
+        "y1": 1751
+      }
+    },
+    {
+      "text": "BOB MARTIN",
+      "bbox": {
+        "x0": 282,
+        "y0": 1823,
+        "x1": 554,
+        "y1": 1855
+      }
+    },
+    {
+      "text": "CHEESE SHOP",
+      "bbox": {
+        "x0": 283,
+        "y0": 1864,
+        "x1": 578,
+        "y1": 1896
+      }
+    },
+    {
+      "text": "B. CUNNINGHAM",
+      "bbox": {
+        "x0": 283,
+        "y0": 1969,
+        "x1": 645,
+        "y1": 1999
+      }
+    },
+    {
+      "text": "86085",
+      "bbox": {
+        "x0": 827,
+        "y0": 1679,
+        "x1": 996,
+        "y1": 1710
+      }
+    },
+    {
+      "text": "PUB",
+      "bbox": {
+        "x0": 918,
+        "y0": 1722,
+        "x1": 1003,
+        "y1": 1751
+      }
+    },
+    {
+      "text": "74741",
+      "bbox": {
+        "x0": 825,
+        "y0": 1822,
+        "x1": 994,
+        "y1": 1854
+      }
+    },
+    {
+      "text": "NIGHT CLUB",
+      "bbox": {
+        "x0": 745,
+        "y0": 1867,
+        "x1": 1005,
+        "y1": 1894
+      }
+    },
+    {
+      "text": "98327",
+      "bbox": {
+        "x0": 827,
+        "y0": 1966,
+        "x1": 999,
+        "y1": 2000
+      }
+    },
+    {
+      "text": "PUB",
+      "bbox": {
+        "x0": 919,
+        "y0": 2009,
+        "x1": 1005,
+        "y1": 2038
+      }
+    },
+    {
+      "text": "PUB",
+      "bbox": {
+        "x0": 282,
+        "y0": 2012,
+        "x1": 370,
+        "y1": 2039
+      }
+    },
+    {
+      "text": "AMBER MILLER",
+      "bbox": {
+        "x0": 283,
+        "y0": 2113,
+        "x1": 597,
+        "y1": 2143
+      }
+    },
+    {
+      "text": "86082",
+      "bbox": {
+        "x0": 827,
+        "y0": 2113,
+        "x1": 996,
+        "y1": 2142
+      }
+    },
+    {
+      "text": "DONUT SHOP",
+      "bbox": {
+        "x0": 283,
+        "y0": 2152,
+        "x1": 566,
+        "y1": 2185
+      }
+    },
+    {
+      "text": "DONUT SHOP",
+      "bbox": {
+        "x0": 722,
+        "y0": 2155,
+        "x1": 1003,
+        "y1": 2183
+      }
+    },
+    {
+      "text": "ANDY BELL",
+      "bbox": {
+        "x0": 283,
+        "y0": 2257,
+        "x1": 532,
+        "y1": 2286
+      }
+    },
+    {
+      "text": "SEAFOOD",
+      "bbox": {
+        "x0": 282,
+        "y0": 2297,
+        "x1": 475,
+        "y1": 2328
+      }
+    },
+    {
+      "text": "RENE HART",
+      "bbox": {
+        "x0": 285,
+        "y0": 2398,
+        "x1": 529,
+        "y1": 2430
+      }
+    },
+    {
+      "text": "DONUT SHOP",
+      "bbox": {
+        "x0": 283,
+        "y0": 2442,
+        "x1": 567,
+        "y1": 2471
+      }
+    },
+    {
+      "text": "NATHAN FLEMING",
+      "bbox": {
+        "x0": 283,
+        "y0": 2544,
+        "x1": 670,
+        "y1": 2573
+      }
+    },
+    {
+      "text": "AIRLINE COOD",
+      "bbox": {
+        "x0": 284,
+        "y0": 2586,
+        "x1": 578,
+        "y1": 2607
+      }
+    },
+    {
+      "text": "98327",
+      "bbox": {
+        "x0": 825,
+        "y0": 2253,
+        "x1": 997,
+        "y1": 2291
+      }
+    },
+    {
+      "text": "SEAFOOD",
+      "bbox": {
+        "x0": 810,
+        "y0": 2297,
+        "x1": 1004,
+        "y1": 2328
+      }
+    },
+    {
+      "text": "91353",
+      "bbox": {
+        "x0": 828,
+        "y0": 2399,
+        "x1": 994,
+        "y1": 2429
+      }
+    },
+    {
+      "text": "DONUT SHOP",
+      "bbox": {
+        "x0": 720,
+        "y0": 2442,
+        "x1": 1003,
+        "y1": 2470
+      }
+    },
+    {
+      "text": "91021",
+      "bbox": {
+        "x0": 828,
+        "y0": 2544,
+        "x1": 993,
+        "y1": 2572
+      }
+    },
+    {
+      "text": "AIRLING GOOD",
+      "bbox": {
+        "x0": 706,
+        "y0": 2584,
+        "x1": 1002,
+        "y1": 2606
+      }
+    },
+    {
+      "text": "1,092,001",
+      "bbox": {
+        "x0": 100,
+        "y0": 2642,
+        "x1": 319,
+        "y1": 2673
+      }
+    },
+    {
+      "text": "284",
+      "bbox": {
+        "x0": 539,
+        "y0": 2635,
+        "x1": 632,
+        "y1": 2675
+      }
+    },
+    {
+      "text": ") :",
+      "bbox": {
+        "x0": 1053,
+        "y0": 975,
+        "x1": 1088,
+        "y1": 1018
+      }
+    },
+    {
+      "text": ") :",
+      "bbox": {
+        "x0": 1053,
+        "y0": 687,
+        "x1": 1089,
+        "y1": 728
+      }
+    }
+  ]
+}

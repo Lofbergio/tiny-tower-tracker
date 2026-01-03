@@ -1,14 +1,14 @@
 <template>
   <Dialog :open="open" @update:open="handleOpenChange">
     <DialogContent class="max-w-2xl">
-      <div class="flex flex-col space-y-1.5 text-center sm:text-left">
+      <div class="min-w-0 flex flex-col space-y-1.5 text-center sm:text-left">
         <DialogTitle class="flex items-center gap-2">
           <span class="text-2xl">📸</span>
           <span>Import Residents from Screenshots</span>
         </DialogTitle>
       </div>
 
-      <div class="space-y-4">
+      <div class="min-w-0 space-y-4">
         <p class="text-sm text-muted-foreground">
           Upload one or more screenshots of your Tiny Tower resident list. We'll use Google Vision
           OCR to extract resident names + dream jobs.
@@ -227,7 +227,7 @@
       </div>
 
       <input
-        ref="screenshotInput"
+        :ref="setScreenshotInput"
         type="file"
         accept="image/*"
         multiple
@@ -251,7 +251,7 @@ import { useResidentsStore, useStoresStore } from '@/stores'
 import type { Store, UserStore } from '@/types'
 import type { ScreenshotResidentCandidate } from '@/utils/residentScreenshotImport'
 import { useToast } from '@/utils/toast'
-import { computed } from 'vue'
+import { computed, type ComponentPublicInstance } from 'vue'
 
 type ConfirmArgs = {
   title: string
@@ -275,12 +275,12 @@ const residentsStore = useResidentsStore()
 const storesStore = useStoresStore()
 
 const {
-  screenshotInput,
   importCandidates,
   isImporting,
   isDragOver,
   isOnline,
   lastOcrPages,
+  screenshotInput,
   copyOcrFixtureToClipboard,
   selectedScreenshotCountText,
   selectedImportCount,
@@ -303,7 +303,11 @@ const {
   toast,
 })
 
-const isDev = computed(() => Boolean((import.meta as any)?.env?.DEV))
+const isDev = !!import.meta.env.VITE_SHOW_OCR_DEV_TOOLS
+
+function setScreenshotInput(el: Element | ComponentPublicInstance | null) {
+  screenshotInput.value = el as HTMLInputElement | null
+}
 
 function fixtureFilePathFor(fileName: string): string {
   const base = fileName
@@ -346,8 +350,6 @@ function handleOpenChange(isOpen: boolean) {
 }
 
 const isLikelyViteDev = computed(() => {
-  const isDev = Boolean((import.meta as any)?.env?.DEV)
-  if (!isDev) return false
   const port = window.location.port
   return (
     (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') &&

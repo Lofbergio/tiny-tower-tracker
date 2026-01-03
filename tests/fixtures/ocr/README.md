@@ -33,4 +33,10 @@ You _do not_ need to include the base64 image.
 - Run tests: `yarn test`
 - Add new fixture(s), then update snapshots once: `yarn test:update`
 
+The “expected values” for these golden tests live in Vitest’s snapshot file:
+
+- `tests/__snapshots__/ocrFixtures.test.ts.snap`
+
+After running `yarn test:update`, make sure the updated `.snap` file is included in your git change.
+
 If a change breaks an old fixture unexpectedly, `yarn test` will fail and show a diff.

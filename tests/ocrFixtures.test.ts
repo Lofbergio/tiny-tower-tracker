@@ -3,8 +3,8 @@ import path from 'path'
 import { describe, expect, it } from 'vitest'
 
 import type { Store } from '@/types'
-import type { OcrLine, OcrPage } from '@/utils/residentScreenshotImport/types'
 import { extractResidentsFromOcrPages } from '@/utils/residentScreenshotImport'
+import type { OcrLine, OcrPage } from '@/utils/residentScreenshotImport/types'
 
 function loadAllStores(): Store[] {
   const filePath = path.resolve(process.cwd(), 'public/db-store.json')
@@ -63,6 +63,8 @@ describe('OCR fixtures (golden)', () => {
       return { fileName, candidates }
     })
 
+    // Expected values live in `tests/__snapshots__/ocrFixtures.test.ts.snap`.
+    // Update them with: `yarn test:update`.
     expect(results).toMatchSnapshot()
   })
 })

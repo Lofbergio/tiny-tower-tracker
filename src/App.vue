@@ -143,7 +143,7 @@
               </div>
             </div>
             <RouterView v-else v-slot="{ Component }">
-              <Transition name="page">
+              <Transition name="page" mode="out-in">
                 <component :is="Component" :key="route.fullPath" />
               </Transition>
             </RouterView>

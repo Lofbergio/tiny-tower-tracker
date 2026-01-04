@@ -104,6 +104,7 @@ function findStoresInText(text: string, index: ReturnType<typeof buildStoreIndex
   const results: StoreMatch[] = []
   const textNorm = normalizeNoSpace(text)
 
+  // First pass: find exact substring matches
   for (const store of index.stores) {
     const storeNorm = normalizeNoSpace(store.name)
     if (!storeNorm) continue
@@ -115,6 +116,36 @@ function findStoresInText(text: string, index: ReturnType<typeof buildStoreIndex
       if (idx < 0) break
       results.push({ store, confidence: 0.95, startIndex: idx })
       searchStart = idx + storeNorm.length
+    }
+  }
+
+  // Second pass: check for suffix matches in remaining text
+  // This handles OCR truncation like "EDDING CHAPEL" -> "WEDDING CHAPEL"
+  if (results.length > 0) {
+    // Sort by position to find the last matched store
+    results.sort((a, b) => a.startIndex - b.startIndex)
+    const lastMatch = results[results.length - 1]
+    const lastStoreNorm = normalizeNoSpace(lastMatch.store.name)
+    const afterLastStore = textNorm.slice(lastMatch.startIndex + lastStoreNorm.length)
+
+    if (afterLastStore.length >= 5) {
+      // Try to match the remaining text as a suffix of a store name
+      for (const store of index.stores) {
+        const storeNorm = normalizeNoSpace(store.name)
+        // Check if remaining text is a suffix of this store (1-3 chars truncated)
+        if (storeNorm.length > afterLastStore.length) {
+          const truncated = storeNorm.length - afterLastStore.length
+          if (truncated <= 3 && storeNorm.endsWith(afterLastStore)) {
+            const conf = 0.88 - truncated * 0.03
+            results.push({
+              store,
+              confidence: conf,
+              startIndex: lastMatch.startIndex + lastStoreNorm.length,
+            })
+            break // Found a suffix match, stop searching
+          }
+        }
+      }
     }
   }
 
@@ -131,13 +162,31 @@ function matchSingleStore(
   const trimmed = text.trim()
   if (!trimmed || isUnemployed(trimmed)) return undefined
 
+  const textNorm = normalize(trimmed)
+  const textNoSpace = normalizeNoSpace(trimmed)
+
   // Exact match (normalized)
-  const exactMatch = index.byNormalized.get(normalize(trimmed))
+  const exactMatch = index.byNormalized.get(textNorm)
   if (exactMatch) return { store: exactMatch, confidence: 1.0, startIndex: 0 }
 
   // No-space exact match
-  const noSpaceMatch = index.byNoSpace.get(normalizeNoSpace(trimmed))
+  const noSpaceMatch = index.byNoSpace.get(textNoSpace)
   if (noSpaceMatch) return { store: noSpaceMatch, confidence: 0.98, startIndex: 0 }
+
+  // Suffix match - handle OCR truncation where beginning of store name is cut off
+  // e.g., "EDDING CHAPEL" should match "WEDDING CHAPEL"
+  for (const store of index.stores) {
+    const storeNoSpace = normalizeNoSpace(store.name)
+    // Check if the text is a suffix of the store name (allowing 1-3 chars truncated)
+    if (storeNoSpace.length > textNoSpace.length) {
+      const truncated = storeNoSpace.length - textNoSpace.length
+      if (truncated <= 3 && storeNoSpace.endsWith(textNoSpace)) {
+        // Confidence based on how much was truncated
+        const conf = 0.9 - truncated * 0.03
+        return { store, confidence: conf, startIndex: 0 }
+      }
+    }
+  }
 
   // Fuzzy match - find best similarity
   let best: { store: Store; score: number } | undefined

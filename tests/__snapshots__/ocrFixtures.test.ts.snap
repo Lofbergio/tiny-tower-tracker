@@ -329,12 +329,10 @@ exports[`OCR fixtures (golden) > keeps parsing stable for all saved fixtures 1`]
       },
       {
         "currentJobStoreId": "dentists-office",
-        "dreamJobStoreId": null,
-        "issues": [
-          "Could not confidently match dream job to a known store",
-        ],
+        "dreamJobStoreId": "wedding-chapel",
+        "issues": [],
         "name": "M WALKER",
-        "selected": false,
+        "selected": true,
       },
       {
         "currentJobStoreId": "bank",
@@ -345,12 +343,10 @@ exports[`OCR fixtures (golden) > keeps parsing stable for all saved fixtures 1`]
       },
       {
         "currentJobStoreId": "fortune-teller",
-        "dreamJobStoreId": null,
-        "issues": [
-          "Could not confidently match dream job to a known store",
-        ],
+        "dreamJobStoreId": "wedding-chapel",
+        "issues": [],
         "name": "P HOFFMAN",
-        "selected": false,
+        "selected": true,
       },
       {
         "currentJobStoreId": "fortune-teller",

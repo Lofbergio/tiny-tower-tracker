@@ -4,24 +4,6 @@
       <div class="relative min-h-screen bg-background">
         <div class="bg-grid-pattern pointer-events-none fixed inset-0" aria-hidden="true" />
         <div class="relative">
-          <div
-            v-show="isRouteNavigating"
-            class="pointer-events-none fixed left-0 right-0 top-0 z-50"
-          >
-            <div
-              class="h-0.5 w-full bg-transparent"
-              role="progressbar"
-              aria-label="Page loading"
-              :aria-valuenow="Math.round(routeProgress)"
-              aria-valuemin="0"
-              aria-valuemax="100"
-            >
-              <div
-                class="h-full bg-gradient-to-r from-primary via-primary/80 to-primary transition-[width] duration-200 ease-out"
-                :style="{ width: `${routeProgress}%` }"
-              />
-            </div>
-          </div>
           <a
             href="#main-content"
             class="sr-only z-50 rounded-md bg-background px-3 py-2 text-sm font-medium text-foreground ring-2 ring-ring ring-offset-2 ring-offset-background focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
@@ -143,7 +125,7 @@
               </div>
             </div>
             <RouterView v-else v-slot="{ Component }">
-              <Transition name="page" mode="out-in">
+              <Transition :name="slideDirection" mode="out-in">
                 <component :is="Component" :key="route.fullPath" />
               </Transition>
             </RouterView>
@@ -212,57 +194,6 @@ import { useResidentsStore } from './stores'
 const router = useRouter()
 const route = useRoute()
 const showMobileMenu = ref(false)
-
-const isRouteNavigating = ref(false)
-const routeProgress = ref(0)
-const routeNavStartedAt = ref<number | null>(null)
-
-let progressTimer: number | null = null
-let finishTimer: number | null = null
-
-function clearRouteTimers() {
-  if (progressTimer !== null) {
-    window.clearInterval(progressTimer)
-    progressTimer = null
-  }
-  if (finishTimer !== null) {
-    window.clearTimeout(finishTimer)
-    finishTimer = null
-  }
-}
-
-function startRouteProgress() {
-  clearRouteTimers()
-  isRouteNavigating.value = true
-  routeNavStartedAt.value = Date.now()
-  routeProgress.value = 12
-
-  progressTimer = window.setInterval(() => {
-    // Ease toward 90% while navigation is pending
-    const current = routeProgress.value
-    if (current >= 90) return
-    const next = current + (90 - current) * 0.12
-    routeProgress.value = Math.min(90, Math.max(current + 0.6, next))
-  }, 120)
-}
-
-function finishRouteProgress() {
-  const startedAt = routeNavStartedAt.value
-  const elapsed = startedAt ? Date.now() - startedAt : 0
-  const minVisibleMs = 180
-  const delay = Math.max(0, minVisibleMs - elapsed)
-
-  clearRouteTimers()
-
-  finishTimer = window.setTimeout(() => {
-    routeProgress.value = 100
-    window.setTimeout(() => {
-      isRouteNavigating.value = false
-      routeProgress.value = 0
-      routeNavStartedAt.value = null
-    }, 180)
-  }, delay)
-}
 
 const showTopNav = ref(true)
 const lastScrollY = ref(0)
@@ -368,19 +299,23 @@ onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
 })
 
+// Route order for determining slide direction
+const routeOrder: Record<string, number> = {
+  '/': 0,
+  '/missions': 1,
+  '/residents': 2,
+  '/stores': 3,
+}
+
+const slideDirection = ref<'slide-left' | 'slide-right'>('slide-right')
+
 const removeBeforeEach = router.beforeEach((to, from) => {
   if (to.fullPath !== from.fullPath) {
-    startRouteProgress()
+    const fromIndex = routeOrder[from.path] ?? 0
+    const toIndex = routeOrder[to.path] ?? 0
+    slideDirection.value = toIndex > fromIndex ? 'slide-left' : 'slide-right'
   }
   return true
-})
-
-const removeAfterEach = router.afterEach(() => {
-  finishRouteProgress()
-})
-
-router.onError(() => {
-  finishRouteProgress()
 })
 
 // Get pending counts for navigation badges
@@ -430,8 +365,6 @@ onUnmounted(() => {
   window.removeEventListener('keydown', handleGlobalKeydown)
   window.removeEventListener('pointerdown', handleGlobalPointerDown)
   removeBeforeEach()
-  removeAfterEach()
-  clearRouteTimers()
 })
 
 const residentsNeedingPlacementCount = computed(

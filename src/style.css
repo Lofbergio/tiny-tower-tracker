@@ -190,24 +190,6 @@
     transition: background-color 0.2s ease-in-out;
   }
 
-  /* Page (route) transitions */
-  .page-enter-active,
-  .page-leave-active {
-    transition:
-      opacity 140ms ease,
-      transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .page-enter-from {
-    opacity: 0;
-    transform: translateY(14px) scale(0.985);
-  }
-
-  .page-leave-to {
-    opacity: 0;
-    transform: translateY(-10px) scale(0.985);
-  }
-
   /* Page header transitions (Transition name="header") */
   .header-enter-active {
     transition:
@@ -286,4 +268,34 @@
       transition-duration: 0.01ms !important;
     }
   }
+}
+
+/* Page (route) slide transitions - outside @layer for higher specificity */
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition:
+    opacity 120ms ease,
+    transform 120ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.slide-left-enter-from {
+  opacity: 0;
+  transform: translateX(40px);
+}
+
+.slide-left-leave-to {
+  opacity: 0;
+  transform: translateX(-40px);
+}
+
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translateX(-40px);
+}
+
+.slide-right-leave-to {
+  opacity: 0;
+  transform: translateX(40px);
 }

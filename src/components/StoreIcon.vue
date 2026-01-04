@@ -82,19 +82,14 @@
 import { useDarkMode } from '@/composables/useDarkMode'
 import { computed } from 'vue'
 
-const props = withDefaults(
-  defineProps<{
-    category: string
-    size?: number
-  }>(),
-  {
-    size: 48,
-  }
-)
+const { category, size = 48 } = defineProps<{
+  category: string
+  size?: number
+}>()
 
 const { isDark } = useDarkMode()
 
-const categoryLower = computed(() => props.category.toLowerCase())
+const categoryLower = computed(() => category.toLowerCase())
 
 const categoryType = computed(() => {
   const cat = categoryLower.value

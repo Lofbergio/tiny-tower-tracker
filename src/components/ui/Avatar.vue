@@ -1,7 +1,17 @@
 <template>
   <AvatarRoot :class="['relative flex shrink-0 overflow-hidden rounded-full', sizeClasses[size]]">
-    <AvatarImage v-if="src" :src="src" :alt="alt" class="aspect-square h-full w-full object-cover" />
-    <AvatarFallback :class="['flex h-full w-full items-center justify-center rounded-full bg-muted text-muted-foreground', fallbackClass]">
+    <AvatarImage
+      v-if="src"
+      :src="src"
+      :alt="alt"
+      class="aspect-square h-full w-full object-cover"
+    />
+    <AvatarFallback
+      :class="[
+        'flex h-full w-full items-center justify-center rounded-full bg-muted text-muted-foreground',
+        fallbackClass,
+      ]"
+    >
       <slot name="fallback">
         {{ fallbackText }}
       </slot>
@@ -13,21 +23,19 @@
 import { AvatarFallback, AvatarImage, AvatarRoot } from 'radix-vue'
 import { computed } from 'vue'
 
-interface Props {
+const {
+  src,
+  alt = '',
+  fallback = '',
+  size = 'md',
+  fallbackClass = '',
+} = defineProps<{
   src?: string
   alt?: string
   fallback?: string
   size?: 'sm' | 'md' | 'lg' | 'xl'
   fallbackClass?: string
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  src: undefined,
-  alt: '',
-  fallback: '',
-  size: 'md',
-  fallbackClass: '',
-})
+}>()
 
 const sizeClasses = {
   sm: 'h-8 w-8 text-xs',
@@ -37,9 +45,9 @@ const sizeClasses = {
 }
 
 const fallbackText = computed(() => {
-  if (props.fallback) return props.fallback
-  if (props.alt) {
-    return props.alt
+  if (fallback) return fallback
+  if (alt) {
+    return alt
       .split(' ')
       .map(n => n[0])
       .join('')

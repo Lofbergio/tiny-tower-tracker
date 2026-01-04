@@ -20,15 +20,10 @@
 <script setup lang="ts">
 import EmptyTowerIllustration from '../EmptyTowerIllustration.vue'
 
-withDefaults(
-  defineProps<{
-    title?: string
-    description?: string
-    icon?: any
-    hideIllustration?: boolean
-  }>(),
-  {
-    hideIllustration: false,
-  }
-)
+const { hideIllustration = false } = defineProps<{
+  title?: string
+  description?: string
+  icon?: any
+  hideIllustration?: boolean
+}>()
 </script>

@@ -17,26 +17,19 @@
 </template>
 
 <script setup lang="ts">
-import {
-  TooltipArrow,
-  TooltipContent,
-  TooltipPortal,
-  TooltipRoot,
-  TooltipTrigger,
-} from 'radix-vue'
+import { TooltipArrow, TooltipContent, TooltipPortal, TooltipRoot, TooltipTrigger } from 'radix-vue'
 
-interface Props {
+const {
+  content,
+  side = 'top',
+  sideOffset = 4,
+  delayDuration = 200,
+  showArrow = false,
+} = defineProps<{
   content: string
   side?: 'top' | 'right' | 'bottom' | 'left'
   sideOffset?: number
   delayDuration?: number
   showArrow?: boolean
-}
-
-withDefaults(defineProps<Props>(), {
-  side: 'top',
-  sideOffset: 4,
-  delayDuration: 200,
-  showArrow: false,
-})
+}>()
 </script>

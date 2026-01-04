@@ -88,18 +88,15 @@
 <script setup lang="ts">
 import { useDarkMode } from '@/composables/useDarkMode'
 
-withDefaults(
-  defineProps<{
-    width?: string | number
-    height?: string | number
-    className?: string
-  }>(),
-  {
-    width: '200',
-    height: '300',
-    className: '',
-  }
-)
+const {
+  width = '200',
+  height = '300',
+  className = '',
+} = defineProps<{
+  width?: string | number
+  height?: string | number
+  className?: string
+}>()
 
 const { isDark } = useDarkMode()
 </script>

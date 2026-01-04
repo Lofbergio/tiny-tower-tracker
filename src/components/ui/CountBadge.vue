@@ -9,20 +9,15 @@ import { computed, useAttrs } from 'vue'
 
 const attrs = useAttrs()
 
-const props = withDefaults(
-  defineProps<{
-    count: number
-    max?: number
-  }>(),
-  {
-    max: 9,
-  }
-)
+const { count, max = 9 } = defineProps<{
+  count: number
+  max?: number
+}>()
 
 const displayCount = computed(() => {
-  if (props.count > props.max) {
-    return `${props.max}+`
+  if (count > max) {
+    return `${max}+`
   }
-  return String(props.count)
+  return String(count)
 })
 </script>

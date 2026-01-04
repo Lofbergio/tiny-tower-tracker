@@ -14,21 +14,14 @@
 <script setup lang="ts">
 import { DropdownMenuItem } from 'radix-vue'
 
-interface Props {
+const { disabled = false, variant = 'default' } = defineProps<{
   disabled?: boolean
   variant?: 'default' | 'destructive'
-}
+}>()
 
-interface Emits {
-  (e: 'select', event: Event): void
-}
-
-withDefaults(defineProps<Props>(), {
-  disabled: false,
-  variant: 'default',
-})
-
-const emit = defineEmits<Emits>()
+const emit = defineEmits<{
+  select: [event: Event]
+}>()
 
 function handleSelect(event: Event) {
   emit('select', event)

@@ -87,15 +87,15 @@ import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
 import Separator from './ui/Separator.vue'
 
-interface Props {
+const {
+  userStore,
+  residents: allResidents,
+  isComplete = false,
+} = defineProps<{
   userStore: UserStore & { store: Store }
   residents: Resident[]
   isComplete?: boolean
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  isComplete: false,
-})
+}>()
 
 defineEmits<{
   'remove-resident': [residentId: string]
@@ -103,13 +103,13 @@ defineEmits<{
 }>()
 
 const { isDark } = useDarkMode()
-const store = computed(() => props.userStore.store)
-const residents = computed(() => props.userStore.residents)
+const store = computed(() => userStore.store)
+const residents = computed(() => userStore.residents)
 const capacity = computed(() => residents.value.length)
 
 const residentById = computed(() => {
   const map = new Map<string, Resident>()
-  for (const resident of props.residents) {
+  for (const resident of allResidents) {
     map.set(resident.id, resident)
   }
   return map

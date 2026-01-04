@@ -23,21 +23,21 @@ import Dialog from './Dialog.vue'
 import DialogContent from './DialogContent.vue'
 import DialogTitle from './DialogTitle.vue'
 
-withDefaults(
-  defineProps<{
-    open: boolean
-    title: string
-    message: string
-    confirmText?: string
-    cancelText?: string
-    variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
-  }>(),
-  {
-    confirmText: 'Confirm',
-    cancelText: 'Cancel',
-    variant: 'default',
-  }
-)
+const {
+  open,
+  title,
+  message,
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
+  variant = 'default',
+} = defineProps<{
+  open: boolean
+  title: string
+  message: string
+  confirmText?: string
+  cancelText?: string
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
+}>()
 
 const emit = defineEmits<{
   'update:open': [value: boolean]

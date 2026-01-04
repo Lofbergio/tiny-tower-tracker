@@ -14,15 +14,13 @@
 <script setup lang="ts">
 import { DropdownMenuContent, DropdownMenuPortal } from 'radix-vue'
 
-interface Props {
+const {
+  side = 'bottom',
+  sideOffset = 4,
+  align = 'start',
+} = defineProps<{
   side?: 'top' | 'right' | 'bottom' | 'left'
   sideOffset?: number
   align?: 'start' | 'center' | 'end'
-}
-
-withDefaults(defineProps<Props>(), {
-  side: 'bottom',
-  sideOffset: 4,
-  align: 'start',
-})
+}>()
 </script>

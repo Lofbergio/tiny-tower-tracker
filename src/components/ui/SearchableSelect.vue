@@ -102,28 +102,27 @@ export type SearchableSelectItem = {
   disabled?: boolean
 }
 
-const props = withDefaults(
-  defineProps<{
-    modelValue?: string
-    placeholder?: string
-    items: SearchableSelectItem[]
-    searchPlaceholder?: string
-    maxItems?: number
-    requireSearchThreshold?: number
-    minQueryLength?: number
-    clearOnClose?: boolean
-    debounceMs?: number
-  }>(),
-  {
-    placeholder: 'Select…',
-    searchPlaceholder: 'Type to filter…',
-    maxItems: 25,
-    requireSearchThreshold: 40,
-    minQueryLength: 1,
-    clearOnClose: true,
-    debounceMs: 150,
-  }
-)
+const {
+  modelValue,
+  placeholder = 'Select…',
+  items,
+  searchPlaceholder = 'Type to filter…',
+  maxItems: maxItemsProp = 25,
+  requireSearchThreshold = 40,
+  minQueryLength: minQueryLengthProp = 1,
+  clearOnClose = true,
+  debounceMs = 150,
+} = defineProps<{
+  modelValue?: string
+  placeholder?: string
+  items: SearchableSelectItem[]
+  searchPlaceholder?: string
+  maxItems?: number
+  requireSearchThreshold?: number
+  minQueryLength?: number
+  clearOnClose?: boolean
+  debounceMs?: number
+}>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
@@ -146,7 +145,7 @@ watch(
       () => {
         debouncedQuery.value = value
       },
-      Math.max(0, props.debounceMs)
+      Math.max(0, debounceMs)
     )
   },
   { flush: 'sync' }
@@ -164,7 +163,7 @@ watch(
 )
 
 const itemsIndex = computed(() => {
-  return props.items.map(item => ({
+  return items.map(item => ({
     item,
     lower: item.label.toLowerCase(),
   }))
@@ -176,14 +175,14 @@ const filteredItems = computed(() => {
     return []
   }
   const q = qRaw.trim().toLowerCase()
-  if (!q) return props.items
+  if (!q) return items
 
   return itemsIndex.value.filter(x => x.lower.includes(q)).map(x => x.item)
 })
 
-const maxItems = computed(() => Math.max(1, props.maxItems))
-const minQueryLength = computed(() => Math.max(0, props.minQueryLength))
-const isSearchRequired = computed(() => props.items.length > props.requireSearchThreshold)
+const maxItems = computed(() => Math.max(1, maxItemsProp))
+const minQueryLength = computed(() => Math.max(0, minQueryLengthProp))
+const isSearchRequired = computed(() => items.length > requireSearchThreshold)
 
 const visibleItems = computed(() => {
   return filteredItems.value.slice(0, maxItems.value)
@@ -234,7 +233,7 @@ watch(
       }
       return
     }
-    if (props.clearOnClose) {
+    if (clearOnClose) {
       query.value = ''
     }
   },

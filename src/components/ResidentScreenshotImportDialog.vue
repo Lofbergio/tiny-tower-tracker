@@ -1,7 +1,7 @@
 <template>
   <Dialog :open="open" @update:open="handleOpenChange">
     <DialogContent class="max-w-2xl">
-      <div class="min-w-0 flex flex-col space-y-1.5 text-center sm:text-left">
+      <div class="flex min-w-0 flex-col space-y-1.5 text-center sm:text-left">
         <DialogTitle class="flex items-center gap-2">
           <span class="text-2xl">📸</span>
           <span>Import Residents from Screenshots</span>
@@ -17,37 +17,6 @@
         <p v-if="!isOnline" class="text-xs text-destructive">
           You're offline. Google Vision OCR requires an internet connection.
         </p>
-
-        <div
-          v-if="isLikelyViteDev"
-          class="rounded-md border bg-muted p-3 text-xs text-muted-foreground"
-        >
-          <div class="font-medium text-foreground">Local dev note</div>
-          <div class="mt-1">
-            You're currently on the Vite dev server (port 5173). Netlify Functions only work when
-            running Netlify Dev (port 8888).
-          </div>
-          <div class="mt-2 flex flex-col gap-2 sm:flex-row">
-            <Button
-              variant="outline"
-              size="sm"
-              class="w-full sm:w-auto"
-              :disabled="isImporting"
-              @click="copyNetlifyDevCommand"
-            >
-              Copy yarn dev:netlify
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              class="w-full sm:w-auto"
-              :disabled="isImporting"
-              @click="openNetlifyDevUrl"
-            >
-              Open localhost:8888
-            </Button>
-          </div>
-        </div>
 
         <div v-if="isDev" class="rounded-md border bg-muted p-3 text-xs text-muted-foreground">
           <div class="font-medium text-foreground">Dev: Fixture workflow</div>
@@ -347,27 +316,6 @@ async function copySuggestedFixturePath(fileName: string) {
 
 function handleOpenChange(isOpen: boolean) {
   emit('update:open', isOpen)
-}
-
-const isLikelyViteDev = computed(() => {
-  const port = window.location.port
-  return (
-    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') &&
-    (port === '5173' || port === '4173')
-  )
-})
-
-async function copyNetlifyDevCommand() {
-  try {
-    await navigator.clipboard.writeText('yarn dev:netlify')
-    toast.success('Copied: yarn dev:netlify')
-  } catch {
-    toast.error('Could not copy to clipboard')
-  }
-}
-
-function openNetlifyDevUrl() {
-  window.open('http://localhost:8888', '_blank', 'noopener,noreferrer')
 }
 
 const storeNameById = computed(() => {

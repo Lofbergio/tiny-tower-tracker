@@ -14,12 +14,8 @@
 <script setup lang="ts">
 import { ProgressIndicator, ProgressRoot } from 'radix-vue'
 
-interface Props {
+const { modelValue, max = 100 } = defineProps<{
   modelValue: number
   max?: number
-}
-
-withDefaults(defineProps<Props>(), {
-  max: 100,
-})
+}>()
 </script>

@@ -109,21 +109,21 @@ import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
 import Separator from './ui/Separator.vue'
 
-interface Props {
+const {
+  resident,
+  stores,
+  currentStore,
+  dreamJobStoreBuilt = true,
+  dreamJobStoreFull = false,
+  dreamJobDemandCount = 0,
+} = defineProps<{
   resident: Resident
   stores: Store[]
   currentStore?: string
   dreamJobStoreBuilt?: boolean
   dreamJobStoreFull?: boolean
   dreamJobDemandCount?: number
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  currentStore: undefined,
-  dreamJobStoreBuilt: true,
-  dreamJobStoreFull: false,
-  dreamJobDemandCount: 0,
-})
+}>()
 
 defineEmits<{
   'remove-resident': []
@@ -132,22 +132,22 @@ defineEmits<{
 }>()
 
 const isSettled = computed(() => {
-  return !!props.currentStore && props.currentStore === props.resident.dreamJob
+  return !!currentStore && currentStore === resident.dreamJob
 })
 
 const needsPlacement = computed(() => {
-  return !props.currentStore || props.currentStore !== props.resident.dreamJob
+  return !currentStore || currentStore !== resident.dreamJob
 })
 
 const canPlaceInDreamJob = computed(() => {
-  return needsPlacement.value && props.dreamJobStoreBuilt && !props.dreamJobStoreFull
+  return needsPlacement.value && dreamJobStoreBuilt && !dreamJobStoreFull
 })
 
 const statusBorderColor = computed(() => {
-  if (!props.currentStore) {
+  if (!currentStore) {
     return 'border-gray-400 dark:border-gray-600' // Unassigned
   }
-  if (props.currentStore === props.resident.dreamJob) {
+  if (currentStore === resident.dreamJob) {
     return 'border-green-500 dark:border-green-600' // In dream job
   }
   return 'border-yellow-500 dark:border-yellow-600' // Needs placement
@@ -161,11 +161,11 @@ const avatarClass = computed(() => {
   ]
 })
 
-const displayName = computed(() => formatResidentName(props.resident.name))
+const displayName = computed(() => formatResidentName(resident.name))
 
 const storeById = computed(() => {
   const map = new Map<string, Store>()
-  for (const store of props.stores) {
+  for (const store of stores) {
     map.set(store.id, store)
   }
   return map
@@ -177,12 +177,12 @@ const avatarUrl = computed(() => {
 })
 
 function getDreamJobName() {
-  const store = storeById.value.get(props.resident.dreamJob)
-  return store?.name || props.resident.dreamJob
+  const store = storeById.value.get(resident.dreamJob)
+  return store?.name || resident.dreamJob
 }
 
 function getCurrentStoreName() {
-  const store = props.currentStore ? storeById.value.get(props.currentStore) : undefined
-  return store?.name || props.currentStore
+  const store = currentStore ? storeById.value.get(currentStore) : undefined
+  return store?.name || currentStore
 }
 </script>

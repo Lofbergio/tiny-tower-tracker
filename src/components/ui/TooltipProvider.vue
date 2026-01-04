@@ -7,13 +7,8 @@
 <script setup lang="ts">
 import { TooltipProvider } from 'radix-vue'
 
-interface Props {
+const { delayDuration = 200, skipDelayDuration = 300 } = defineProps<{
   delayDuration?: number
   skipDelayDuration?: number
-}
-
-withDefaults(defineProps<Props>(), {
-  delayDuration: 200,
-  skipDelayDuration: 300,
-})
+}>()
 </script>

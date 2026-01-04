@@ -16,15 +16,17 @@ const baseClasses =
   'pressable tap-ripple ring-offset-background focus-visible:ring-ring inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-semibold transition-[transform,background-color,border-color,color,box-shadow,opacity] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50'
 
 const variantClasses = {
-  default: 'btn-glow bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm',
-  destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm',
+  default:
+    'btn-glow bg-gradient-to-br from-primary via-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:via-primary/80 hover:to-primary/80 shadow-md shadow-primary/20',
+  destructive:
+    'bg-gradient-to-br from-red-500 to-rose-600 text-white hover:from-red-600 hover:to-rose-700 shadow-md shadow-red-500/20',
   outline:
     'border-2 border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-accent-foreground/20',
   secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-sm',
   ghost: 'hover:bg-accent hover:text-accent-foreground',
   link: 'text-primary underline-offset-4 hover:underline',
   success:
-    'btn-glow-success bg-green-600 text-white hover:bg-green-700 shadow-sm dark:bg-green-700 dark:hover:bg-green-600',
+    'btn-glow-success bg-gradient-to-br from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 shadow-md shadow-green-500/25',
 }
 
 const sizeClasses = {

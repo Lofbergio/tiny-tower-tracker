@@ -14,29 +14,23 @@
             <div class="container mx-auto px-4">
               <div class="flex h-16 items-center justify-between">
                 <div class="group flex select-none items-center gap-2">
-                  <div aria-hidden="true" class="text-2xl motion-safe:group-hover:animate-jiggle">
-                    🏢
+                  <div class="relative">
+                    <div aria-hidden="true" class="text-2xl motion-safe:group-hover:animate-jiggle">
+                      🏢
+                    </div>
+                    <!-- Tiny glow behind icon -->
+                    <div
+                      class="animate-pulse-soft pointer-events-none absolute inset-0 -z-10 rounded-full bg-primary/20 blur-lg"
+                    />
                   </div>
                   <h1
-                    class="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-xl font-bold text-transparent motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:scale-[1.01]"
+                    class="bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 bg-clip-text text-xl font-black tracking-tight text-transparent motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:scale-[1.01] dark:from-purple-400 dark:via-pink-400 dark:to-orange-300"
                   >
                     Tiny Tower Tracker
                   </h1>
                 </div>
                 <div class="flex items-center gap-2">
                   <DarkModeToggle class="md:hidden" />
-                  <div class="flex gap-2 md:hidden">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      aria-label="Toggle menu"
-                      aria-controls="mobile-menu"
-                      :aria-expanded="showMobileMenu"
-                      @click="showMobileMenu = !showMobileMenu"
-                    >
-                      Menu
-                    </Button>
-                  </div>
                   <div class="hidden items-center gap-3 md:flex">
                     <DarkModeToggle />
                     <div v-for="navRoute in routes" :key="navRoute.path" class="relative">
@@ -66,32 +60,6 @@
                 </div>
               </div>
             </div>
-            <Transition name="mobile-menu">
-              <div v-if="showMobileMenu" id="mobile-menu" class="border-t md:hidden">
-                <div class="container mx-auto space-y-1 px-4 py-2">
-                  <Button
-                    v-for="menuRoute in routes"
-                    :key="menuRoute.path"
-                    variant="ghost"
-                    class="group w-full justify-start"
-                    @click="handleNavClick(menuRoute.path)"
-                  >
-                    <span
-                      aria-hidden="true"
-                      class="mr-2 inline-block motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-active:scale-110"
-                    >
-                      {{ menuRoute.icon }}
-                    </span>
-                    {{ menuRoute.name }}
-                    <CountBadge
-                      v-if="getPendingCount(menuRoute.path) > 0"
-                      :count="getPendingCount(menuRoute.path)"
-                      class="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold tabular-nums text-destructive-foreground"
-                    />
-                  </Button>
-                </div>
-              </div>
-            </Transition>
           </nav>
 
           <main id="main-content" tabindex="-1" class="min-h-[calc(100vh-4rem)]" :style="mainStyle">
@@ -138,8 +106,12 @@
 
           <!-- Mobile Bottom Navigation -->
           <div
-            class="fixed bottom-0 left-0 right-0 z-40 border-t bg-background/95 backdrop-blur-sm md:hidden"
+            class="fixed bottom-0 left-0 right-0 z-40 border-t bg-background/95 backdrop-blur-md md:hidden"
           >
+            <!-- Game-like glowing top border -->
+            <div
+              class="pointer-events-none absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"
+            />
             <div
               class="grid grid-cols-4 gap-1 p-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))]"
             >
@@ -147,9 +119,9 @@
                 <button
                   :data-active="currentRoute === mobileRoute.path"
                   :class="[
-                    'nav-item-game pressable-strong group flex h-full min-h-[52px] w-full flex-col items-center justify-center gap-0.5 rounded-xl p-1.5 text-[11px] font-semibold ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                    'nav-item-game pressable-strong group flex h-full min-h-[52px] w-full flex-col items-center justify-center gap-0.5 rounded-xl p-1.5 text-[11px] font-bold ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                     currentRoute === mobileRoute.path
-                      ? 'bg-primary text-primary-foreground shadow-lg'
+                      ? 'bg-gradient-to-br from-primary via-primary to-primary/90 text-primary-foreground shadow-lg shadow-primary/25'
                       : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground active:bg-accent/80',
                   ]"
                   :aria-label="`Navigate to ${mobileRoute.name}`"
@@ -161,7 +133,7 @@
                     :class="[
                       'inline-block text-xl leading-none',
                       currentRoute === mobileRoute.path
-                        ? 'motion-safe:animate-bounce-in'
+                        ? 'motion-safe:animate-bounce-in drop-shadow-sm'
                         : 'motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-active:scale-110',
                     ]"
                   >
@@ -171,7 +143,7 @@
                 </button>
                 <span
                   v-if="getPendingCount(mobileRoute.path) > 0"
-                  class="pointer-events-none absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold tabular-nums text-destructive-foreground shadow"
+                  class="motion-safe:animate-pulse-soft pointer-events-none absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-rose-600 px-1 text-[10px] font-bold tabular-nums text-white shadow-lg shadow-red-500/30"
                 >
                   {{
                     getPendingCount(mobileRoute.path) > 9 ? '9+' : getPendingCount(mobileRoute.path)
@@ -190,11 +162,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ErrorBoundary from './components/ErrorBoundary.vue'
 import Button from './components/ui/Button.vue'
-import CountBadge from './components/ui/CountBadge.vue'
 import DarkModeToggle from './components/ui/DarkModeToggle.vue'
 import EmptyState from './components/ui/EmptyState.vue'
 import Toast from './components/ui/Toast.vue'
@@ -209,7 +180,6 @@ import { useResidentsStore } from './stores'
 
 const router = useRouter()
 const route = useRoute()
-const showMobileMenu = ref(false)
 
 const showTopNav = ref(true)
 const lastScrollY = ref(0)
@@ -274,12 +244,6 @@ function reloadPage() {
 }
 
 function handleScroll() {
-  if (showMobileMenu.value) {
-    showTopNav.value = true
-    lastScrollY.value = window.scrollY
-    return
-  }
-
   const currentY = window.scrollY
   const delta = currentY - lastScrollY.value
 
@@ -303,10 +267,6 @@ function handleScroll() {
 
   lastScrollY.value = currentY
 }
-
-watch(showMobileMenu, isOpen => {
-  if (isOpen) showTopNav.value = true
-})
 
 onMounted(() => {
   lastScrollY.value = window.scrollY
@@ -350,38 +310,7 @@ const routes = [
 
 const currentRoute = computed(() => route.path)
 
-watch(
-  () => route.path,
-  () => {
-    showMobileMenu.value = false
-  }
-)
-
-function handleGlobalKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') {
-    showMobileMenu.value = false
-  }
-}
-
-function handleGlobalPointerDown(event: PointerEvent) {
-  if (!showMobileMenu.value) return
-  const target = event.target as HTMLElement | null
-  if (!target) return
-  // Close when clicking outside the mobile menu region and menu button.
-  if (target.closest('#mobile-menu') || target.closest('[aria-controls="mobile-menu"]')) {
-    return
-  }
-  showMobileMenu.value = false
-}
-
-onMounted(() => {
-  window.addEventListener('keydown', handleGlobalKeydown)
-  window.addEventListener('pointerdown', handleGlobalPointerDown)
-})
-
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleGlobalKeydown)
-  window.removeEventListener('pointerdown', handleGlobalPointerDown)
   removeBeforeEach()
 })
 
@@ -399,10 +328,5 @@ const pendingCountByPath = computed<Record<string, number>>(() => {
 
 function getPendingCount(path: string): number {
   return pendingCountByPath.value[path] ?? 0
-}
-
-function handleNavClick(path: string) {
-  router.push(path)
-  showMobileMenu.value = false
 }
 </script>

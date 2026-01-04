@@ -21,41 +21,53 @@
     <!-- Quick Stats Banner -->
     <div v-if="stats.totalPending > 0 || stats.completableAvailable > 0" class="mb-6">
       <Card
-        class="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/5 via-primary/10 to-primary/5"
+        class="overflow-hidden border-primary/20 bg-gradient-to-br from-primary/5 via-purple-500/5 to-pink-500/5"
       >
         <div class="p-4">
-          <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div class="rounded-lg bg-white/50 p-3 dark:bg-black/20">
-              <p class="mb-1 flex items-center gap-1 text-xs text-muted-foreground">
+          <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
+            <div class="stat-box-game">
+              <p
+                class="mb-1 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+              >
                 <span>📋</span>
                 <span>Pending</span>
               </p>
-              <p class="text-2xl font-bold">{{ stats.totalPending }}</p>
+              <p class="text-xl font-black tabular-nums md:text-2xl">{{ stats.totalPending }}</p>
             </div>
-            <div class="rounded-lg bg-green-50/80 p-3 dark:bg-green-950/20">
-              <p class="mb-1 flex items-center gap-1 text-xs text-muted-foreground">
-                <span>✅</span>
+            <div class="stat-box-game bg-gradient-to-br from-green-500/10 to-emerald-500/5">
+              <p
+                class="mb-1 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+              >
+                <span class="motion-safe:animate-sparkle">✨</span>
                 <span>Ready</span>
               </p>
-              <p class="text-2xl font-bold text-green-600 dark:text-green-400">
+              <p
+                class="bg-gradient-to-br from-green-500 to-emerald-600 bg-clip-text text-xl font-black tabular-nums text-transparent md:text-2xl"
+              >
                 {{ stats.readyToComplete }}
               </p>
             </div>
-            <div class="rounded-lg bg-yellow-50/80 p-3 dark:bg-yellow-950/20">
-              <p class="mb-1 flex items-center gap-1 text-xs text-muted-foreground">
+            <div class="stat-box-game bg-gradient-to-br from-amber-500/10 to-yellow-500/5">
+              <p
+                class="mb-1 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+              >
                 <span>💰</span>
-                <span>Potential Bux</span>
+                <span>Potential</span>
               </p>
-              <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+              <p class="coin-display text-xl font-black tabular-nums md:text-2xl">
                 {{ stats.pendingBux.toLocaleString() }}
               </p>
             </div>
-            <div class="rounded-lg bg-blue-50/80 p-3 dark:bg-blue-950/20">
-              <p class="mb-1 flex items-center gap-1 text-xs text-muted-foreground">
+            <div class="stat-box-game bg-gradient-to-br from-blue-500/10 to-indigo-500/5">
+              <p
+                class="mb-1 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+              >
                 <span>🎁</span>
                 <span>Available</span>
               </p>
-              <p class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              <p
+                class="bg-gradient-to-br from-blue-500 to-indigo-600 bg-clip-text text-xl font-black tabular-nums text-transparent md:text-2xl"
+              >
                 {{ stats.completableAvailable }}
               </p>
             </div>

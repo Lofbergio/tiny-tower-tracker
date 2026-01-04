@@ -33,7 +33,8 @@
               variant="success"
               class="badge-pop shrink-0 text-[10px] md:text-xs"
             >
-              <span class="check-celebrate mr-0.5 inline-block">✓</span> Dream Job
+              <span class="star-filled mr-0.5 inline-block text-[8px]">★</span>
+              Dream Job
             </Badge>
           </div>
         </div>

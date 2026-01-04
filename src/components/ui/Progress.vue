@@ -22,16 +22,16 @@ const props = defineProps<{
 const max = props.max ?? 100
 
 const sizeClasses = {
-  sm: 'h-1.5',
-  md: 'h-2.5',
-  lg: 'h-3.5',
+  sm: 'h-2',
+  md: 'h-3',
+  lg: 'h-4',
 }
 
 const variantIndicatorClasses = {
-  default: 'bg-primary',
-  success: 'bg-green-500 dark:bg-green-600',
-  info: 'bg-blue-500 dark:bg-blue-600',
-  warning: 'bg-yellow-500 dark:bg-yellow-600',
+  default: 'bg-gradient-to-r from-primary via-primary/90 to-primary/80',
+  success: 'bg-gradient-to-r from-green-500 via-emerald-500 to-emerald-600',
+  info: 'bg-gradient-to-r from-blue-500 via-indigo-500 to-indigo-600',
+  warning: 'bg-gradient-to-r from-amber-500 via-orange-500 to-orange-600',
 }
 
 const rootClass = computed(() => [

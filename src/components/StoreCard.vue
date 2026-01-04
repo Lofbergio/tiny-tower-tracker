@@ -86,11 +86,13 @@
         </Button>
       </div>
       <div v-else-if="isComplete" class="mt-auto">
-        <p
-          class="flex items-center justify-center gap-1 py-1 text-center text-xs font-medium text-green-600 dark:text-green-400"
+        <div
+          class="flex items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-green-500/10 to-emerald-500/10 py-1.5 text-center"
         >
-          <span class="motion-safe:animate-sparkle">🎉</span> Fully staffed!
-        </p>
+          <span class="star-filled motion-safe:animate-sparkle text-sm">★</span>
+          <p class="text-xs font-bold text-green-600 dark:text-green-400">Fully staffed!</p>
+          <span class="star-filled motion-safe:animate-sparkle text-sm">★</span>
+        </div>
       </div>
     </div>
   </Card>

@@ -29,13 +29,14 @@
         <Badge
           :variant="userMission.status === 'completed' ? 'secondary' : 'default'"
           :class="[
-            'count-badge-game shrink-0 text-[10px] tabular-nums md:text-xs',
+            'shrink-0 text-[10px] tabular-nums md:text-xs',
             isCompletable && userMission.status === 'pending'
-              ? 'motion-safe:animate-sparkle bg-green-600 dark:bg-green-600'
+              ? 'motion-safe:animate-sparkle bg-gradient-to-r from-amber-500 to-yellow-500 text-white dark:from-amber-400 dark:to-yellow-400'
               : '',
           ]"
         >
-          💰 {{ userMission.mission.reward }}
+          <span class="mr-0.5">💰</span>
+          <span class="coin-display">{{ userMission.mission.reward.toLocaleString() }}</span>
         </Badge>
       </div>
       <p class="line-clamp-1 text-[10px] text-muted-foreground md:text-xs">

@@ -21,41 +21,37 @@
     <!-- First Time Experience -->
     <div
       v-if="isFirstTime && hasNoData"
-      class="mb-8 rounded-lg border-2 border-dashed border-primary/50 bg-primary/5 p-6"
+      class="mb-8 overflow-hidden rounded-xl border-2 border-dashed border-primary/50 bg-gradient-to-br from-primary/5 via-purple-500/5 to-pink-500/5 p-6"
     >
       <div class="text-center">
-        <h2 class="mb-2 text-xl font-bold">Welcome to Tiny Tower Tracker!</h2>
+        <div
+          class="mb-3 inline-block rounded-full bg-gradient-to-br from-amber-400 to-orange-500 p-3 shadow-lg shadow-orange-500/25"
+        >
+          <span class="text-2xl">🏗️</span>
+        </div>
+        <h2
+          class="mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-xl font-black text-transparent dark:from-purple-400 dark:to-pink-400"
+        >
+          Welcome to Tiny Tower Tracker!
+        </h2>
         <p class="mb-4 text-sm text-muted-foreground">
-          Get started by adding stores, residents, and missions to track your tower's progress.
+          Start building your tower by adding stores, residents, and missions.
         </p>
         <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-center">
           <Button variant="default" class="w-full sm:w-auto" @click="$router.push('/stores')">
+            <span class="mr-1.5">🏪</span>
             Add Your First Store
           </Button>
           <Button variant="outline" class="w-full sm:w-auto" @click="$router.push('/residents')">
-            Add Your First Resident
+            <span class="mr-1.5">👤</span>
+            Add Residents
           </Button>
           <Button variant="outline" class="w-full sm:w-auto" @click="$router.push('/missions')">
+            <span class="mr-1.5">🎯</span>
             Browse Missions
           </Button>
         </div>
       </div>
-    </div>
-
-    <!-- Quick Actions (when user has data) -->
-    <div v-if="!hasNoData" class="mb-6 flex flex-wrap gap-2">
-      <Button variant="outline" size="sm" class="gap-1.5" @click="$router.push('/stores')">
-        <span class="text-base">🏪</span>
-        Stores
-      </Button>
-      <Button variant="outline" size="sm" class="gap-1.5" @click="$router.push('/residents')">
-        <span class="text-base">👤</span>
-        Residents
-      </Button>
-      <Button variant="outline" size="sm" class="gap-1.5" @click="$router.push('/missions')">
-        <span class="text-base">🎯</span>
-        Missions
-      </Button>
     </div>
 
     <DashboardStats />

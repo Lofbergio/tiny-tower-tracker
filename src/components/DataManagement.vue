@@ -1,90 +1,90 @@
 <template>
   <Card>
-    <div class="flex flex-col space-y-1.5 p-6">
-      <h3 class="flex items-center gap-2 text-2xl font-semibold leading-none tracking-tight">
-        <span>💾</span>
-        Data Management
-      </h3>
-      <p class="text-sm text-muted-foreground">
-        Export your data for backup or import from a previous backup
-      </p>
-    </div>
-    <div class="space-y-4 p-6 pt-0">
-      <!-- Storage Info -->
-      <div class="rounded-md bg-muted p-3">
-        <div class="flex items-center justify-between text-sm">
-          <span class="text-muted-foreground">Storage Used:</span>
-          <span class="font-medium">{{ storageInfo.percentUsed.toFixed(1) }}%</span>
+    <div class="p-4">
+      <!-- Header Row -->
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-xl dark:bg-amber-900/30"
+          >
+            💾
+          </div>
+          <div>
+            <h3 class="font-semibold leading-tight">Backup & Restore</h3>
+            <p class="text-xs text-muted-foreground">
+              <span v-if="appStore.lastSaved"
+                >Saved {{ formatRelativeTime(appStore.lastSaved) }}</span
+              >
+              <span v-else>Export or import your data</span>
+            </p>
+          </div>
         </div>
-        <div
-          v-if="storageInfo.percentUsed > 75"
-          class="mt-2 text-xs text-yellow-600 dark:text-yellow-400"
+        <div class="flex gap-2">
+          <Button variant="outline" size="sm" @click="handleExport"> Export </Button>
+          <Button variant="outline" size="sm" @click="triggerImport"> Import </Button>
+        </div>
+      </div>
+
+      <!-- Expandable Details -->
+      <button
+        class="mt-3 flex w-full items-center justify-between rounded-md bg-muted/50 px-3 py-2 text-left text-xs transition-colors hover:bg-muted"
+        @click="showDetails = !showDetails"
+      >
+        <span class="text-muted-foreground">
+          Storage: {{ storageInfo.percentUsed.toFixed(1) }}% used
+          <span
+            v-if="storageInfo.percentUsed > 75"
+            class="ml-1 text-yellow-600 dark:text-yellow-400"
+            >⚠️</span
+          >
+        </span>
+        <svg
+          class="h-3 w-3 text-muted-foreground transition-transform"
+          :class="{ 'rotate-180': showDetails }"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          ⚠️ Storage is getting full. Consider exporting and clearing old data.
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
+
+      <div v-show="showDetails" class="mt-3 space-y-3">
+        <div class="rounded-md bg-muted/50 p-3 text-xs">
+          <div class="flex items-center justify-between">
+            <span class="text-muted-foreground">Storage Used:</span>
+            <span class="font-medium">{{ storageInfo.percentUsed.toFixed(1) }}%</span>
+          </div>
+          <div
+            v-if="storageInfo.percentUsed > 75"
+            class="mt-2 text-yellow-600 dark:text-yellow-400"
+          >
+            ⚠️ Storage is getting full. Consider exporting and clearing old data.
+          </div>
         </div>
-      </div>
 
-      <!-- Last Saved -->
-      <div v-if="appStore.lastSaved" class="text-sm text-muted-foreground">
-        Last saved: {{ formatDate(appStore.lastSaved) }}
-      </div>
-
-      <!-- Actions -->
-      <div class="grid gap-3 sm:grid-cols-2">
-        <Button variant="outline" class="min-h-[48px] w-full" @click="handleExport">
-          <svg
-            class="mr-2 h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-            />
-          </svg>
-          Export Data
-        </Button>
-        <Button variant="outline" class="min-h-[48px] w-full" @click="triggerImport">
-          <svg
-            class="mr-2 h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-            />
-          </svg>
-          Import Data
-        </Button>
-      </div>
-
-      <div class="border-t pt-4">
-        <Button variant="destructive" class="min-h-[48px] w-full" @click="handleClearAll">
+        <Button variant="destructive" size="sm" class="w-full" @click="handleClearAll">
           Clear All Data
         </Button>
-        <p class="mt-2 text-xs text-muted-foreground">
-          Warning: This will permanently delete all your stores, residents, and missions.
+        <p class="text-center text-[10px] text-muted-foreground">
+          This will permanently delete all your stores, residents, and missions.
         </p>
       </div>
-
-      <!-- Hidden file input -->
-      <input
-        ref="fileInput"
-        type="file"
-        accept="application/json"
-        class="hidden"
-        @change="handleImport"
-      />
     </div>
+
+    <!-- Hidden file input -->
+    <input
+      ref="fileInput"
+      type="file"
+      accept="application/json"
+      class="hidden"
+      @change="handleImport"
+    />
 
     <!-- Confirmation Dialog -->
     <ConfirmDialog
@@ -118,13 +118,26 @@ const appStore = useAppStore()
 const toast = useToast()
 const { showConfirmDialog, confirmDialogData, confirm } = useConfirmDialog()
 const fileInput = ref<HTMLInputElement | null>(null)
+const showDetails = ref(false)
 
 const storageInfo = computed(() => checkLocalStorageQuota())
 
-function formatDate(date: Date): string {
+function formatRelativeTime(date: Date): string {
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffSec = Math.floor(diffMs / 1000)
+  const diffMin = Math.floor(diffSec / 60)
+  const diffHour = Math.floor(diffMin / 60)
+  const diffDay = Math.floor(diffHour / 24)
+
+  if (diffSec < 60) return 'just now'
+  if (diffMin < 60) return `${diffMin}m ago`
+  if (diffHour < 24) return `${diffHour}h ago`
+  if (diffDay < 7) return `${diffDay}d ago`
+
   return new Intl.DateTimeFormat('en-US', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
+    month: 'short',
+    day: 'numeric',
   }).format(date)
 }
 

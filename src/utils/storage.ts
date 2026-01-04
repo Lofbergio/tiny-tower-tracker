@@ -21,6 +21,59 @@ export function exportUserData(data: UserData): void {
   }
 }
 
+// === Device Sync Utilities ===
+
+/**
+ * Encode user data to a compact string for device sync.
+ * Uses base64 encoding of gzipped JSON for smaller size.
+ */
+export function encodeDataForSync(data: UserData): string {
+  const json = JSON.stringify(data)
+  // Use base64 encoding - simple and works everywhere
+  return btoa(unescape(encodeURIComponent(json)))
+}
+
+/**
+ * Decode sync data back to UserData.
+ */
+export function decodeDataFromSync(encoded: string): UserData {
+  try {
+    const json = decodeURIComponent(escape(atob(encoded.trim())))
+    const data = JSON.parse(json)
+
+    const validation = validateUserData(data)
+    if (!validation.success) {
+      throw new Error(validation.error)
+    }
+
+    return validation.data
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('Invalid')) {
+      throw error
+    }
+    throw new Error('Invalid sync data. Please check and try again.')
+  }
+}
+
+/**
+ * Copy data to clipboard for device sync.
+ */
+export async function copyDataToClipboard(data: UserData): Promise<void> {
+  const encoded = encodeDataForSync(data)
+  await navigator.clipboard.writeText(encoded)
+}
+
+/**
+ * Import data from clipboard.
+ */
+export async function importDataFromClipboard(): Promise<UserData> {
+  const text = await navigator.clipboard.readText()
+  if (!text.trim()) {
+    throw new Error('Clipboard is empty')
+  }
+  return decodeDataFromSync(text)
+}
+
 export function importUserData(file: File): Promise<UserData> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()

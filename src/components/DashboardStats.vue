@@ -1,109 +1,121 @@
 <template>
   <div v-if="hasAnyData" class="mb-6">
-    <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
-      <Card class="overflow-hidden">
-        <div class="p-3 md:p-4">
-          <div class="mb-2 flex items-center gap-2">
+    <div class="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4">
+      <!-- Missions Card -->
+      <Card class="group overflow-hidden transition-shadow hover:shadow-md">
+        <div class="p-3 sm:p-4">
+          <div class="mb-1.5 flex items-center gap-1.5 sm:mb-2 sm:gap-2">
             <div
-              class="icon-container-game flex h-8 w-8 items-center justify-center rounded-lg text-lg"
+              class="icon-container-game flex h-7 w-7 items-center justify-center rounded-md text-sm sm:h-8 sm:w-8 sm:rounded-lg sm:text-lg"
             >
               🎯
             </div>
-            <p class="text-xs font-medium text-muted-foreground">Missions</p>
+            <p class="text-[10px] font-medium text-muted-foreground sm:text-xs">Missions</p>
           </div>
-          <div class="flex items-baseline gap-1.5">
-            <p class="stat-value text-xl md:text-2xl">{{ missionCompletionPct }}%</p>
-            <p class="text-[10px] tabular-nums text-muted-foreground md:text-xs">
+          <div class="flex items-baseline gap-1">
+            <p class="stat-value text-lg font-bold tabular-nums sm:text-xl md:text-2xl">
+              {{ missionCompletionPct }}%
+            </p>
+            <p class="text-[9px] tabular-nums text-muted-foreground sm:text-[10px] md:text-xs">
               {{ completedCount }}/{{ totalMissionsCount }}
             </p>
           </div>
           <Progress
             :model-value="missionCompletionPct"
             variant="success"
-            size="md"
+            size="sm"
             :animated="missionCompletionPct > 0"
-            class="mt-2"
+            class="mt-1.5 sm:mt-2"
           />
         </div>
       </Card>
 
-      <Card class="overflow-hidden">
-        <div class="p-3 md:p-4">
-          <div class="mb-2 flex items-center gap-2">
+      <!-- Dream Jobs Card -->
+      <Card class="group overflow-hidden transition-shadow hover:shadow-md">
+        <div class="p-3 sm:p-4">
+          <div class="mb-1.5 flex items-center gap-1.5 sm:mb-2 sm:gap-2">
             <div
-              class="icon-container-game flex h-8 w-8 items-center justify-center rounded-lg text-lg"
+              class="icon-container-game flex h-7 w-7 items-center justify-center rounded-md text-sm sm:h-8 sm:w-8 sm:rounded-lg sm:text-lg"
             >
               ✨
             </div>
-            <p class="text-xs font-medium text-muted-foreground">Dream Jobs</p>
+            <p class="text-[10px] font-medium text-muted-foreground sm:text-xs">Dream Jobs</p>
           </div>
-          <div class="flex items-baseline gap-1.5">
-            <p class="stat-value text-xl md:text-2xl">{{ dreamJobPct }}%</p>
-            <p class="text-[10px] tabular-nums text-muted-foreground md:text-xs">
+          <div class="flex items-baseline gap-1">
+            <p class="stat-value text-lg font-bold tabular-nums sm:text-xl md:text-2xl">
+              {{ dreamJobPct }}%
+            </p>
+            <p class="text-[9px] tabular-nums text-muted-foreground sm:text-[10px] md:text-xs">
               {{ residentsInDreamJobs }}/{{ totalResidentsCount }}
             </p>
           </div>
           <Progress
             :model-value="dreamJobPct"
             variant="info"
-            size="md"
+            size="sm"
             :animated="dreamJobPct > 0"
-            class="mt-2"
+            class="mt-1.5 sm:mt-2"
           />
         </div>
       </Card>
 
-      <Card class="overflow-hidden">
-        <div class="p-3 md:p-4">
-          <div class="mb-2 flex items-center gap-2">
+      <!-- Stores Card -->
+      <Card class="group overflow-hidden transition-shadow hover:shadow-md">
+        <div class="p-3 sm:p-4">
+          <div class="mb-1.5 flex items-center gap-1.5 sm:mb-2 sm:gap-2">
             <div
-              class="icon-container-game flex h-8 w-8 items-center justify-center rounded-lg text-lg"
+              class="icon-container-game flex h-7 w-7 items-center justify-center rounded-md text-sm sm:h-8 sm:w-8 sm:rounded-lg sm:text-lg"
             >
               🏪
             </div>
-            <p class="text-xs font-medium text-muted-foreground">Stores Built</p>
+            <p class="text-[10px] font-medium text-muted-foreground sm:text-xs">Stores</p>
           </div>
-          <div class="flex items-baseline gap-1.5">
-            <p class="stat-value text-xl md:text-2xl">{{ storesBuiltPct }}%</p>
-            <p class="text-[10px] tabular-nums text-muted-foreground md:text-xs">
-              {{ storesBuiltCount }}/{{ totalStoresCount }}
+          <div class="flex items-baseline gap-1">
+            <p class="stat-value text-lg font-bold tabular-nums sm:text-xl md:text-2xl">
+              {{ storesBuiltCount }}
+            </p>
+            <p class="text-[9px] tabular-nums text-muted-foreground sm:text-[10px] md:text-xs">
+              of {{ totalStoresCount }}
             </p>
           </div>
           <Progress
             :model-value="storesBuiltPct"
-            size="md"
+            size="sm"
             :animated="storesBuiltPct > 0"
-            class="mt-2"
+            class="mt-1.5 sm:mt-2"
           />
         </div>
       </Card>
 
-      <Card class="overflow-hidden">
-        <div class="p-3 md:p-4">
-          <div class="mb-2 flex items-center gap-2">
+      <!-- Occupancy Card -->
+      <Card class="group overflow-hidden transition-shadow hover:shadow-md">
+        <div class="p-3 sm:p-4">
+          <div class="mb-1.5 flex items-center gap-1.5 sm:mb-2 sm:gap-2">
             <div
-              class="icon-container-game flex h-8 w-8 items-center justify-center rounded-lg text-lg"
+              class="icon-container-game flex h-7 w-7 items-center justify-center rounded-md text-sm sm:h-8 sm:w-8 sm:rounded-lg sm:text-lg"
             >
               👥
             </div>
-            <p class="text-xs font-medium text-muted-foreground">Occupancy</p>
+            <p class="text-[10px] font-medium text-muted-foreground sm:text-xs">Staffed</p>
           </div>
-          <div class="flex items-baseline gap-1.5">
-            <p class="stat-value text-xl md:text-2xl">{{ storeOccupancyPct }}%</p>
-            <p class="text-[10px] tabular-nums text-muted-foreground md:text-xs">
-              {{ assignedResidentsCount }}/{{ totalCapacityCount }}
+          <div class="flex items-baseline gap-1">
+            <p class="stat-value text-lg font-bold tabular-nums sm:text-xl md:text-2xl">
+              {{ assignedResidentsCount }}
+            </p>
+            <p class="text-[9px] tabular-nums text-muted-foreground sm:text-[10px] md:text-xs">
+              of {{ totalCapacityCount }}
             </p>
           </div>
           <Progress
             :model-value="storeOccupancyPct"
             variant="warning"
-            size="md"
+            size="sm"
             :animated="storeOccupancyPct > 0"
-            class="mt-2"
+            class="mt-1.5 sm:mt-2"
           />
           <p
             v-if="readyMissionsCount > 0"
-            class="mt-2 flex items-center gap-1 text-[10px] font-medium text-green-600 dark:text-green-400 md:text-xs"
+            class="mt-1.5 flex items-center gap-1 text-[9px] font-medium text-green-600 dark:text-green-400 sm:mt-2 sm:text-[10px] md:text-xs"
           >
             <span class="motion-safe:animate-sparkle inline-block">✓</span>
             {{ readyMissionsCount }} ready

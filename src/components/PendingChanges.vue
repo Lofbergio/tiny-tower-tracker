@@ -1,28 +1,23 @@
 <template>
-  <div class="space-y-6">
+  <div class="space-y-4">
     <!-- Mission Suggestions -->
     <div v-if="completableMissions.length > 0">
-      <h3 class="mb-3 flex items-center gap-2 text-lg font-semibold">
-        <span class="text-2xl">🎉</span>
-        Missions Ready to Complete
+      <h3 class="mb-2 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+        <span>🎉</span>
+        Missions Ready ({{ completableMissions.length }})
       </h3>
-      <div class="space-y-3">
+      <div class="space-y-2">
         <Card
           v-for="mission in completableMissions"
           :key="mission.id"
-          class="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20"
+          class="border-green-200 bg-green-50/50 dark:border-green-800 dark:bg-green-900/20"
         >
-          <div class="p-4 sm:p-6">
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div class="flex-1">
-                <h4 class="mb-1 font-semibold">{{ mission.name }}</h4>
-                <p class="mb-2 text-sm text-muted-foreground">{{ mission.description }}</p>
-                <p class="text-sm">Reward: {{ mission.reward }} Bux</p>
-              </div>
-              <Button class="w-full sm:w-auto" @click="handleCompleteMission(mission.id)">
-                Mark Done
-              </Button>
+          <div class="flex items-center justify-between gap-3 p-3 sm:p-4">
+            <div class="min-w-0 flex-1">
+              <h4 class="truncate text-sm font-medium">{{ mission.name }}</h4>
+              <p class="text-xs text-muted-foreground">{{ mission.reward }} Bux reward</p>
             </div>
+            <Button size="sm" @click="handleCompleteMission(mission.id)"> Done </Button>
           </div>
         </Card>
       </div>
@@ -30,56 +25,43 @@
 
     <!-- Resident Placement Suggestions -->
     <div v-if="residentPlacements.length > 0">
-      <h3 class="mb-3 flex items-center gap-2 text-lg font-semibold">
-        <span class="text-2xl">👷</span>
-        Resident Placements Needed
+      <h3 class="mb-2 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+        <span>👷</span>
+        Place Residents ({{ residentPlacements.length }})
       </h3>
-      <div class="space-y-3">
+      <div class="space-y-2">
         <Card
           v-for="placement in residentPlacements"
           :key="placement.resident.id"
-          class="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20"
+          class="border-blue-200 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-900/20"
         >
-          <div class="p-4 sm:p-6">
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div class="flex-1">
-                <h4 class="mb-1 font-semibold">{{ placement.resident.name }}</h4>
-                <p class="text-sm text-muted-foreground">
-                  Should be placed in
-                  <strong class="inline-flex items-center gap-1.5">
-                    <StoreIcon
-                      v-if="storeById.get(placement.storeId)"
-                      :category="storeById.get(placement.storeId)?.category ?? ''"
-                      :size="16"
-                      class="shrink-0"
-                    />
-                    {{ placement.storeName }}
-                  </strong>
-                  (dream job)
-                </p>
-                <p
-                  v-if="placement.isFull"
-                  class="mt-1 text-sm text-yellow-600 dark:text-yellow-400"
+          <div class="flex items-center justify-between gap-3 p-3 sm:p-4">
+            <div class="min-w-0 flex-1">
+              <h4 class="truncate text-sm font-medium">{{ placement.resident.name }}</h4>
+              <p class="flex items-center gap-1 text-xs text-muted-foreground">
+                <span>→</span>
+                <StoreIcon
+                  v-if="storeById.get(placement.storeId)"
+                  :category="storeById.get(placement.storeId)?.category ?? ''"
+                  :size="12"
+                />
+                <span class="truncate">{{ placement.storeName }}</span>
+                <span v-if="placement.isFull" class="shrink-0 text-yellow-600 dark:text-yellow-400"
+                  >⚠️ Full</span
                 >
-                  ⚠️ Store is full (3/3). You may need to evict a resident.
-                </p>
-              </div>
-              <div class="flex w-full flex-col gap-2 sm:w-auto">
-                <Button
-                  class="w-full sm:w-auto"
-                  :disabled="placement.isFull"
-                  @click="handlePlaceResident(placement.resident.id, placement.storeId)"
-                >
-                  Place Here
-                </Button>
-                <Button
-                  variant="outline"
-                  class="w-full sm:w-auto"
-                  @click="goToStore(placement.storeId)"
-                >
-                  Open Store
-                </Button>
-              </div>
+              </p>
+            </div>
+            <div class="flex shrink-0 gap-1.5">
+              <Button
+                size="sm"
+                :disabled="placement.isFull"
+                @click="handlePlaceResident(placement.resident.id, placement.storeId)"
+              >
+                Place
+              </Button>
+              <Button variant="ghost" size="sm" @click="goToStore(placement.storeId)">
+                View
+              </Button>
             </div>
           </div>
         </Card>
@@ -88,47 +70,31 @@
 
     <!-- Overcapacity Warnings -->
     <div v-if="overcapacityWarnings.length > 0">
-      <h3 class="mb-3 flex items-center gap-2 text-lg font-semibold">
-        <span class="text-2xl">⚠️</span>
-        Overcapacity Warnings
+      <h3 class="mb-2 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+        <span>⚠️</span>
+        Full Stores ({{ overcapacityWarnings.length }})
       </h3>
-      <div class="space-y-3">
+      <div class="space-y-2">
         <Card
           v-for="warning in overcapacityWarnings"
           :key="warning.resident.id"
-          class="border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20"
+          class="border-yellow-200 bg-yellow-50/50 dark:border-yellow-800 dark:bg-yellow-900/20"
         >
-          <div class="p-4 sm:p-6">
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div class="flex-1">
-                <h4 class="mb-1 font-semibold">{{ warning.resident.name }}</h4>
-                <p class="text-sm text-muted-foreground">
-                  Dream job is
-                  <strong class="inline-flex items-center gap-1.5">
-                    <StoreIcon
-                      v-if="storeById.get(warning.storeId)"
-                      :category="storeById.get(warning.storeId)?.category ?? ''"
-                      :size="16"
-                      class="shrink-0"
-                    />
-                    {{ warning.storeName }}
-                  </strong>
-                  , but store is full (3/3)
-                </p>
-                <p class="mt-1 text-sm text-muted-foreground">
-                  Consider evicting a resident from this store
-                </p>
-              </div>
-              <div class="flex w-full flex-col gap-2 sm:w-auto">
-                <Button
-                  variant="outline"
-                  class="w-full sm:w-auto"
-                  @click="goToStore(warning.storeId)"
-                >
-                  Open Store
-                </Button>
-              </div>
+          <div class="flex items-center justify-between gap-3 p-3 sm:p-4">
+            <div class="min-w-0 flex-1">
+              <h4 class="truncate text-sm font-medium">{{ warning.resident.name }}</h4>
+              <p class="flex items-center gap-1 text-xs text-muted-foreground">
+                <span>Dream job:</span>
+                <StoreIcon
+                  v-if="storeById.get(warning.storeId)"
+                  :category="storeById.get(warning.storeId)?.category ?? ''"
+                  :size="12"
+                />
+                <span class="truncate">{{ warning.storeName }}</span>
+                <span class="shrink-0">(3/3)</span>
+              </p>
             </div>
+            <Button variant="outline" size="sm" @click="goToStore(warning.storeId)"> View </Button>
           </div>
         </Card>
       </div>
@@ -136,54 +102,43 @@
 
     <!-- New Store Opportunities -->
     <div v-if="newStoreOpportunities.length > 0">
-      <h3 class="mb-3 flex items-center gap-2 text-lg font-semibold">
-        <span class="text-2xl">🏗️</span>
-        New Store Opportunities
+      <h3 class="mb-2 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+        <span>🏗️</span>
+        Build Stores ({{ newStoreOpportunities.length }})
       </h3>
-      <div class="space-y-3">
+      <div class="space-y-2">
         <Card
           v-for="opportunity in newStoreOpportunities"
           :key="opportunity.storeId"
-          class="border-purple-200 bg-purple-50 dark:border-purple-800 dark:bg-purple-900/20"
+          class="border-purple-200 bg-purple-50/50 dark:border-purple-800 dark:bg-purple-900/20"
         >
-          <div class="p-4 sm:p-6">
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div class="flex-1">
-                <h4 class="mb-1 inline-flex items-center gap-2 font-semibold">
-                  <StoreIcon
-                    v-if="storeById.get(opportunity.storeId)"
-                    :category="storeById.get(opportunity.storeId)?.category ?? ''"
-                    :size="18"
-                    class="shrink-0"
-                  />
-                  <span>{{ opportunity.storeName }}</span>
-                </h4>
-                <p class="text-sm text-muted-foreground">
-                  {{ opportunity.residents.length }} resident(s) have this as their dream job:
-                </p>
-                <ul class="mt-1 space-y-1 text-sm">
-                  <li v-for="resident in opportunity.residents" :key="resident.id">
-                    • {{ resident.name }}
-                  </li>
-                </ul>
-              </div>
-              <div class="flex w-full flex-col gap-2 sm:w-auto">
-                <Button class="w-full sm:w-auto" @click="handleAddStore(opportunity.storeId)">
-                  Add Store
-                </Button>
-              </div>
+          <div class="flex items-center justify-between gap-3 p-3 sm:p-4">
+            <div class="min-w-0 flex-1">
+              <h4 class="flex items-center gap-1.5 text-sm font-medium">
+                <StoreIcon
+                  v-if="storeById.get(opportunity.storeId)"
+                  :category="storeById.get(opportunity.storeId)?.category ?? ''"
+                  :size="14"
+                />
+                <span class="truncate">{{ opportunity.storeName }}</span>
+              </h4>
+              <p class="text-xs text-muted-foreground">
+                {{ opportunity.residents.length }} resident{{
+                  opportunity.residents.length !== 1 ? 's' : ''
+                }}
+                waiting
+              </p>
             </div>
+            <Button size="sm" @click="handleAddStore(opportunity.storeId)"> Add </Button>
           </div>
         </Card>
       </div>
     </div>
 
-    <!-- Empty State -->
-    <EmptyState
-      v-if="hasNoPendingChanges"
-      title="All Set!"
-      description="No pending changes. Everything is up to date and your tower is running smoothly!"
-    />
+    <!-- Empty State - more subtle -->
+    <div v-if="hasNoPendingChanges" class="rounded-lg bg-muted/30 py-6 text-center">
+      <p class="text-sm text-muted-foreground">✓ All caught up! No actions needed.</p>
+    </div>
   </div>
 </template>
 
@@ -197,7 +152,6 @@ import { useRouter } from 'vue-router'
 import StoreIcon from './StoreIcon.vue'
 import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
-import EmptyState from './ui/EmptyState.vue'
 
 const storesStore = useStoresStore()
 const residentsStore = useResidentsStore()

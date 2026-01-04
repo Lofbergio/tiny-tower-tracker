@@ -8,14 +8,12 @@
           Dashboard
         </span>
       </template>
-      <template #subtitle
-        >Welcome to your tower! Track progress and manage everything here</template
-      >
+      <template #subtitle>Your tower at a glance</template>
       <template #aside>
         <TowerIllustration
           :width="120"
           :height="180"
-          class="motion-safe:animate-float-slow opacity-70 transition-opacity hover:opacity-100"
+          class="opacity-70 transition-opacity hover:opacity-100 motion-safe:animate-float-slow"
         />
       </template>
     </PageHeader>
@@ -44,16 +42,62 @@
       </div>
     </div>
 
-    <DashboardStats />
+    <!-- Quick Actions (when user has data) -->
+    <div v-if="!hasNoData" class="mb-6 flex flex-wrap gap-2">
+      <Button variant="outline" size="sm" class="gap-1.5" @click="$router.push('/stores')">
+        <span class="text-base">🏪</span>
+        Stores
+      </Button>
+      <Button variant="outline" size="sm" class="gap-1.5" @click="$router.push('/residents')">
+        <span class="text-base">👤</span>
+        Residents
+      </Button>
+      <Button variant="outline" size="sm" class="gap-1.5" @click="$router.push('/missions')">
+        <span class="text-base">🎯</span>
+        Missions
+      </Button>
+    </div>
 
-    <Separator v-if="!hasNoData" class="my-8" />
+    <DashboardStats />
 
     <PendingChanges />
 
-    <Separator v-if="!hasNoData" class="my-8" />
+    <!-- Settings Section (Collapsible) -->
+    <div v-if="!hasNoData" class="mt-8">
+      <button
+        class="flex w-full items-center justify-between rounded-lg bg-muted/50 px-4 py-3 text-left transition-colors hover:bg-muted"
+        @click="showSettings = !showSettings"
+      >
+        <span class="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+          <span>⚙️</span>
+          Settings & Data
+        </span>
+        <svg
+          class="h-4 w-4 text-muted-foreground transition-transform"
+          :class="{ 'rotate-180': showSettings }"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </button>
 
-    <div>
-      <h2 class="mb-3 text-base font-semibold text-muted-foreground">Data Management</h2>
+      <div v-show="showSettings" class="mt-4 space-y-4">
+        <DeviceSync />
+        <DataManagement />
+      </div>
+    </div>
+
+    <!-- Show settings expanded when no data -->
+    <div v-else class="mt-8 space-y-4">
+      <h2 class="text-base font-semibold text-muted-foreground">Settings & Data</h2>
+      <DeviceSync />
       <DataManagement />
     </div>
   </div>
@@ -62,11 +106,11 @@
 <script setup lang="ts">
 import DashboardStats from '@/components/DashboardStats.vue'
 import DataManagement from '@/components/DataManagement.vue'
+import DeviceSync from '@/components/DeviceSync.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import PendingChanges from '@/components/PendingChanges.vue'
 import TowerIllustration from '@/components/TowerIllustration.vue'
 import Button from '@/components/ui/Button.vue'
-import Separator from '@/components/ui/Separator.vue'
 import { APP_CONSTANTS } from '@/constants'
 import { useUserMissionsWithData, useUserStoresWithData } from '@/queries'
 import { useResidentsStore } from '@/stores'
@@ -75,6 +119,8 @@ import { computed, onMounted, ref } from 'vue'
 const { userStores } = useUserStoresWithData()
 const { userMissions } = useUserMissionsWithData()
 const residentsStore = useResidentsStore()
+
+const showSettings = ref(false)
 
 const hasNoData = computed(() => {
   return (

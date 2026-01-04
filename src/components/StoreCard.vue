@@ -1,73 +1,95 @@
 <template>
   <Card
-    class="flex h-full flex-col overflow-hidden border-l-4 transition-all hover:shadow-md"
+    class="card-game group flex h-full flex-col overflow-hidden border-l-4 transition-all hover:shadow-md"
     :class="
-      isComplete ? 'opacity-70 motion-safe:transition-opacity motion-safe:hover:opacity-100' : ''
+      isComplete ? 'opacity-80 motion-safe:transition-opacity motion-safe:hover:opacity-100' : ''
     "
     :style="{ borderLeftColor: categoryColors.border }"
+    :glow="isComplete ? 'success' : false"
   >
-    <div
-      class="flex flex-col space-y-1 p-4 md:space-y-1.5 md:p-4"
-      :style="{ backgroundColor: categoryColors.bg }"
-    >
-      <div class="flex items-center justify-between">
+    <div class="flex flex-col space-y-1 p-3 md:p-4" :style="{ backgroundColor: categoryColors.bg }">
+      <div class="flex items-center justify-between gap-2">
         <h3
-          class="flex items-center gap-2 text-lg font-semibold leading-tight md:text-2xl md:leading-none md:tracking-tight"
+          class="flex min-w-0 flex-1 items-center gap-2 text-base font-bold leading-tight md:text-lg"
         >
-          <StoreIcon :category="store.category" :size="32" class="shrink-0" />
-          <span>{{ store.name }}</span>
+          <StoreIcon :category="store.category" :size="28" class="shrink-0" />
+          <span class="truncate">{{ store.name }}</span>
         </h3>
         <Badge
-          :variant="isComplete ? 'secondary' : capacity >= 3 ? 'destructive' : 'secondary'"
-          class="text-xs"
+          :variant="isComplete ? 'secondary' : 'secondary'"
+          :class="[
+            'count-badge-game shrink-0 text-[10px] tabular-nums md:text-xs',
+            isComplete ? 'badge-pop' : '',
+          ]"
         >
-          <span v-if="isComplete"><span class="check-celebrate inline-block">✓</span> 3/3</span>
+          <span v-if="isComplete" class="flex items-center gap-0.5">
+            <span class="check-celebrate inline-block">✓</span> 3/3
+          </span>
           <span v-else>{{ capacity }}/3</span>
         </Badge>
       </div>
-      <p class="text-xs font-medium text-muted-foreground md:text-sm">
+      <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground md:text-xs">
         {{ store.category }}
       </p>
     </div>
-    <div class="flex flex-1 flex-col p-4 pt-0 md:p-4 md:pt-0">
-      <div v-if="residents.length > 0" class="space-y-2">
-        <p class="text-sm font-medium">Residents</p>
-        <div class="overflow-hidden rounded-md border bg-background/60">
+    <div class="flex flex-1 flex-col gap-3 p-3 pt-2 md:p-4 md:pt-3">
+      <!-- Resident Slots -->
+      <div class="space-y-1.5">
+        <p class="text-xs font-semibold text-muted-foreground">Residents</p>
+        <div class="grid gap-1.5">
+          <!-- Filled slots -->
           <div
             v-for="residentId in residents"
             :key="residentId"
-            class="flex min-h-[44px] items-center justify-between gap-3 border-b px-3 last:border-b-0"
+            class="slot-filled group/slot flex min-h-[44px] items-center gap-2.5 rounded-lg p-2 transition-colors"
           >
-            <div class="flex min-w-0 flex-1 items-center gap-2">
+            <div class="relative">
               <Avatar
                 :src="getResidentAvatarUrl(residentId)"
                 :alt="getResidentName(residentId)"
                 size="sm"
               />
-              <span class="min-w-0 flex-1 truncate text-sm">{{ getResidentName(residentId) }}</span>
+              <span
+                v-if="isResidentInDreamJob(residentId)"
+                class="status-dot status-dot-success absolute -bottom-0.5 -right-0.5 h-2 w-2"
+              />
             </div>
+            <span class="min-w-0 flex-1 truncate text-sm font-medium">{{
+              getResidentName(residentId)
+            }}</span>
             <Button
               v-if="!isComplete"
               variant="ghost"
               size="sm"
-              class="min-h-[44px] px-3 text-muted-foreground hover:text-foreground"
+              class="h-8 px-2 text-xs text-muted-foreground opacity-0 transition-opacity hover:text-foreground group-hover/slot:opacity-100"
               @click="$emit('remove-resident', residentId)"
             >
-              Remove
+              ✕
             </Button>
+          </div>
+          <!-- Empty slots -->
+          <div
+            v-for="i in emptySlots"
+            :key="`empty-${i}`"
+            class="slot-empty flex min-h-[44px] items-center justify-center gap-2 rounded-lg p-2 text-xs text-muted-foreground"
+          >
+            <span>Empty slot</span>
           </div>
         </div>
       </div>
-      <div v-else class="text-sm text-muted-foreground">No residents assigned</div>
 
-      <Separator class="my-3 md:my-4" />
-
-      <div class="mt-auto">
-        <div v-if="!isComplete && capacity < 3" class="space-y-2">
-          <Button variant="outline" size="sm" class="w-full" @click="$emit('add-resident')">
-            Add Resident ({{ capacity }}/3)
-          </Button>
-        </div>
+      <!-- Add action -->
+      <div v-if="!isComplete && capacity < 3" class="mt-auto">
+        <Button variant="outline" size="sm" class="w-full" @click="$emit('add-resident')">
+          <span class="mr-1">+</span> Add Resident
+        </Button>
+      </div>
+      <div v-else-if="isComplete" class="mt-auto">
+        <p
+          class="flex items-center justify-center gap-1 py-1 text-center text-xs font-medium text-green-600 dark:text-green-400"
+        >
+          <span class="motion-safe:animate-sparkle">🎉</span> Fully staffed!
+        </p>
       </div>
     </div>
   </Card>
@@ -85,7 +107,6 @@ import Avatar from './ui/Avatar.vue'
 import Badge from './ui/Badge.vue'
 import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
-import Separator from './ui/Separator.vue'
 
 const {
   userStore,
@@ -106,6 +127,7 @@ const { isDark } = useDarkMode()
 const store = computed(() => userStore.store)
 const residents = computed(() => userStore.residents)
 const capacity = computed(() => residents.value.length)
+const emptySlots = computed(() => Math.max(0, 3 - capacity.value))
 
 const residentById = computed(() => {
   const map = new Map<string, Resident>()
@@ -124,5 +146,10 @@ function getResidentName(residentId: string) {
 
 function getResidentAvatarUrl(residentId: string) {
   return getResidentAvatarUrlByName(getResidentName(residentId))
+}
+
+function isResidentInDreamJob(residentId: string) {
+  const resident = residentById.value.get(residentId)
+  return resident?.dreamJob === store.value.id
 }
 </script>

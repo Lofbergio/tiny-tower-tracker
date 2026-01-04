@@ -1,10 +1,12 @@
 /**
  * Game UI effects
- * Polished visual treatments for a gamified experience
+ * Polished visual treatments for a gamified mobile experience
  */
 
 @layer utilities {
-  /* Card shimmer effect on hover */
+  /* === Card Effects === */
+
+  /* Card shimmer effect on hover/tap */
   .card-game {
     @apply relative;
   }
@@ -41,6 +43,15 @@
     }
   }
 
+  /* Also trigger shimmer on active/tap for mobile */
+  .card-game:active::before {
+    @apply opacity-100;
+  }
+
+  .card-game:active::after {
+    animation: card-shimmer 550ms ease-out forwards;
+  }
+
   @keyframes card-shimmer {
     0% {
       transform: translateX(0);
@@ -51,12 +62,43 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .card-game:hover::after {
+    .card-game:hover::after,
+    .card-game:active::after {
       animation: none;
     }
   }
 
-  /* Primary button glow on hover */
+  /* Glowing card border effect - for important items */
+  .card-glow {
+    @apply relative overflow-visible;
+  }
+
+  .card-glow::before {
+    @apply pointer-events-none absolute -inset-px rounded-[inherit] opacity-0 transition-opacity duration-300;
+    content: '';
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.4), hsl(var(--primary) / 0.1));
+    z-index: -1;
+    filter: blur(8px);
+  }
+
+  .card-glow:hover::before,
+  .card-glow:focus-within::before {
+    @apply opacity-100;
+  }
+
+  /* Success card glow - green variant */
+  .card-glow-success::before {
+    background: linear-gradient(135deg, hsl(142 76% 36% / 0.4), hsl(142 76% 36% / 0.1));
+  }
+
+  /* Warning card glow - yellow variant */
+  .card-glow-warning::before {
+    background: linear-gradient(135deg, hsl(45 93% 47% / 0.4), hsl(45 93% 47% / 0.1));
+  }
+
+  /* === Button Effects === */
+
+  /* Primary button glow on hover/active */
   .btn-glow {
     @apply relative;
   }
@@ -73,11 +115,283 @@
     }
   }
 
-  /* Dialog game-like glow border */
+  .btn-glow:active::after {
+    @apply opacity-100;
+  }
+
+  /* Success button glow - for action confirmation */
+  .btn-glow-success {
+    @apply relative;
+  }
+
+  .btn-glow-success::after {
+    @apply pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-200;
+    content: '';
+    box-shadow: 0 0 20px 2px hsl(142 76% 36% / 0.4);
+  }
+
+  .btn-glow-success:hover::after,
+  .btn-glow-success:active::after {
+    @apply opacity-100;
+  }
+
+  /* Tap ripple effect for touch devices */
+  .tap-ripple {
+    @apply relative overflow-hidden;
+  }
+
+  .tap-ripple::after {
+    @apply pointer-events-none absolute left-1/2 top-1/2 h-0 w-0 -translate-x-1/2 -translate-y-1/2 rounded-full;
+    content: '';
+    background: hsl(var(--primary) / 0.2);
+    transition:
+      width 0.3s ease-out,
+      height 0.3s ease-out,
+      opacity 0.3s ease-out;
+    opacity: 0;
+  }
+
+  .tap-ripple:active::after {
+    width: 150%;
+    height: 150%;
+    opacity: 1;
+    transition:
+      width 0s,
+      height 0s,
+      opacity 0s;
+  }
+
+  /* === XP Bar / Progress Bar Game Styling === */
+
+  .xp-bar {
+    @apply relative h-3 overflow-hidden rounded-full;
+    background: linear-gradient(180deg, hsl(var(--muted) / 0.8) 0%, hsl(var(--muted)) 100%);
+    box-shadow: inset 0 1px 3px rgb(0 0 0 / 0.15);
+  }
+
+  .xp-bar-fill {
+    @apply h-full rounded-full transition-all duration-500 ease-out;
+    background: linear-gradient(
+      180deg,
+      hsl(var(--primary) / 0.9) 0%,
+      hsl(var(--primary)) 50%,
+      hsl(var(--primary) / 0.8) 100%
+    );
+    box-shadow:
+      inset 0 1px 0 hsl(var(--primary-foreground) / 0.2),
+      0 0 8px hsl(var(--primary) / 0.3);
+  }
+
+  /* Green success XP bar */
+  .xp-bar-success .xp-bar-fill {
+    background: linear-gradient(
+      180deg,
+      hsl(142 76% 42%) 0%,
+      hsl(142 76% 36%) 50%,
+      hsl(142 76% 30%) 100%
+    );
+    box-shadow:
+      inset 0 1px 0 hsl(0 0% 100% / 0.2),
+      0 0 8px hsl(142 76% 36% / 0.4);
+  }
+
+  /* Blue info XP bar */
+  .xp-bar-info .xp-bar-fill {
+    background: linear-gradient(
+      180deg,
+      hsl(217 91% 65%) 0%,
+      hsl(217 91% 55%) 50%,
+      hsl(217 91% 45%) 100%
+    );
+    box-shadow:
+      inset 0 1px 0 hsl(0 0% 100% / 0.2),
+      0 0 8px hsl(217 91% 55% / 0.4);
+  }
+
+  /* XP bar shimmer animation */
+  .xp-bar-animated .xp-bar-fill {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .xp-bar-animated .xp-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent 0%, hsl(0 0% 100% / 0.3) 50%, transparent 100%);
+    animation: xp-shimmer 2s ease-in-out infinite;
+  }
+
+  @keyframes xp-shimmer {
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 200%;
+    }
+  }
+
+  /* === Stat Card Game Styling === */
+
+  .stat-card {
+    @apply relative overflow-hidden;
+  }
+
+  .stat-card::before {
+    @apply pointer-events-none absolute -right-4 -top-4 h-16 w-16 rounded-full opacity-10;
+    content: '';
+    background: radial-gradient(circle, hsl(var(--primary)), transparent 70%);
+  }
+
+  .stat-value {
+    @apply text-2xl font-bold tabular-nums;
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+  }
+
+  /* === Dialog Game Styling === */
+
   .dialog-game {
     box-shadow:
       0 25px 50px -12px rgb(0 0 0 / 0.25),
       0 0 0 1px hsl(var(--primary) / 0.1),
       0 0 30px -5px hsl(var(--primary) / 0.15);
+  }
+
+  /* === Mobile Navigation Game Styling === */
+
+  .nav-item-game {
+    @apply relative;
+  }
+
+  .nav-item-game::before {
+    @apply absolute inset-x-2 -top-0.5 h-1 scale-x-0 rounded-full bg-current opacity-0 transition-all duration-200;
+    content: '';
+  }
+
+  .nav-item-game[data-active='true']::before {
+    @apply scale-x-100 opacity-100;
+  }
+
+  /* Glowing active state for mobile nav */
+  .nav-item-game[data-active='true'] {
+    box-shadow: 0 0 16px -2px hsl(var(--primary) / 0.3);
+  }
+
+  /* === Count Badge Game Styling === */
+
+  .count-badge-game {
+    @apply relative;
+    box-shadow:
+      0 2px 4px rgb(0 0 0 / 0.15),
+      inset 0 1px 0 hsl(0 0% 100% / 0.2);
+  }
+
+  .count-badge-game::after {
+    @apply pointer-events-none absolute inset-0 rounded-[inherit];
+    content: '';
+    background: linear-gradient(180deg, hsl(0 0% 100% / 0.15) 0%, transparent 50%);
+  }
+
+  /* Urgent notification pulse - more game-like */
+  .badge-urgent {
+    animation: badge-urgent-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes badge-urgent-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 hsl(var(--destructive) / 0.5);
+    }
+    50% {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 6px hsl(var(--destructive) / 0);
+    }
+  }
+
+  /* === Resident/Store Slot Styling === */
+
+  .slot-empty {
+    @apply border-2 border-dashed border-muted-foreground/30 bg-muted/30;
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 4px,
+      hsl(var(--muted-foreground) / 0.03) 4px,
+      hsl(var(--muted-foreground) / 0.03) 8px
+    );
+  }
+
+  .slot-filled {
+    @apply border border-border bg-background;
+    box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.05);
+  }
+
+  /* === Status Indicators === */
+
+  .status-dot {
+    @apply h-2.5 w-2.5 rounded-full;
+    box-shadow:
+      0 0 0 2px hsl(var(--background)),
+      0 0 4px currentColor;
+  }
+
+  .status-dot-success {
+    @apply bg-green-500;
+    box-shadow:
+      0 0 0 2px hsl(var(--background)),
+      0 0 6px hsl(142 76% 36% / 0.5);
+  }
+
+  .status-dot-warning {
+    @apply bg-yellow-500;
+    box-shadow:
+      0 0 0 2px hsl(var(--background)),
+      0 0 6px hsl(45 93% 47% / 0.5);
+  }
+
+  .status-dot-error {
+    @apply bg-red-500;
+    box-shadow:
+      0 0 0 2px hsl(var(--background)),
+      0 0 6px hsl(0 84% 60% / 0.5);
+  }
+
+  /* === Icon Container Game Styling === */
+
+  .icon-container-game {
+    @apply flex items-center justify-center rounded-lg;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary) / 0.1) 0%,
+      hsl(var(--primary) / 0.05) 100%
+    );
+    box-shadow:
+      inset 0 1px 0 hsl(0 0% 100% / 0.1),
+      0 1px 3px rgb(0 0 0 / 0.05);
+  }
+
+  /* Category color icon containers */
+  .icon-container-food {
+    background: linear-gradient(135deg, hsl(24 94% 50% / 0.15), hsl(24 94% 50% / 0.05));
+  }
+
+  .icon-container-service {
+    background: linear-gradient(135deg, hsl(217 91% 60% / 0.15), hsl(217 91% 60% / 0.05));
+  }
+
+  .icon-container-recreation {
+    background: linear-gradient(135deg, hsl(142 76% 36% / 0.15), hsl(142 76% 36% / 0.05));
+  }
+
+  .icon-container-retail {
+    background: linear-gradient(135deg, hsl(280 68% 55% / 0.15), hsl(280 68% 55% / 0.05));
+  }
+
+  .icon-container-creative {
+    background: linear-gradient(135deg, hsl(340 82% 52% / 0.15), hsl(340 82% 52% / 0.05));
   }
 }

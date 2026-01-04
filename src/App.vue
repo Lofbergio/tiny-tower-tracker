@@ -135,15 +135,16 @@
           <div
             class="fixed bottom-0 left-0 right-0 z-40 border-t bg-background/95 backdrop-blur-sm md:hidden"
           >
-            <div class="grid grid-cols-4 gap-1 p-2">
+            <div class="grid grid-cols-4 gap-1.5 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
               <button
                 v-for="mobileRoute in routes"
                 :key="mobileRoute.path"
+                :data-active="currentRoute === mobileRoute.path"
                 :class="[
-                  'pressable group relative flex min-h-[60px] flex-col items-center justify-center rounded-md p-3 text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  'nav-item-game pressable-strong group relative flex min-h-[56px] flex-col items-center justify-center gap-0.5 rounded-xl p-2 text-[11px] font-semibold ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   currentRoute === mobileRoute.path
-                    ? 'nav-active-indicator bg-primary text-primary-foreground'
-                    : 'text-muted-foreground active:bg-accent',
+                    ? 'bg-primary text-primary-foreground shadow-lg'
+                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground active:bg-accent/80',
                 ]"
                 :aria-label="`Navigate to ${mobileRoute.name}`"
                 :aria-current="currentRoute === mobileRoute.path ? 'page' : undefined"
@@ -152,22 +153,32 @@
                 <span
                   aria-hidden="true"
                   :class="[
-                    'inline-block text-base leading-none motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-active:scale-110',
-                    currentRoute === mobileRoute.path ? 'motion-safe:animate-bounce-in' : '',
+                    'inline-block text-xl leading-none',
+                    currentRoute === mobileRoute.path
+                      ? 'motion-safe:animate-bounce-in'
+                      : 'motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-active:scale-110',
                   ]"
                 >
                   {{ mobileRoute.icon }}
                 </span>
-                <span>{{ mobileRoute.name }}</span>
-                <CountBadge
+                <span class="truncate">{{ mobileRoute.name }}</span>
+                <span
                   v-if="getPendingCount(mobileRoute.path) > 0"
-                  :count="getPendingCount(mobileRoute.path)"
-                  class="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground"
-                />
+                  :class="[
+                    'count-badge-game absolute right-1.5 top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold tabular-nums text-destructive-foreground',
+                    getPendingCount(mobileRoute.path) > 0 ? 'badge-urgent' : '',
+                  ]"
+                >
+                  {{
+                    getPendingCount(mobileRoute.path) > 99
+                      ? '99+'
+                      : getPendingCount(mobileRoute.path)
+                  }}
+                </span>
               </button>
             </div>
           </div>
-          <div class="h-[72px] md:hidden" />
+          <div class="h-[76px] md:hidden" />
           <!-- Spacer for mobile nav -->
         </div>
         <Toast />

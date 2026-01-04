@@ -1,58 +1,112 @@
 <template>
   <div v-if="hasAnyData" class="mb-6">
     <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
-      <Card>
-        <div class="p-4">
-          <p class="text-xs font-medium text-muted-foreground">Missions completed</p>
-          <div class="mt-1 flex items-baseline gap-2">
-            <p class="text-2xl font-bold">{{ missionCompletionPct }}%</p>
-            <p class="text-xs text-muted-foreground">
-              ({{ completedCount }}/{{ totalMissionsCount }})
+      <Card class="stat-card card-game overflow-hidden">
+        <div class="p-3 md:p-4">
+          <div class="mb-2 flex items-center gap-2">
+            <div
+              class="icon-container-game flex h-8 w-8 items-center justify-center rounded-lg text-lg"
+            >
+              🎯
+            </div>
+            <p class="text-xs font-medium text-muted-foreground">Missions</p>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <p class="stat-value text-xl md:text-2xl">{{ missionCompletionPct }}%</p>
+            <p class="text-[10px] tabular-nums text-muted-foreground md:text-xs">
+              {{ completedCount }}/{{ totalMissionsCount }}
             </p>
           </div>
-          <Progress :model-value="missionCompletionPct" class="mt-3" />
+          <Progress
+            :model-value="missionCompletionPct"
+            variant="success"
+            size="md"
+            :animated="missionCompletionPct > 0"
+            class="mt-2"
+          />
         </div>
       </Card>
 
-      <Card>
-        <div class="p-4">
-          <p class="text-xs font-medium text-muted-foreground">Residents in dream jobs</p>
-          <div class="mt-1 flex items-baseline gap-2">
-            <p class="text-2xl font-bold">{{ dreamJobPct }}%</p>
-            <p class="text-xs text-muted-foreground">
-              ({{ residentsInDreamJobs }}/{{ totalResidentsCount }})
+      <Card class="stat-card card-game overflow-hidden">
+        <div class="p-3 md:p-4">
+          <div class="mb-2 flex items-center gap-2">
+            <div
+              class="icon-container-game flex h-8 w-8 items-center justify-center rounded-lg text-lg"
+            >
+              ✨
+            </div>
+            <p class="text-xs font-medium text-muted-foreground">Dream Jobs</p>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <p class="stat-value text-xl md:text-2xl">{{ dreamJobPct }}%</p>
+            <p class="text-[10px] tabular-nums text-muted-foreground md:text-xs">
+              {{ residentsInDreamJobs }}/{{ totalResidentsCount }}
             </p>
           </div>
-          <Progress :model-value="dreamJobPct" class="mt-3" />
+          <Progress
+            :model-value="dreamJobPct"
+            variant="info"
+            size="md"
+            :animated="dreamJobPct > 0"
+            class="mt-2"
+          />
         </div>
       </Card>
 
-      <Card>
-        <div class="p-4">
-          <p class="text-xs font-medium text-muted-foreground">Stores built</p>
-          <div class="mt-1 flex items-baseline gap-2">
-            <p class="text-2xl font-bold">{{ storesBuiltPct }}%</p>
-            <p class="text-xs text-muted-foreground">
-              ({{ storesBuiltCount }}/{{ totalStoresCount }})
+      <Card class="stat-card card-game overflow-hidden">
+        <div class="p-3 md:p-4">
+          <div class="mb-2 flex items-center gap-2">
+            <div
+              class="icon-container-game flex h-8 w-8 items-center justify-center rounded-lg text-lg"
+            >
+              🏪
+            </div>
+            <p class="text-xs font-medium text-muted-foreground">Stores Built</p>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <p class="stat-value text-xl md:text-2xl">{{ storesBuiltPct }}%</p>
+            <p class="text-[10px] tabular-nums text-muted-foreground md:text-xs">
+              {{ storesBuiltCount }}/{{ totalStoresCount }}
             </p>
           </div>
-          <Progress :model-value="storesBuiltPct" class="mt-3" />
+          <Progress
+            :model-value="storesBuiltPct"
+            size="md"
+            :animated="storesBuiltPct > 0"
+            class="mt-2"
+          />
         </div>
       </Card>
 
-      <Card>
-        <div class="p-4">
-          <p class="text-xs font-medium text-muted-foreground">Store occupancy</p>
-          <div class="mt-1 flex items-baseline gap-2">
-            <p class="text-2xl font-bold">{{ storeOccupancyPct }}%</p>
-            <p class="text-xs text-muted-foreground">
-              ({{ assignedResidentsCount }}/{{ totalCapacityCount }})
+      <Card class="stat-card card-game overflow-hidden">
+        <div class="p-3 md:p-4">
+          <div class="mb-2 flex items-center gap-2">
+            <div
+              class="icon-container-game flex h-8 w-8 items-center justify-center rounded-lg text-lg"
+            >
+              👥
+            </div>
+            <p class="text-xs font-medium text-muted-foreground">Occupancy</p>
+          </div>
+          <div class="flex items-baseline gap-1.5">
+            <p class="stat-value text-xl md:text-2xl">{{ storeOccupancyPct }}%</p>
+            <p class="text-[10px] tabular-nums text-muted-foreground md:text-xs">
+              {{ assignedResidentsCount }}/{{ totalCapacityCount }}
             </p>
           </div>
-          <Progress :model-value="storeOccupancyPct" class="mt-3" />
-          <p v-if="readyMissionsCount > 0" class="mt-2 text-xs text-muted-foreground">
-            {{ readyMissionsCount }} mission{{ readyMissionsCount === 1 ? '' : 's' }} ready to
-            complete
+          <Progress
+            :model-value="storeOccupancyPct"
+            variant="warning"
+            size="md"
+            :animated="storeOccupancyPct > 0"
+            class="mt-2"
+          />
+          <p
+            v-if="readyMissionsCount > 0"
+            class="mt-2 flex items-center gap-1 text-[10px] font-medium text-green-600 dark:text-green-400 md:text-xs"
+          >
+            <span class="motion-safe:animate-sparkle inline-block">✓</span>
+            {{ readyMissionsCount }} ready
           </p>
         </div>
       </Card>

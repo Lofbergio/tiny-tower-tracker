@@ -1,6 +1,6 @@
 /**
  * Animation utilities and keyframes
- * Reusable animations for UI feedback and polish
+ * Reusable animations for game-like UI feedback and polish
  */
 
 @layer utilities {
@@ -20,6 +20,11 @@
     }
   }
 
+  /* Slow float variant for illustrations */
+  .animate-float-slow {
+    animation: floaty 8s ease-in-out infinite;
+  }
+
   /* Consistent press feedback for clickable surfaces */
   .pressable {
     transition:
@@ -29,6 +34,12 @@
 
   .pressable:active {
     @apply translate-y-px scale-[0.98] will-change-transform;
+  }
+
+  /* Stronger press for primary actions */
+  .pressable-strong:active {
+    @apply scale-[0.96] will-change-transform;
+    transition: transform 100ms ease-out;
   }
 
   /* Tiny pop for count badges when value changes */
@@ -103,6 +114,202 @@
     }
     100% {
       transform: translateX(-50%) scaleX(1);
+    }
+  }
+
+  /* Jiggle animation for icons on hover */
+  .animate-jiggle {
+    animation: jiggle 400ms ease-in-out;
+  }
+
+  @keyframes jiggle {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(-8deg);
+    }
+    50% {
+      transform: rotate(8deg);
+    }
+    75% {
+      transform: rotate(-4deg);
+    }
+  }
+
+  /* Bounce-in for elements appearing */
+  .animate-bounce-in {
+    animation: bounce-in 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes bounce-in {
+    0% {
+      transform: scale(0.3);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    70% {
+      transform: scale(0.95);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Pop animation for new items */
+  .animate-pop {
+    animation: pop 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes pop {
+    0% {
+      transform: scale(0.95);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.02);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Coin collect animation - for rewards/achievements */
+  .animate-coin-collect {
+    animation: coin-collect 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes coin-collect {
+    0% {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    30% {
+      transform: scale(1.3) translateY(-8px);
+    }
+    100% {
+      transform: scale(0.5) translateY(-30px);
+      opacity: 0;
+    }
+  }
+
+  /* Level up pulse - for achievements/milestones */
+  .animate-level-up {
+    animation: level-up 800ms ease-out;
+  }
+
+  @keyframes level-up {
+    0% {
+      box-shadow: 0 0 0 0 hsl(var(--primary) / 0.6);
+    }
+    30% {
+      box-shadow: 0 0 0 8px hsl(var(--primary) / 0.3);
+    }
+    100% {
+      box-shadow: 0 0 0 16px hsl(var(--primary) / 0);
+    }
+  }
+
+  /* Success pulse - green variant */
+  .animate-success-pulse {
+    animation: success-pulse 800ms ease-out;
+  }
+
+  @keyframes success-pulse {
+    0% {
+      box-shadow: 0 0 0 0 hsl(142 76% 36% / 0.6);
+    }
+    30% {
+      box-shadow: 0 0 0 8px hsl(142 76% 36% / 0.3);
+    }
+    100% {
+      box-shadow: 0 0 0 16px hsl(142 76% 36% / 0);
+    }
+  }
+
+  /* Wiggle for attention */
+  .animate-wiggle {
+    animation: wiggle 300ms ease-in-out;
+  }
+
+  @keyframes wiggle {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20% {
+      transform: translateX(-4px);
+    }
+    40% {
+      transform: translateX(4px);
+    }
+    60% {
+      transform: translateX(-2px);
+    }
+    80% {
+      transform: translateX(2px);
+    }
+  }
+
+  /* Slide up fade in - for list items */
+  .animate-slide-up {
+    animation: slide-up 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes slide-up {
+    0% {
+      transform: translateY(10px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* Heartbeat for important notifications */
+  .animate-heartbeat {
+    animation: heartbeat 1.5s ease-in-out infinite;
+  }
+
+  @keyframes heartbeat {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    14% {
+      transform: scale(1.1);
+    }
+    28% {
+      transform: scale(1);
+    }
+    42% {
+      transform: scale(1.1);
+    }
+    70% {
+      transform: scale(1);
+    }
+  }
+
+  /* Sparkle effect - for rewards */
+  .animate-sparkle {
+    animation: sparkle 1.5s ease-in-out infinite;
+  }
+
+  @keyframes sparkle {
+    0%,
+    100% {
+      opacity: 1;
+      filter: brightness(1);
+    }
+    50% {
+      opacity: 0.8;
+      filter: brightness(1.2);
     }
   }
 

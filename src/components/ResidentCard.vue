@@ -1,98 +1,112 @@
 <template>
   <Card
-    class="group overflow-hidden border-l-4 transition-all hover:shadow-md"
+    class="card-game group overflow-hidden border-l-4 transition-all hover:shadow-md"
     :class="[
       statusBorderColor,
-      isSettled ? 'opacity-70 motion-safe:transition-opacity motion-safe:hover:opacity-100' : '',
+      isSettled ? 'opacity-80 motion-safe:transition-opacity motion-safe:hover:opacity-100' : '',
     ]"
+    :glow="isSettled ? 'success' : needsPlacement && canPlaceInDreamJob ? 'warning' : false"
   >
-    <div class="flex flex-col space-y-1 p-3 md:space-y-1.5 md:p-6">
+    <div class="flex flex-col space-y-1 p-3 md:space-y-1.5 md:p-4">
       <div class="flex items-center gap-3">
-        <Avatar :src="avatarUrl" :alt="displayName" size="lg" :class="avatarClass" />
+        <div class="relative">
+          <Avatar :src="avatarUrl" :alt="displayName" size="lg" :class="avatarClass" />
+          <span
+            v-if="isSettled"
+            class="status-dot status-dot-success absolute -bottom-0.5 -right-0.5"
+          />
+          <span
+            v-else-if="needsPlacement && canPlaceInDreamJob"
+            class="status-dot status-dot-warning absolute -bottom-0.5 -right-0.5"
+          />
+        </div>
         <div class="min-w-0 flex-1">
           <div class="flex items-center justify-between gap-2">
             <h3
-              class="min-w-0 flex-1 truncate text-lg font-semibold leading-tight motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:translate-x-0.5 md:text-2xl md:leading-none md:tracking-tight"
+              class="min-w-0 flex-1 truncate text-base font-bold leading-tight motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:translate-x-0.5 md:text-lg"
             >
               {{ displayName }}
             </h3>
-            <Badge v-if="isSettled" variant="secondary" class="badge-pop shrink-0 text-xs">
-              <span class="check-celebrate inline-block">✓</span> All set
+            <Badge
+              v-if="isSettled"
+              variant="secondary"
+              class="badge-pop count-badge-game shrink-0 text-[10px] md:text-xs"
+            >
+              <span class="check-celebrate mr-0.5 inline-block">✓</span> Dream Job
             </Badge>
           </div>
         </div>
       </div>
     </div>
-    <div class="p-3 pt-0 md:p-6 md:pt-0">
-      <div class="space-y-1.5 md:space-y-2">
-        <div>
-          <p class="text-xs font-medium md:text-sm">Dream Job:</p>
-          <p class="text-xs text-muted-foreground md:text-sm">{{ getDreamJobName() }}</p>
+    <div class="space-y-3 p-3 pt-0 md:p-4 md:pt-0">
+      <div class="grid grid-cols-2 gap-2 text-xs md:gap-3 md:text-sm">
+        <div class="rounded-md bg-muted/50 p-2">
+          <p class="mb-0.5 font-medium text-muted-foreground">Dream Job</p>
+          <p class="truncate font-semibold">{{ getDreamJobName() }}</p>
         </div>
-        <div v-if="currentStore">
-          <p class="text-xs font-medium md:text-sm">Current Store:</p>
-          <p class="text-xs text-muted-foreground md:text-sm">{{ getCurrentStoreName() }}</p>
-        </div>
-        <div v-else>
-          <p class="text-xs text-muted-foreground md:text-sm">Not placed in any store</p>
-        </div>
-        <div
-          v-if="needsPlacement && !dreamJobStoreBuilt && dreamJobDemandCount >= 3"
-          class="rounded bg-blue-50 p-1.5 motion-safe:animate-pop dark:bg-blue-950/20 md:rounded-md md:p-2"
-        >
-          <p class="text-xs font-medium text-blue-800 dark:text-blue-200 md:text-sm">
-            🏗️ Build dream job store ({{ dreamJobDemandCount }}/3 want it)
-          </p>
-        </div>
-        <div
-          v-else-if="needsPlacement && canPlaceInDreamJob"
-          class="rounded bg-yellow-50 p-1.5 motion-safe:animate-pop dark:bg-yellow-900/20 md:rounded-md md:p-2"
-        >
-          <p class="text-xs font-medium text-yellow-800 dark:text-yellow-200 md:text-sm">
-            Needs placement in dream job store
-          </p>
-        </div>
-        <div
-          v-else-if="needsPlacement && dreamJobStoreBuilt && !canPlaceInDreamJob"
-          class="rounded bg-orange-50 p-1.5 motion-safe:animate-pop dark:bg-orange-900/20 md:rounded-md md:p-2"
-        >
-          <p class="text-xs font-medium text-orange-800 dark:text-orange-200 md:text-sm">
-            ⚠️ Dream job store is full (3/3)
-          </p>
+        <div class="rounded-md bg-muted/50 p-2">
+          <p class="mb-0.5 font-medium text-muted-foreground">Current</p>
+          <p class="truncate font-semibold">{{ currentStore ? getCurrentStoreName() : '—' }}</p>
         </div>
       </div>
 
-      <Separator class="my-3 md:my-4" />
+      <!-- Status alerts -->
+      <div
+        v-if="needsPlacement && !dreamJobStoreBuilt && dreamJobDemandCount >= 3"
+        class="motion-safe:animate-slide-up flex items-center gap-2 rounded-lg bg-blue-50 p-2.5 dark:bg-blue-950/30"
+      >
+        <span class="text-base">🏗️</span>
+        <p class="text-xs font-medium text-blue-800 dark:text-blue-200">
+          Build store! <span class="font-bold">{{ dreamJobDemandCount }}</span> want it
+        </p>
+      </div>
+      <div
+        v-else-if="needsPlacement && canPlaceInDreamJob"
+        class="motion-safe:animate-slide-up flex items-center gap-2 rounded-lg bg-yellow-50 p-2.5 dark:bg-yellow-900/30"
+      >
+        <span class="motion-safe:animate-heartbeat text-base">⭐</span>
+        <p class="text-xs font-medium text-yellow-800 dark:text-yellow-200">Ready for dream job!</p>
+      </div>
+      <div
+        v-else-if="needsPlacement && dreamJobStoreBuilt && !canPlaceInDreamJob"
+        class="motion-safe:animate-slide-up flex items-center gap-2 rounded-lg bg-orange-50 p-2.5 dark:bg-orange-900/30"
+      >
+        <span class="text-base">⚠️</span>
+        <p class="text-xs font-medium text-orange-800 dark:text-orange-200">Store is full (3/3)</p>
+      </div>
 
-      <div class="space-y-2">
+      <!-- Actions -->
+      <div class="flex flex-col gap-2">
         <Button
           v-if="!isSettled && needsPlacement && canPlaceInDreamJob"
-          variant="default"
+          variant="success"
           size="sm"
           class="w-full"
           @click="$emit('place-in-dream-job')"
         >
-          <span aria-hidden="true" class="mr-1 inline-block motion-safe:group-hover:animate-jiggle"
-            >✨</span
-          >
+          <span aria-hidden="true" class="motion-safe:animate-sparkle mr-1.5 inline-block">✨</span>
           Place in Dream Job
         </Button>
-        <p v-else-if="isSettled" class="text-xs text-muted-foreground md:text-sm">
-          Done — working their dream job.
+        <p
+          v-else-if="isSettled"
+          class="py-1 text-center text-xs font-medium text-green-600 dark:text-green-400"
+        >
+          <span class="mr-1">🎉</span> Living the dream!
         </p>
 
-        <Button variant="outline" size="sm" class="w-full" @click="$emit('edit-resident')">
-          Edit
-        </Button>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          class="w-full text-destructive hover:text-destructive"
-          @click="$emit('remove-resident')"
-        >
-          Remove Resident
-        </Button>
+        <div class="flex gap-2">
+          <Button variant="outline" size="sm" class="flex-1" @click="$emit('edit-resident')">
+            Edit
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            class="text-destructive hover:text-destructive"
+            @click="$emit('remove-resident')"
+          >
+            Remove
+          </Button>
+        </div>
       </div>
     </div>
   </Card>
@@ -107,7 +121,6 @@ import Avatar from './ui/Avatar.vue'
 import Badge from './ui/Badge.vue'
 import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
-import Separator from './ui/Separator.vue'
 
 const {
   resident,

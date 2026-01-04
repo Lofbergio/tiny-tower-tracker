@@ -1,0 +1,81 @@
+/**
+ * Vue transition classes
+ * Named transitions for route changes, lists, menus, etc.
+ */
+
+@layer utilities {
+  /* Page header transitions (Transition name="header") */
+  .header-enter-active {
+    @apply transition-[opacity,transform] ease-out;
+    transition-duration: 260ms;
+  }
+
+  .header-enter-from {
+    @apply translate-y-2.5 scale-[0.98] opacity-0;
+  }
+
+  /* Mobile menu transitions (Transition name="mobile-menu") */
+  .mobile-menu-enter-active,
+  .mobile-menu-leave-active {
+    @apply origin-top transition-[opacity,transform] ease-out;
+    transition-duration: 220ms;
+  }
+
+  .mobile-menu-enter-from {
+    @apply -translate-y-2 scale-y-[0.98] opacity-0;
+  }
+
+  .mobile-menu-leave-to {
+    @apply -translate-y-2.5 scale-y-[0.98] opacity-0;
+  }
+
+  /* List pop / reorder transitions (TransitionGroup name="list") */
+  .list-enter-active,
+  .list-leave-active {
+    @apply transition-[opacity,transform] ease-out;
+    transition-duration: 180ms;
+  }
+
+  .list-enter-from {
+    @apply translate-y-3.5 scale-[0.965] opacity-0;
+  }
+
+  .list-leave-to {
+    @apply -translate-y-3 scale-[0.965] opacity-0;
+  }
+
+  .list-move {
+    @apply transition-transform duration-200 ease-out;
+  }
+
+  /* Prevent layout jank while leaving items animate */
+  .list-leave-active {
+    @apply absolute;
+  }
+}
+
+/* Page (route) slide transitions - outside @layer for higher specificity */
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease-out;
+}
+
+.slide-left-enter-from {
+  @apply translate-x-10 opacity-0;
+}
+
+.slide-left-leave-to {
+  @apply -translate-x-10 opacity-0;
+}
+
+.slide-right-enter-from {
+  @apply -translate-x-10 opacity-0;
+}
+
+.slide-right-leave-to {
+  @apply translate-x-10 opacity-0;
+}

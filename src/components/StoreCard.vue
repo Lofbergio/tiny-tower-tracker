@@ -21,7 +21,7 @@
           :variant="isComplete ? 'secondary' : capacity >= 3 ? 'destructive' : 'secondary'"
           class="text-xs"
         >
-          <span v-if="isComplete">✓ 3/3</span>
+          <span v-if="isComplete"><span class="check-celebrate inline-block">✓</span> 3/3</span>
           <span v-else>{{ capacity }}/3</span>
         </Badge>
       </div>

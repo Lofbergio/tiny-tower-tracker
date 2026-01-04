@@ -142,7 +142,7 @@
                 :class="[
                   'pressable group relative flex min-h-[60px] flex-col items-center justify-center rounded-md p-3 text-xs font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   currentRoute === mobileRoute.path
-                    ? 'bg-primary text-primary-foreground'
+                    ? 'nav-active-indicator bg-primary text-primary-foreground'
                     : 'text-muted-foreground active:bg-accent',
                 ]"
                 :aria-label="`Navigate to ${mobileRoute.name}`"
@@ -151,7 +151,10 @@
               >
                 <span
                   aria-hidden="true"
-                  class="inline-block text-base leading-none motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-active:scale-110"
+                  :class="[
+                    'inline-block text-base leading-none motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-active:scale-110',
+                    currentRoute === mobileRoute.path ? 'motion-safe:animate-bounce-in' : '',
+                  ]"
                 >
                   {{ mobileRoute.icon }}
                 </span>

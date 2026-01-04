@@ -1,0 +1,118 @@
+/**
+ * Animation utilities and keyframes
+ * Reusable animations for UI feedback and polish
+ */
+
+@layer utilities {
+  /* Subtle float for decorative elements */
+  .floaty {
+    @apply will-change-transform;
+    animation: floaty 6.5s ease-in-out infinite;
+  }
+
+  @keyframes floaty {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
+  /* Consistent press feedback for clickable surfaces */
+  .pressable {
+    transition:
+      transform 180ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 120ms ease;
+  }
+
+  .pressable:active {
+    @apply translate-y-px scale-[0.98] will-change-transform;
+  }
+
+  /* Tiny pop for count badges when value changes */
+  .badge-pop {
+    @apply origin-center;
+    animation: badge-pop 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes badge-pop {
+    0% {
+      transform: scale(0.85);
+    }
+    55% {
+      transform: scale(1.12);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  /* Notification badge pulse - draws attention to pending actions */
+  .badge-pulse {
+    animation: badge-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes badge-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 hsl(var(--destructive) / 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 4px hsl(var(--destructive) / 0);
+    }
+  }
+
+  /* Success checkmark celebration */
+  .check-celebrate {
+    animation: check-celebrate 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes check-celebrate {
+    0% {
+      transform: scale(0) rotate(-45deg);
+    }
+    50% {
+      transform: scale(1.2) rotate(10deg);
+    }
+    100% {
+      transform: scale(1) rotate(0);
+    }
+  }
+
+  /* Mobile nav active indicator bounce */
+  .nav-active-indicator {
+    @apply relative;
+  }
+
+  .nav-active-indicator::before {
+    content: '';
+    @apply absolute left-1/2 h-[3px] w-5 rounded-full bg-current;
+    top: -2px;
+    transform: translateX(-50%);
+    animation: nav-indicator-bounce 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes nav-indicator-bounce {
+    0% {
+      transform: translateX(-50%) scaleX(0);
+    }
+    60% {
+      transform: translateX(-50%) scaleX(1.2);
+    }
+    100% {
+      transform: translateX(-50%) scaleX(1);
+    }
+  }
+
+  /* Background grid animation */
+  @keyframes grid-flow {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 24px 24px;
+    }
+  }
+}

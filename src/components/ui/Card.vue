@@ -1,6 +1,6 @@
 <template>
   <div
-    class="rounded-lg border bg-card text-card-foreground shadow-sm transition-[box-shadow,border-color,background-color] duration-200 ease-out hover:border-primary/20 hover:shadow-md"
+    class="card-game overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm transition-[box-shadow,border-color,background-color] duration-200 ease-out hover:border-primary/20 hover:shadow-md"
   >
     <slot />
   </div>

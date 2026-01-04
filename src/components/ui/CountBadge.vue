@@ -1,5 +1,5 @@
 <template>
-  <span v-if="count > 0" :key="count" class="badge-pop" v-bind="attrs">
+  <span v-if="count > 0" :key="count" class="badge-pop badge-pulse" v-bind="attrs">
     {{ displayCount }}
   </span>
 </template>

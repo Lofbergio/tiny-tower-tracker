@@ -17,7 +17,7 @@
               {{ displayName }}
             </h3>
             <Badge v-if="isSettled" variant="secondary" class="badge-pop shrink-0 text-xs">
-              ✓ All set
+              <span class="check-celebrate inline-block">✓</span> All set
             </Badge>
           </div>
         </div>

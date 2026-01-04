@@ -68,6 +68,13 @@
   @apply translate-x-10 opacity-0;
 }
 
+.slide-left-enter-to,
+.slide-left-leave-from,
+.slide-right-enter-to,
+.slide-right-leave-from {
+  @apply translate-x-0 opacity-100;
+}
+
 .slide-left-leave-to {
   @apply -translate-x-10 opacity-0;
 }

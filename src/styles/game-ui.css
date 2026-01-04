@@ -154,11 +154,28 @@
   /* === Game Stat Box === */
 
   .stat-box-game {
-    @apply relative rounded-xl p-3;
+    @apply relative rounded-xl border p-3;
     background: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--muted) / 0.3) 100%);
     box-shadow:
       inset 0 1px 0 hsl(0 0% 100% / 0.1),
       0 2px 8px hsl(0 0% 0% / 0.08);
+  }
+
+  /* Light mode: brighter, more defined */
+  :root .stat-box-game {
+    border-color: hsl(var(--border));
+    box-shadow:
+      inset 0 1px 0 hsl(0 0% 100% / 0.5),
+      0 2px 4px hsl(0 0% 0% / 0.04),
+      0 4px 12px hsl(0 0% 0% / 0.06);
+  }
+
+  /* Dark mode: softer, more atmospheric */
+  .dark .stat-box-game {
+    border-color: transparent;
+    box-shadow:
+      inset 0 1px 0 hsl(0 0% 100% / 0.1),
+      0 2px 8px hsl(0 0% 0% / 0.15);
   }
 
   .stat-box-game::before {
@@ -535,6 +552,30 @@
     box-shadow:
       inset 0 1px 0 hsl(0 0% 100% / 0.1),
       0 1px 3px rgb(0 0 0 / 0.05);
+  }
+
+  /* Light mode: more vibrant icon containers */
+  :root .icon-container-game {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary) / 0.12) 0%,
+      hsl(var(--primary) / 0.06) 100%
+    );
+    box-shadow:
+      inset 0 1px 0 hsl(0 0% 100% / 0.5),
+      0 1px 2px rgb(0 0 0 / 0.06);
+  }
+
+  /* Dark mode: softer icon containers */
+  .dark .icon-container-game {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary) / 0.1) 0%,
+      hsl(var(--primary) / 0.05) 100%
+    );
+    box-shadow:
+      inset 0 1px 0 hsl(0 0% 100% / 0.08),
+      0 1px 3px rgb(0 0 0 / 0.15);
   }
 
   /* Category color icon containers */

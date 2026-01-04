@@ -102,15 +102,34 @@
 
     <!-- New Store Opportunities -->
     <div v-if="newStoreOpportunities.length > 0">
-      <h3 class="mb-2 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
-        <span>🏗️</span>
-        Build Stores ({{ newStoreOpportunities.length }})
-      </h3>
+      <div class="mb-2 flex items-center justify-between gap-2">
+        <h3 class="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+          <span>🏗️</span>
+          Build Stores
+          <span v-if="!showAllStores && hasMoreStores" class="text-xs font-normal opacity-75"
+            >({{ topStoreOpportunities.length }} of {{ newStoreOpportunities.length }})</span
+          >
+          <span v-else class="text-xs font-normal opacity-75"
+            >({{ newStoreOpportunities.length }})</span
+          >
+        </h3>
+        <button
+          v-if="hasMoreStores"
+          class="text-xs text-muted-foreground transition-colors hover:text-foreground"
+          @click="showAllStores = !showAllStores"
+        >
+          {{ showAllStores ? 'Show Less' : 'Show All' }}
+        </button>
+      </div>
       <div class="space-y-2">
         <Card
-          v-for="opportunity in newStoreOpportunities"
+          v-for="opportunity in displayedStoreOpportunities"
           :key="opportunity.storeId"
-          class="border-purple-200 bg-purple-50/50 dark:border-purple-800 dark:bg-purple-900/20"
+          :class="
+            opportunity.residents.length > 3
+              ? 'border-orange-200 bg-orange-50/50 dark:border-orange-800 dark:bg-orange-900/20'
+              : 'border-purple-200 bg-purple-50/50 dark:border-purple-800 dark:bg-purple-900/20'
+          "
         >
           <div class="flex items-center justify-between gap-3 p-3 sm:p-4">
             <div class="min-w-0 flex-1">
@@ -121,12 +140,24 @@
                   :size="14"
                 />
                 <span class="truncate">{{ opportunity.storeName }}</span>
+                <span
+                  v-if="opportunity.residents.length > 3"
+                  class="shrink-0 text-orange-600 dark:text-orange-400"
+                  title="Store capacity is 3 - you'll need to evict residents"
+                  >⚠️</span
+                >
               </h4>
               <p class="text-xs text-muted-foreground">
                 {{ opportunity.residents.length }} resident{{
                   opportunity.residents.length !== 1 ? 's' : ''
                 }}
                 waiting
+                <span
+                  v-if="opportunity.residents.length > 3"
+                  class="font-medium text-orange-600 dark:text-orange-400"
+                >
+                  ({{ opportunity.residents.length - 3 }} will need eviction)
+                </span>
               </p>
             </div>
             <Button size="sm" @click="handleAddStore(opportunity.storeId)"> Add </Button>
@@ -147,7 +178,7 @@ import { useCompletableMissions, useUserStoresWithData } from '@/queries'
 import { useMissionsStore, useResidentsStore, useStoresStore } from '@/stores'
 import type { Resident, Store } from '@/types'
 import { useToast } from '@/utils/toast'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import StoreIcon from './StoreIcon.vue'
 import Button from './ui/Button.vue'
@@ -160,6 +191,9 @@ const { userStores, allStores } = useUserStoresWithData()
 const { completableMissions } = useCompletableMissions()
 const toast = useToast()
 const router = useRouter()
+
+const showAllStores = ref(false)
+const MAX_DISPLAYED_STORES = 5
 
 const storeById = computed(() => {
   const map = new Map<string, Store>()
@@ -280,7 +314,20 @@ const newStoreOpportunities = computed<NewStoreOpportunity[]>(() => {
     }
   })
 
-  return opportunities
+  // Sort by number of waiting residents (descending)
+  return opportunities.sort((a, b) => b.residents.length - a.residents.length)
+})
+
+const topStoreOpportunities = computed(() => {
+  return newStoreOpportunities.value.slice(0, MAX_DISPLAYED_STORES)
+})
+
+const hasMoreStores = computed(() => {
+  return newStoreOpportunities.value.length > MAX_DISPLAYED_STORES
+})
+
+const displayedStoreOpportunities = computed(() => {
+  return showAllStores.value ? newStoreOpportunities.value : topStoreOpportunities.value
 })
 
 const hasNoPendingChanges = computed(() => {

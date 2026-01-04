@@ -10,7 +10,7 @@
           >
             Skip to content
           </a>
-          <nav :class="topNavClass">
+          <nav :class="topNavClass" class="bg-background/95 backdrop-blur-md border-b shadow-sm">
             <div class="container mx-auto px-4">
               <div class="flex h-16 items-center justify-between">
                 <div class="group flex select-none items-center gap-2">

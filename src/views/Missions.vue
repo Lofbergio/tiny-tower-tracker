@@ -112,6 +112,35 @@
       </div>
     </div>
 
+    <!-- Search and Filters for Available Missions -->
+    <div v-if="availableMissions.length > 5" class="mb-6 space-y-3">
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <div class="relative flex-1">
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search available missions..."
+            class="h-10 w-full rounded-lg border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          />
+          <span
+            v-if="searchQuery"
+            class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-muted-foreground hover:text-foreground"
+            @click="searchQuery = ''"
+          >
+            ✕
+          </span>
+        </div>
+        <div class="sm:w-40">
+          <Select v-model="rewardFilter" placeholder="All Rewards">
+            <SelectItem value="all">All Rewards</SelectItem>
+            <SelectItem value="high">High (6+ Bux)</SelectItem>
+            <SelectItem value="medium">Medium (4-5 Bux)</SelectItem>
+            <SelectItem value="low">Low (1-3 Bux)</SelectItem>
+          </Select>
+        </div>
+      </div>
+    </div>
+
     <!-- Filtered Missions Grid -->
     <div v-if="userMissions.length > 0" class="mb-8">
       <EmptyState
@@ -154,7 +183,19 @@
     <div v-if="sortedCompletableMissions.length > 0" class="mb-8">
       <div class="mb-4 flex items-center justify-between">
         <h2 class="text-lg font-semibold">Ready</h2>
-        <span class="text-sm text-muted-foreground">{{ sortedCompletableMissions.length }}</span>
+        <div class="flex items-center gap-3">
+          <span class="text-sm text-muted-foreground"
+            >{{ displayedCompletableMissions.length }} of
+            {{ sortedCompletableMissions.length }}</span
+          >
+          <button
+            v-if="sortedCompletableMissions.length > READY_MISSIONS_LIMIT"
+            class="text-xs text-muted-foreground transition-colors hover:text-foreground"
+            @click="showAllReadyMissions = !showAllReadyMissions"
+          >
+            {{ showAllReadyMissions ? 'Show Less' : 'Show All' }}
+          </button>
+        </div>
       </div>
       <TransitionGroup
         tag="div"
@@ -162,7 +203,7 @@
         class="relative grid gap-3 md:grid-cols-2 lg:grid-cols-3"
       >
         <Card
-          v-for="mission in sortedCompletableMissions"
+          v-for="mission in displayedCompletableMissions"
           :key="mission.id"
           class="pressable card-game group relative flex h-full cursor-pointer touch-manipulation flex-col overflow-hidden border-l-4 border-green-500 transition-all hover:shadow-xl hover:ring-1 hover:ring-ring/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-green-600"
           @click="handleAddMission(mission.id)"
@@ -204,18 +245,35 @@
       </TransitionGroup>
     </div>
 
-    <div v-if="sortedNonCompletableMissions.length > 0" class="mb-8">
-      <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-lg font-semibold text-muted-foreground">Waiting</h2>
-        <span class="text-sm text-muted-foreground">{{ sortedNonCompletableMissions.length }}</span>
-      </div>
+    <div v-if="filteredNonCompletableMissions.length > 0" class="mb-8">
+      <button
+        class="mb-4 flex w-full items-center justify-between rounded-lg bg-muted/30 px-4 py-3 text-left transition-colors hover:bg-muted/50"
+        @click="showWaitingSection = !showWaitingSection"
+      >
+        <div class="flex items-center gap-2">
+          <h2 class="text-lg font-semibold text-muted-foreground">Waiting</h2>
+          <span class="text-sm text-muted-foreground"
+            >({{ filteredNonCompletableMissions.length }})</span
+          >
+        </div>
+        <svg
+          class="h-5 w-5 text-muted-foreground transition-transform"
+          :class="{ 'rotate-180': showWaitingSection }"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
       <TransitionGroup
+        v-show="showWaitingSection"
         tag="div"
         name="list"
         class="relative grid gap-3 md:grid-cols-2 lg:grid-cols-3"
       >
         <Card
-          v-for="entry in sortedNonCompletableMissions"
+          v-for="entry in filteredNonCompletableMissions"
           :key="entry.mission.id"
           class="pressable card-game group relative flex h-full cursor-pointer touch-manipulation flex-col overflow-hidden border-l-4 border-gray-400 opacity-80 transition-all hover:opacity-100 hover:shadow-xl hover:ring-1 hover:ring-ring/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:opacity-95 dark:border-gray-600"
           @click="handleAddMission(entry.mission.id)"
@@ -294,6 +352,8 @@ import Card from '@/components/ui/Card.vue'
 import Button from '@/components/ui/Button.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
+import Select from '@/components/ui/Select.vue'
+import SelectItem from '@/components/ui/SelectItem.vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { useCompletableMissions, useUserMissionsWithData, useUserStoresWithData } from '@/queries'
 import { useMissionsStore } from '@/stores'
@@ -314,6 +374,12 @@ const toast = useToast()
 const { showConfirmDialog, confirmDialogData, confirm } = useConfirmDialog()
 
 const activeTab = ref<'pending' | 'completed' | 'all'>('pending')
+const searchQuery = ref('')
+const rewardFilter = ref<'all' | 'high' | 'medium' | 'low'>('all')
+const showWaitingSection = ref(false)
+const showAllReadyMissions = ref(false)
+
+const READY_MISSIONS_LIMIT = 9
 
 const filteredMissions = computed(() => {
   if (activeTab.value === 'pending') return pendingMissions.value
@@ -325,7 +391,30 @@ const availableMissions = computed(() => {
   const userMissionIds = new Set(
     userMissions.value.map((um: UserMission & { mission: Mission }) => um.missionId)
   )
-  return allMissions.value.filter(m => !userMissionIds.has(m.id))
+  let missions = allMissions.value.filter(m => !userMissionIds.has(m.id))
+
+  // Apply search filter
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase()
+    missions = missions.filter(
+      m =>
+        m.name.toLowerCase().includes(query) ||
+        m.description.toLowerCase().includes(query) ||
+        m.requirements.some(r => r.product.toLowerCase().includes(query))
+    )
+  }
+
+  // Apply reward filter
+  if (rewardFilter.value !== 'all') {
+    missions = missions.filter(m => {
+      if (rewardFilter.value === 'high') return m.reward >= 6
+      if (rewardFilter.value === 'medium') return m.reward >= 4 && m.reward <= 5
+      if (rewardFilter.value === 'low') return m.reward >= 1 && m.reward <= 3
+      return true
+    })
+  }
+
+  return missions
 })
 
 const missionById = computed(() => {
@@ -352,9 +441,20 @@ const availableNonCompletableMissions = computed(() => {
   return availableMissions.value.filter(m => !isMissionCompletable(m.id))
 })
 
+const filteredNonCompletableMissions = computed(() => {
+  return sortedNonCompletableMissions.value
+})
+
 // Sorted missions by reward (highest first)
 const sortedCompletableMissions = computed(() => {
   return [...availableCompletableMissions.value].sort((a, b) => b.reward - a.reward)
+})
+
+const displayedCompletableMissions = computed(() => {
+  if (showAllReadyMissions.value || sortedCompletableMissions.value.length <= READY_MISSIONS_LIMIT) {
+    return sortedCompletableMissions.value
+  }
+  return sortedCompletableMissions.value.slice(0, READY_MISSIONS_LIMIT)
 })
 
 const sortedNonCompletableMissions = computed(() => {

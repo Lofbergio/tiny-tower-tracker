@@ -18,7 +18,7 @@
 /* === Design Tokens (CSS Custom Properties) === */
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 40% 98%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -28,13 +28,13 @@
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 40% 96.5%;
+    --muted-foreground: 215.4 16.3% 44%;
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
+    --border: 214.3 31.8% 88%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
     --radius: 0.5rem;
@@ -107,12 +107,24 @@
   }
 
   .bg-grid-pattern {
+    background-size: 24px 24px;
+    animation: grid-flow 20s linear infinite;
+  }
+
+  /* Light mode: darker, more visible grid lines */
+  :root .bg-grid-pattern {
+    background-image:
+      linear-gradient(hsl(214.3 31.8% 82%) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(214.3 31.8% 82%) 1px, transparent 1px);
+    @apply opacity-40;
+  }
+
+  /* Dark mode: using border color */
+  .dark .bg-grid-pattern {
     background-image:
       linear-gradient(hsl(var(--border)) 1px, transparent 1px),
       linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px);
-    background-size: 24px 24px;
-    @apply opacity-15;
-    animation: grid-flow 20s linear infinite;
+    @apply opacity-20;
   }
 }
 

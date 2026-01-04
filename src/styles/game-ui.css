@@ -76,9 +76,9 @@
   .card-glow::before {
     @apply pointer-events-none absolute -inset-px rounded-[inherit] opacity-0 transition-opacity duration-300;
     content: '';
-    background: linear-gradient(135deg, hsl(var(--primary) / 0.4), hsl(var(--primary) / 0.1));
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.5), hsl(var(--primary) / 0.2));
     z-index: -1;
-    filter: blur(8px);
+    filter: blur(10px);
   }
 
   .card-glow:hover::before,
@@ -88,12 +88,17 @@
 
   /* Success card glow - green variant */
   .card-glow-success::before {
-    background: linear-gradient(135deg, hsl(142 76% 36% / 0.4), hsl(142 76% 36% / 0.1));
+    background: linear-gradient(135deg, hsl(142 76% 36% / 0.6), hsl(142 76% 36% / 0.3));
   }
 
-  /* Warning card glow - yellow variant */
+  /* Warning card glow - yellow/amber variant - always visible for action needed */
   .card-glow-warning::before {
-    background: linear-gradient(135deg, hsl(45 93% 47% / 0.4), hsl(45 93% 47% / 0.1));
+    background: linear-gradient(135deg, hsl(45 93% 47% / 0.5), hsl(45 93% 47% / 0.2));
+    @apply opacity-50;
+  }
+
+  .card-glow-warning:hover::before {
+    @apply opacity-100;
   }
 
   /* === Button Effects === */

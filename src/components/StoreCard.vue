@@ -1,6 +1,7 @@
 <template>
   <Card
-    class="card-game group flex h-full flex-col overflow-hidden border-l-4 transition-all hover:shadow-md"
+    hoverable
+    class="group flex h-full flex-col overflow-hidden border-l-4"
     :class="
       isComplete ? 'opacity-80 motion-safe:transition-opacity motion-safe:hover:opacity-100' : ''
     "

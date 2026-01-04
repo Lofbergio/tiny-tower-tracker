@@ -1,11 +1,12 @@
 <template>
   <Card
-    class="card-game group overflow-hidden border-l-4 transition-all hover:shadow-md"
+    hoverable
+    class="group overflow-hidden border-l-4"
     :class="[
       statusBorderColor,
       isSettled ? 'opacity-80 motion-safe:transition-opacity motion-safe:hover:opacity-100' : '',
     ]"
-    :glow="isSettled ? 'success' : needsPlacement && canPlaceInDreamJob ? 'warning' : false"
+    :glow="!isSettled && needsPlacement && canPlaceInDreamJob ? 'warning' : false"
   >
     <div class="flex flex-col space-y-1 p-3 md:space-y-1.5 md:p-4">
       <div class="flex items-center gap-3">
@@ -29,8 +30,8 @@
             </h3>
             <Badge
               v-if="isSettled"
-              variant="secondary"
-              class="badge-pop count-badge-game shrink-0 text-[10px] md:text-xs"
+              variant="success"
+              class="badge-pop shrink-0 text-[10px] md:text-xs"
             >
               <span class="check-celebrate mr-0.5 inline-block">✓</span> Dream Job
             </Badge>
@@ -87,12 +88,6 @@
           <span aria-hidden="true" class="motion-safe:animate-sparkle mr-1.5 inline-block">✨</span>
           Place in Dream Job
         </Button>
-        <p
-          v-else-if="isSettled"
-          class="py-1 text-center text-xs font-medium text-green-600 dark:text-green-400"
-        >
-          <span class="mr-1">🎉</span> Living the dream!
-        </p>
 
         <div class="flex gap-2">
           <Button variant="outline" size="sm" class="flex-1" @click="$emit('edit-resident')">
@@ -101,7 +96,7 @@
           <Button
             variant="ghost"
             size="sm"
-            class="text-destructive hover:text-destructive"
+            class="text-muted-foreground hover:text-foreground"
             @click="$emit('remove-resident')"
           >
             Remove

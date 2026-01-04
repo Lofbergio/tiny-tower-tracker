@@ -9,7 +9,10 @@
       ref="triggerEl"
       class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
     >
-      <SelectValue :placeholder="placeholder" />
+      <!-- Custom display that doesn't rely on SelectItem being in DOM -->
+      <span :class="selectedItem ? '' : 'text-muted-foreground'">
+        {{ selectedItem?.label ?? placeholder }}
+      </span>
       <SelectIcon class="h-4 w-4 opacity-50">
         <ChevronDownIcon />
       </SelectIcon>
@@ -90,7 +93,6 @@ import {
   SelectPortal,
   SelectRoot,
   SelectTrigger,
-  SelectValue,
   SelectViewport,
 } from 'radix-vue'
 import { computed, nextTick, onUnmounted, ref, watch } from 'vue'
@@ -184,8 +186,20 @@ const maxItems = computed(() => Math.max(1, maxItemsProp))
 const minQueryLength = computed(() => Math.max(0, minQueryLengthProp))
 const isSearchRequired = computed(() => items.length > requireSearchThreshold)
 
+// Always include the currently selected item so Radix can display it
+const selectedItem = computed(() => {
+  if (!modelValue) return null
+  return items.find(item => item.value === modelValue) ?? null
+})
+
 const visibleItems = computed(() => {
-  return filteredItems.value.slice(0, maxItems.value)
+  const visible = filteredItems.value.slice(0, maxItems.value)
+  // Ensure selected item is always in the list for Radix to display it
+  const selected = selectedItem.value
+  if (selected && !visible.some(item => item.value === selected.value)) {
+    return [selected, ...visible]
+  }
+  return visible
 })
 
 // Detect if we're on a mobile device

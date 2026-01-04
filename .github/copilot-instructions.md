@@ -44,8 +44,7 @@
 
 - **Single-user app.** Optimize for what the user personally needs day-to-day.
 - **ALWAYS YES.** Do not ask permission to continue or do the next obvious step; just proceed end-to-end. Only ask questions when the request is genuinely ambiguous or risky (data loss / breaking change).
-- **Deprioritize screen-reader/a11y-only work.** Do not spend time on ARIA/screen reader tuning or accessibility-only refinements unless it also improves the user's UX (speed, clarity, mobile ergonomics) or prevents real breakage.
-- **When the user states a broad preference like this, update these instructions immediately** so it doesnt get lost.
+- **Deprioritize screen-reader/a11y-only work.** Do not spend time on ARIA/screen reader tuning or accessibility-only refinements unless it also improves the user's UX (speed, clarity, mobile ergonomics) or prevents real breakage.- **No TDD. Tests only for bugs that bit us.** Do NOT write exhaustive test suites or test-first. Only add focused regression tests when a bug actually makes it to production. Philosophy: "if a bug bit us, add a test that would have caught it." Keep tests in `tests/components/` for component tests. Do not proactively add tests for new features.- **When the user states a broad preference like this, update these instructions immediately** so it doesnt get lost.
 
 ## Common Tasks
 

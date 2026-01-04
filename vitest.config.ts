@@ -10,8 +10,13 @@ export default defineConfig({
     },
   },
   test: {
-    environment: 'node',
+    // Use jsdom for component tests, node for unit tests
+    environment: 'jsdom',
     include: ['tests/**/*.test.ts'],
     clearMocks: true,
+    // Needed for Radix Vue components
+    deps: {
+      inline: ['radix-vue'],
+    },
   },
 })

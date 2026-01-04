@@ -160,7 +160,7 @@ export function useScreenshotResidentImport(options: {
 
   function selectAllMatched() {
     for (const c of importCandidates.value) {
-      c.selected = Boolean(c.name) && Boolean(c.dreamJobStoreId) && c.matchConfidence >= 0.85
+      c.selected = Boolean(c.name) && Boolean(c.dreamJobStoreId) && c.matchConfidence >= 0.75
     }
   }
 

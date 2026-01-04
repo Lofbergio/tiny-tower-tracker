@@ -1,12 +1,13 @@
 <template>
   <Card
-    class="card-game group overflow-hidden border-l-4 transition-all"
+    hoverable
+    class="group overflow-hidden border-l-4"
     :class="[
       userMission.status === 'completed'
         ? 'border-gray-400 opacity-70'
         : isCompletable
-          ? 'border-green-500 hover:shadow-md dark:border-green-500'
-          : 'border-blue-500 hover:shadow-md dark:border-blue-500',
+          ? 'border-green-500 dark:border-green-500'
+          : 'border-blue-500 dark:border-blue-500',
     ]"
     :glow="isCompletable && userMission.status === 'pending' ? 'success' : false"
   >

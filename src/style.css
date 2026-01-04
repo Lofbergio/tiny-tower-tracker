@@ -125,30 +125,46 @@
     inset: 0;
     opacity: 0;
     background: linear-gradient(
-      115deg,
-      transparent 0%,
-      hsl(var(--primary) / 0.12) 42%,
-      hsl(var(--primary) / 0.06) 52%,
-      transparent 70%
+      135deg,
+      hsl(var(--primary) / 0.06) 0%,
+      transparent 50%,
+      hsl(var(--primary) / 0.04) 100%
     );
-    background-size: 220% 220%;
-    background-position: 0% 50%;
-    transition: opacity 180ms ease;
+    transition: opacity 300ms ease;
+  }
+
+  .card-game::after {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    height: 100%;
+    background: linear-gradient(
+      105deg,
+      transparent 0%,
+      hsl(var(--primary) / 0.18) 50%,
+      transparent 100%
+    );
   }
 
   @media (hover: hover) {
     .card-game:hover::before {
       opacity: 1;
-      animation: card-shimmer 900ms ease-out;
+    }
+
+    .card-game:hover::after {
+      animation: card-shimmer 550ms ease-out forwards;
     }
   }
 
   @keyframes card-shimmer {
     0% {
-      background-position: 0% 50%;
+      transform: translateX(0);
     }
     100% {
-      background-position: 100% 50%;
+      transform: translateX(300%);
     }
   }
 

@@ -1,11 +1,7 @@
-import { dedupe } from './dedupe'
-import { extractCandidatesFromPlainText } from './extractors/plainText'
-import { extractCandidatesThreeColumn } from './extractors/threeColumn'
-import { extractCandidatesVerticalPair } from './extractors/verticalPair'
+import { extractCandidates } from './extract'
 import { recognizeWithGoogleVision } from './googleVision'
 import type {
   ExtractResidentsFromScreenshotsParams,
-  OcrLine,
   OcrPage,
   ScreenshotResidentCandidate,
 } from './types'
@@ -19,44 +15,48 @@ export function extractResidentsFromOcrPages(params: {
   const { pages, stores } = params
   if (pages.length === 0) return []
 
-  function parsePage(page: OcrPage): ScreenshotResidentCandidate[] {
-    const lines: OcrLine[] = page.lines ?? []
-    const inferredWidth = Math.max(1, ...lines.map(l => l.bbox.x1))
-
-    const threeCol = extractCandidatesThreeColumn({
-      lines,
-      inferredWidth,
-      stores,
-      sourceFileName: page.fileName,
-    })
-
-    const legacy = extractCandidatesVerticalPair({
-      lines,
-      inferredWidth,
-      stores,
-      sourceFileName: page.fileName,
-    })
-
-    if (threeCol.length === 0 && legacy.length === 0) {
-      const fallbackText = typeof page.text === 'string' ? page.text : ''
-      return fallbackText
-        ? extractCandidatesFromPlainText({
-            text: fallbackText,
-            stores,
-            sourceFileName: page.fileName,
-          })
-        : []
-    }
-
-    return dedupe([...threeCol, ...legacy])
-  }
-
   const allCandidates: ScreenshotResidentCandidate[] = []
+
   for (const page of pages) {
-    allCandidates.push(...parsePage(page))
+    const lines = page.lines ?? []
+    if (lines.length === 0) continue
+
+    const inferredWidth = Math.max(1, ...lines.map(l => l.bbox.x1))
+    const candidates = extractCandidates({
+      lines,
+      inferredWidth,
+      stores,
+      sourceFileName: page.fileName,
+    })
+    allCandidates.push(...candidates)
   }
 
-  return dedupe(allCandidates)
+  // Deduplicate across pages (in case same resident appears in multiple screenshots)
+  const byName = new Map<string, ScreenshotResidentCandidate>()
+  for (const c of allCandidates) {
+    const key = c.name.toLowerCase().replace(/\s+/g, '')
+    const existing = byName.get(key)
+    if (!existing) {
+      byName.set(key, c)
+    } else {
+      // Merge: prefer more complete info
+      if (!existing.dreamJobStoreId && c.dreamJobStoreId) {
+        existing.dreamJobStoreId = c.dreamJobStoreId
+        existing.matchedStoreName = c.matchedStoreName
+        existing.matchConfidence = c.matchConfidence
+        existing.dreamJobRaw = c.dreamJobRaw
+      }
+      if (!existing.currentJobStoreId && c.currentJobStoreId) {
+        existing.currentJobStoreId = c.currentJobStoreId
+        existing.matchedCurrentStoreName = c.matchedCurrentStoreName
+        existing.currentMatchConfidence = c.currentMatchConfidence
+        existing.currentJobRaw = c.currentJobRaw
+      }
+      existing.selected = existing.selected || c.selected
+    }
+  }
+
+  return Array.from(byName.values())
 }
 
 export async function extractResidentsFromScreenshots(

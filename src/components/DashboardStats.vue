@@ -55,7 +55,7 @@
         </div>
         <div class="flex items-baseline gap-1.5">
           <p
-            class="stat-value bg-gradient-to-br from-green-500 to-emerald-600 bg-clip-text text-lg font-black tabular-nums text-transparent sm:text-xl md:text-2xl"
+            class="stat-value text-lg font-black tabular-nums text-green-600 dark:text-green-400 sm:text-xl md:text-2xl"
           >
             {{ missionCompletionPct }}%
           </p>
@@ -88,7 +88,7 @@
         </div>
         <div class="flex items-baseline gap-1.5">
           <p
-            class="stat-value bg-gradient-to-br from-blue-500 to-indigo-600 bg-clip-text text-lg font-black tabular-nums text-transparent sm:text-xl md:text-2xl"
+            class="stat-value text-lg font-black tabular-nums text-blue-600 dark:text-blue-400 sm:text-xl md:text-2xl"
           >
             {{ dreamJobPct }}%
           </p>
@@ -132,7 +132,7 @@
         </div>
         <div class="flex items-baseline gap-1.5">
           <p
-            class="stat-value bg-gradient-to-br from-purple-500 to-pink-600 bg-clip-text text-lg font-black tabular-nums text-transparent sm:text-xl md:text-2xl"
+            class="stat-value text-lg font-black tabular-nums text-purple-600 dark:text-purple-400 sm:text-xl md:text-2xl"
           >
             {{ storesBuiltCount }}
           </p>
@@ -164,7 +164,7 @@
         </div>
         <div class="flex items-baseline gap-1.5">
           <p
-            class="stat-value bg-gradient-to-br from-amber-500 to-orange-600 bg-clip-text text-lg font-black tabular-nums text-transparent sm:text-xl md:text-2xl"
+            class="stat-value text-lg font-black tabular-nums text-amber-600 dark:text-amber-400 sm:text-xl md:text-2xl"
           >
             {{ assignedResidentsCount }}
           </p>

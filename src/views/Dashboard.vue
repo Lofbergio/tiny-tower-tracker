@@ -1,13 +1,7 @@
 <template>
   <div class="container mx-auto p-4 pb-24 md:pb-4">
     <PageHeader icon="🏢">
-      <template #title>
-        <span
-          class="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent dark:from-purple-400 dark:to-pink-400"
-        >
-          Dashboard
-        </span>
-      </template>
+      <template #title>Dashboard</template>
       <template #subtitle>Your tower at a glance</template>
       <template #aside>
         <TowerIllustration

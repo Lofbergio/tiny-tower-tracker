@@ -1,13 +1,7 @@
 <template>
   <div class="container mx-auto p-4 pb-24 md:pb-4">
     <PageHeader icon="👥">
-      <template #title>
-        <span
-          class="bg-gradient-to-r from-pink-600 to-orange-600 bg-clip-text text-transparent dark:from-pink-400 dark:to-orange-400"
-        >
-          Residents
-        </span>
-      </template>
+      <template #title>Residents</template>
       <template #subtitle>Manage residents and place them in their dream jobs</template>
       <template #actions>
         <Button variant="outline" class="w-full sm:w-auto" @click="showImportDialog = true">
@@ -143,7 +137,7 @@
       description="Add residents to your tower and assign them to their dream jobs!"
       :icon="ResidentsEmptyIcon"
     >
-      <Button @click="showAddDialog = true">Add Your First Resident</Button>
+      <Button @click="showAddDialog = true">Add Resident</Button>
     </EmptyState>
 
     <div v-else>
@@ -163,7 +157,8 @@
             ]"
             @click="quickFilter = 'all'"
           >
-            All <span class="ml-1 tabular-nums opacity-70">{{ residentCounts.all }}</span>
+            All
+            <span class="ml-1 tabular-nums opacity-70">{{ residentCounts.all }}</span>
           </button>
           <button
             :class="[
@@ -223,10 +218,10 @@
         :hide-illustration="true"
       />
 
-      <!-- Ready to Place - can move to dream job NOW -->
+      <!-- Ready - can move to dream job NOW -->
       <div v-if="readyToPlaceResidents.length > 0" class="mb-8">
         <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-lg font-semibold">Ready to Place</h2>
+          <h2 class="text-lg font-semibold">Ready</h2>
           <span class="text-sm text-muted-foreground">{{ readyToPlaceResidents.length }}</span>
         </div>
         <TransitionGroup
@@ -250,10 +245,10 @@
         </TransitionGroup>
       </div>
 
-      <!-- Working Elsewhere - has a job but not dream job -->
+      <!-- In Progress - has a job but not dream job -->
       <div v-if="workingElsewhereResidents.length > 0" class="mb-8">
         <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-lg font-semibold">Employed Elsewhere</h2>
+          <h2 class="text-lg font-semibold">In Progress</h2>
           <span class="text-sm text-muted-foreground">{{ workingElsewhereResidents.length }}</span>
         </div>
         <TransitionGroup
@@ -277,10 +272,10 @@
         </TransitionGroup>
       </div>
 
-      <!-- Waiting for Store - dream job store not built yet -->
+      <!-- Waiting - dream job store not built yet -->
       <div v-if="waitingForStoreResidents.length > 0" class="mb-8">
         <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-lg font-semibold">Waiting for Store</h2>
+          <h2 class="text-lg font-semibold">Waiting</h2>
           <span class="text-sm text-muted-foreground">{{ waitingForStoreResidents.length }}</span>
         </div>
         <TransitionGroup

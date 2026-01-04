@@ -1,13 +1,7 @@
 <template>
   <div class="container mx-auto p-4 pb-24 md:pb-4">
     <PageHeader icon="🏪">
-      <template #title>
-        <span
-          class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
-        >
-          Stores
-        </span>
-      </template>
+      <template #title>Stores</template>
       <template #subtitle>Food • Service • Recreation • Retail • Creative</template>
       <template #aside>
         <TowerIllustration
@@ -34,7 +28,8 @@
         <Card
           v-for="store in availableStores.slice(0, 6)"
           :key="store.id"
-          class="pressable card-game group cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:shadow-lg"
+          interactive
+          class="group cursor-pointer touch-manipulation overflow-hidden border-l-4"
           :style="{ borderLeftColor: categoryColors(store.category).border }"
           @click="handleAddStore(store.id)"
         >
@@ -43,12 +38,22 @@
             :style="{ backgroundColor: categoryColors(store.category).bg }"
           >
             <div class="flex items-center gap-3">
-              <StoreIcon :category="store.category" :size="40" class="shrink-0" />
+              <div class="relative">
+                <StoreIcon
+                  :category="store.category"
+                  :size="40"
+                  class="shrink-0 transition-transform group-hover:scale-105"
+                />
+                <span
+                  class="absolute -right-1 -top-1 text-xs opacity-0 transition-opacity group-hover:opacity-100"
+                  >➕</span
+                >
+              </div>
               <div class="min-w-0 flex-1">
-                <h3 class="text-base font-semibold leading-tight md:text-lg">
+                <h3 class="text-base font-bold leading-tight md:text-lg">
                   {{ store.name }}
                 </h3>
-                <p class="line-clamp-1 text-xs font-medium text-muted-foreground">
+                <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                   {{ store.category }}
                 </p>
               </div>
@@ -85,7 +90,8 @@
           <Card
             v-for="store in availableStores.slice(0, 9)"
             :key="store.id"
-            class="pressable card-game group cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:shadow-lg"
+            interactive
+            class="group cursor-pointer touch-manipulation overflow-hidden border-l-4"
             :style="{ borderLeftColor: categoryColors(store.category).border }"
             @click="handleAddStore(store.id)"
           >
@@ -94,12 +100,24 @@
               :style="{ backgroundColor: categoryColors(store.category).bg }"
             >
               <div class="flex items-center gap-3">
-                <StoreIcon :category="store.category" :size="40" class="shrink-0" />
+                <div class="relative">
+                  <StoreIcon
+                    :category="store.category"
+                    :size="40"
+                    class="shrink-0 transition-transform group-hover:scale-105"
+                  />
+                  <span
+                    class="absolute -right-1 -top-1 text-xs opacity-0 transition-opacity group-hover:opacity-100"
+                    >➕</span
+                  >
+                </div>
                 <div class="min-w-0 flex-1">
-                  <h3 class="text-base font-semibold leading-tight md:text-lg">
+                  <h3 class="text-base font-bold leading-tight md:text-lg">
                     {{ store.name }}
                   </h3>
-                  <p class="line-clamp-1 text-xs font-medium text-muted-foreground">
+                  <p
+                    class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+                  >
                     {{ store.category }}
                   </p>
                 </div>
@@ -115,16 +133,6 @@
         >
           View All {{ availableStores.length }} Stores
         </Button>
-      </div>
-    </div>
-
-    <!-- Your Stores Section -->
-    <div v-if="userStoresWithData.length > 0" class="mb-6">
-      <div class="mb-3 flex items-center justify-between">
-        <h2 class="flex items-center gap-2 text-lg font-semibold">
-          <span>Your Stores</span>
-        </h2>
-        <Badge variant="secondary">{{ userStoresWithData.length }}</Badge>
       </div>
     </div>
 
@@ -233,7 +241,8 @@
           <Card
             v-for="store in filteredStores"
             :key="store.id"
-            class="pressable card-game cursor-pointer touch-manipulation overflow-hidden border-l-4 transition-all hover:shadow-md"
+            interactive
+            class="group cursor-pointer touch-manipulation overflow-hidden border-l-4"
             :style="{ borderLeftColor: categoryColors(store.category).border }"
             @click="handleAddStore(store.id)"
           >
@@ -241,10 +250,14 @@
               class="flex items-center gap-3 p-3"
               :style="{ backgroundColor: categoryColors(store.category).bg }"
             >
-              <StoreIcon :category="store.category" :size="32" class="shrink-0" />
+              <StoreIcon
+                :category="store.category"
+                :size="32"
+                class="shrink-0 transition-transform group-hover:scale-105"
+              />
               <div class="min-w-0 flex-1">
-                <h3 class="font-semibold leading-tight">{{ store.name }}</h3>
-                <p class="text-xs font-medium text-muted-foreground">
+                <h3 class="font-bold leading-tight">{{ store.name }}</h3>
+                <p class="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                   {{ store.category }}
                 </p>
               </div>
@@ -477,10 +490,10 @@ const availableResidentItems = computed(() => {
   if (!addResidentTargetStoreId.value) return []
   const storeId = addResidentTargetStoreId.value
   const residentIdsInStore = residentIdsByStoreId.value.get(storeId) ?? new Set<string>()
-  
+
   // Get available residents (not already in this store)
   const available = residents.filter((r: Resident) => !residentIdsInStore.has(r.id))
-  
+
   // Sort: dream job matches first, then alphabetically
   const sorted = [...available].sort((a, b) => {
     const aIsDream = a.dreamJob === storeId
@@ -489,12 +502,13 @@ const availableResidentItems = computed(() => {
     if (!aIsDream && bIsDream) return 1
     return a.name.localeCompare(b.name)
   })
-  
+
   return sorted.map(r => ({
     value: r.id,
-    label: r.dreamJob === storeId 
-      ? `⭐ ${formatResidentName(r.name)} (dream job)`
-      : formatResidentName(r.name),
+    label:
+      r.dreamJob === storeId
+        ? `⭐ ${formatResidentName(r.name)} (dream job)`
+        : formatResidentName(r.name),
   }))
 })
 
@@ -547,12 +561,12 @@ function handleAddResidentDialogClose(isOpen: boolean) {
 
 function handleConfirmAddResident() {
   if (!addResidentTargetStoreId.value || !selectedResidentToAdd.value) return
-  
+
   const storeId = addResidentTargetStoreId.value
   const residentId = selectedResidentToAdd.value
   const store = storeById.value.get(storeId)
   const resident = residentById.value.get(residentId)
-  
+
   const result = storesStore.addResidentToStore(storeId, residentId)
   if (result.success) {
     toast.success(`Added ${formatResidentName(resident?.name ?? '')} to ${store?.name}`)

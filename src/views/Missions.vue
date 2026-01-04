@@ -1,13 +1,7 @@
 <template>
   <div class="container mx-auto p-4 pb-24 md:pb-4">
     <PageHeader icon="🎯">
-      <template #title>
-        <span
-          class="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent dark:from-green-400 dark:to-blue-400"
-        >
-          Missions
-        </span>
-      </template>
+      <template #title>Missions</template>
       <template #subtitle>Complete missions and earn Bux</template>
       <template #aside>
         <TowerIllustration
@@ -42,7 +36,7 @@
                 <span>Ready</span>
               </p>
               <p
-                class="bg-gradient-to-br from-green-500 to-emerald-600 bg-clip-text text-xl font-black tabular-nums text-transparent md:text-2xl"
+                class="text-xl font-black tabular-nums text-green-600 dark:text-green-400 md:text-2xl"
               >
                 {{ stats.readyToComplete }}
               </p>
@@ -66,7 +60,7 @@
                 <span>Available</span>
               </p>
               <p
-                class="bg-gradient-to-br from-blue-500 to-indigo-600 bg-clip-text text-xl font-black tabular-nums text-transparent md:text-2xl"
+                class="text-xl font-black tabular-nums text-blue-600 dark:text-blue-400 md:text-2xl"
               >
                 {{ stats.completableAvailable }}
               </p>
@@ -76,8 +70,8 @@
       </Card>
     </div>
 
-    <!-- Your Missions Filter -->
-    <div v-if="userMissions.length > 0" class="mb-6">
+    <!-- Unified Filter Tabs -->
+    <div v-if="userMissions.length > 0" class="mb-6 space-y-3">
       <div class="flex flex-wrap gap-1.5 rounded-lg bg-muted/50 p-1.5">
         <button
           :class="[
@@ -112,7 +106,7 @@
           ]"
           @click="activeTab = 'all'"
         >
-          All Tracked
+          All
           <span class="ml-1 tabular-nums opacity-70">{{ userMissions.length }}</span>
         </button>
       </div>
@@ -159,7 +153,7 @@
     <!-- Available Missions Section -->
     <div v-if="sortedCompletableMissions.length > 0" class="mb-8">
       <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-lg font-semibold">Ready to Start</h2>
+        <h2 class="text-lg font-semibold">Ready</h2>
         <span class="text-sm text-muted-foreground">{{ sortedCompletableMissions.length }}</span>
       </div>
       <TransitionGroup
@@ -212,7 +206,7 @@
 
     <div v-if="sortedNonCompletableMissions.length > 0" class="mb-8">
       <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-lg font-semibold text-muted-foreground">Need More Stores</h2>
+        <h2 class="text-lg font-semibold text-muted-foreground">Waiting</h2>
         <span class="text-sm text-muted-foreground">{{ sortedNonCompletableMissions.length }}</span>
       </div>
       <TransitionGroup
@@ -270,10 +264,12 @@
 
     <EmptyState
       v-if="availableMissions.length === 0 && userMissions.length === 0"
-      title="No Available Missions"
-      description="All missions have been added! Complete your pending missions or add more stores to unlock new ones."
+      title="No Missions Yet"
+      description="Add missions to your tower and complete them for Bux!"
       :icon="MissionsEmptyIcon"
-    />
+    >
+      <Button @click="() => (activeTab = 'all')">View All Missions</Button>
+    </EmptyState>
 
     <!-- Confirmation Dialog -->
     <ConfirmDialog
@@ -295,6 +291,7 @@ import TowerIllustration from '@/components/TowerIllustration.vue'
 import MissionsEmptyIcon from '@/components/illustrations/MissionsEmptyIcon.vue'
 import Badge from '@/components/ui/Badge.vue'
 import Card from '@/components/ui/Card.vue'
+import Button from '@/components/ui/Button.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'

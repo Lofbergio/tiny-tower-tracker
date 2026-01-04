@@ -130,13 +130,14 @@ function findStoresInText(text: string, index: ReturnType<typeof buildStoreIndex
 
     if (afterLastStore.length >= 5) {
       // Try to match the remaining text as a suffix of a store name
+      // This handles OCR truncation like "EYBALL CLUB" -> "VOLLEYBALL CLUB"
       for (const store of index.stores) {
         const storeNorm = normalizeNoSpace(store.name)
-        // Check if remaining text is a suffix of this store (1-3 chars truncated)
+        // Check if remaining text is a suffix of this store (allowing up to 5 chars truncated)
         if (storeNorm.length > afterLastStore.length) {
           const truncated = storeNorm.length - afterLastStore.length
-          if (truncated <= 3 && storeNorm.endsWith(afterLastStore)) {
-            const conf = 0.88 - truncated * 0.03
+          if (truncated <= 5 && storeNorm.endsWith(afterLastStore)) {
+            const conf = 0.88 - truncated * 0.02
             results.push({
               store,
               confidence: conf,
@@ -175,14 +176,15 @@ function matchSingleStore(
 
   // Suffix match - handle OCR truncation where beginning of store name is cut off
   // e.g., "EDDING CHAPEL" should match "WEDDING CHAPEL"
+  // e.g., "EYBALL CLUB" should match "VOLLEYBALL CLUB"
   for (const store of index.stores) {
     const storeNoSpace = normalizeNoSpace(store.name)
-    // Check if the text is a suffix of the store name (allowing 1-3 chars truncated)
+    // Check if the text is a suffix of the store name (allowing up to 5 chars truncated)
     if (storeNoSpace.length > textNoSpace.length) {
       const truncated = storeNoSpace.length - textNoSpace.length
-      if (truncated <= 3 && storeNoSpace.endsWith(textNoSpace)) {
+      if (truncated <= 5 && storeNoSpace.endsWith(textNoSpace)) {
         // Confidence based on how much was truncated
-        const conf = 0.9 - truncated * 0.03
+        const conf = 0.9 - truncated * 0.02
         return { store, confidence: conf, startIndex: 0 }
       }
     }

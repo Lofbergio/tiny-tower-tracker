@@ -37,11 +37,8 @@
 
     <Dialog :open="showAddDialog" @update:open="handleDialogOpenChange">
       <DialogContent class="max-w-md">
-        <div class="flex flex-col space-y-1.5 text-center sm:text-left">
-          <DialogTitle class="flex items-center gap-2">
-            <span class="text-2xl">👤</span>
-            <span>Add New Resident</span>
-          </DialogTitle>
+        <div class="pr-10">
+          <DialogTitle>👤 Add New Resident</DialogTitle>
         </div>
         <div class="space-y-4">
           <div>
@@ -87,11 +84,8 @@
 
     <Dialog :open="showEditDialog" @update:open="handleEditDialogOpenChange">
       <DialogContent class="max-w-md">
-        <div class="flex flex-col space-y-1.5 text-center sm:text-left">
-          <DialogTitle class="flex items-center gap-2">
-            <span class="text-2xl">✏️</span>
-            <span>Edit Resident</span>
-          </DialogTitle>
+        <div class="pr-10">
+          <DialogTitle>✏️ Edit Resident</DialogTitle>
         </div>
 
         <div class="space-y-4">
@@ -153,48 +147,72 @@
     </EmptyState>
 
     <div v-else>
-      <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div class="mb-6 space-y-3">
         <Input
           v-model="searchQuery"
           placeholder="Search residents, dream jobs, stores..."
           class="w-full sm:max-w-md"
         />
-        <div class="flex flex-wrap gap-2">
-          <Button
-            size="sm"
-            :variant="quickFilter === 'all' ? 'secondary' : 'outline'"
+        <div class="flex flex-wrap gap-1.5 rounded-lg bg-muted/50 p-1.5">
+          <button
+            :class="[
+              'rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+              quickFilter === 'all'
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground',
+            ]"
             @click="quickFilter = 'all'"
           >
-            All ({{ residentCounts.all }})
-          </Button>
-          <Button
-            size="sm"
-            :variant="quickFilter === 'attention' ? 'secondary' : 'outline'"
-            @click="quickFilter = 'attention'"
+            All <span class="ml-1 tabular-nums opacity-70">{{ residentCounts.all }}</span>
+          </button>
+          <button
+            :class="[
+              'rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+              quickFilter === 'ready'
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground',
+            ]"
+            @click="quickFilter = 'ready'"
           >
-            Needs Attention ({{ residentCounts.attention }})
-          </Button>
-          <Button
-            size="sm"
-            :variant="quickFilter === 'in-progress' ? 'secondary' : 'outline'"
-            @click="quickFilter = 'in-progress'"
+            Ready
+            <span class="ml-1 tabular-nums opacity-70">{{ residentCounts.readyToPlace }}</span>
+          </button>
+          <button
+            :class="[
+              'rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+              quickFilter === 'working'
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground',
+            ]"
+            @click="quickFilter = 'working'"
           >
-            In Progress ({{ residentCounts.inProgress }})
-          </Button>
-          <Button
-            size="sm"
-            :variant="quickFilter === 'settled' ? 'secondary' : 'outline'"
-            @click="quickFilter = 'settled'"
+            Employed
+            <span class="ml-1 tabular-nums opacity-70">{{ residentCounts.workingElsewhere }}</span>
+          </button>
+          <button
+            :class="[
+              'rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+              quickFilter === 'waiting'
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground',
+            ]"
+            @click="quickFilter = 'waiting'"
           >
-            All Set ({{ residentCounts.settled }})
-          </Button>
-          <Button
-            size="sm"
-            :variant="quickFilter === 'unassigned' ? 'secondary' : 'outline'"
-            @click="quickFilter = 'unassigned'"
+            Waiting
+            <span class="ml-1 tabular-nums opacity-70">{{ residentCounts.waitingForStore }}</span>
+          </button>
+          <button
+            :class="[
+              'rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+              quickFilter === 'dream-job'
+                ? 'bg-background text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground',
+            ]"
+            @click="quickFilter = 'dream-job'"
           >
-            Unassigned ({{ residentCounts.unassigned }})
-          </Button>
+            Dream Job
+            <span class="ml-1 tabular-nums opacity-70">{{ residentCounts.dreamJob }}</span>
+          </button>
         </div>
       </div>
 
@@ -205,12 +223,11 @@
         :hide-illustration="true"
       />
 
-      <div v-if="attentionResidents.length > 0" class="mb-6">
-        <div class="mb-3 flex items-center justify-between">
-          <h2 class="flex items-center gap-2 text-lg font-semibold">
-            <span>Needs Attention</span>
-          </h2>
-          <span class="text-sm text-muted-foreground">{{ attentionResidents.length }}</span>
+      <!-- Ready to Place - can move to dream job NOW -->
+      <div v-if="readyToPlaceResidents.length > 0" class="mb-8">
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Ready to Place</h2>
+          <span class="text-sm text-muted-foreground">{{ readyToPlaceResidents.length }}</span>
         </div>
         <TransitionGroup
           tag="div"
@@ -218,7 +235,7 @@
           class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
         >
           <ResidentCard
-            v-for="item in attentionResidents"
+            v-for="item in readyToPlaceResidents"
             :key="item.resident.id"
             :resident="item.resident"
             :stores="allStores ?? []"
@@ -233,12 +250,11 @@
         </TransitionGroup>
       </div>
 
-      <div v-if="inProgressResidents.length > 0" class="mb-6">
-        <div class="mb-3 flex items-center justify-between">
-          <h2 class="flex items-center gap-2 text-lg font-semibold">
-            <span>In Progress</span>
-          </h2>
-          <span class="text-sm text-muted-foreground">{{ inProgressResidents.length }}</span>
+      <!-- Working Elsewhere - has a job but not dream job -->
+      <div v-if="workingElsewhereResidents.length > 0" class="mb-8">
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Employed Elsewhere</h2>
+          <span class="text-sm text-muted-foreground">{{ workingElsewhereResidents.length }}</span>
         </div>
         <TransitionGroup
           tag="div"
@@ -246,7 +262,7 @@
           class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
         >
           <ResidentCard
-            v-for="item in inProgressResidents"
+            v-for="item in workingElsewhereResidents"
             :key="item.resident.id"
             :resident="item.resident"
             :stores="allStores ?? []"
@@ -261,12 +277,11 @@
         </TransitionGroup>
       </div>
 
-      <div v-if="settledResidents.length > 0">
-        <div class="mb-3 flex items-center justify-between">
-          <h2 class="flex items-center gap-2 text-lg font-semibold">
-            <span>All Set</span>
-          </h2>
-          <span class="text-sm text-muted-foreground">{{ settledResidents.length }}</span>
+      <!-- Waiting for Store - dream job store not built yet -->
+      <div v-if="waitingForStoreResidents.length > 0" class="mb-8">
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Waiting for Store</h2>
+          <span class="text-sm text-muted-foreground">{{ waitingForStoreResidents.length }}</span>
         </div>
         <TransitionGroup
           tag="div"
@@ -274,7 +289,34 @@
           class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
         >
           <ResidentCard
-            v-for="item in settledResidents"
+            v-for="item in waitingForStoreResidents"
+            :key="item.resident.id"
+            :resident="item.resident"
+            :stores="allStores ?? []"
+            :current-store="item.currentStore"
+            :dream-job-store-built="item.dreamJobStoreBuilt"
+            :dream-job-store-full="item.dreamJobStoreFull"
+            :dream-job-demand-count="dreamJobDemandCount.get(item.resident.dreamJob) ?? 0"
+            @remove-resident="handleRemoveResident(item.resident.id)"
+            @place-in-dream-job="handlePlaceInDreamJob(item.resident.id)"
+            @edit-resident="openEditResident(item.resident.id)"
+          />
+        </TransitionGroup>
+      </div>
+
+      <!-- Dream Job - living the dream! -->
+      <div v-if="dreamJobResidents.length > 0">
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Dream Job</h2>
+          <span class="text-sm text-muted-foreground">{{ dreamJobResidents.length }}</span>
+        </div>
+        <TransitionGroup
+          tag="div"
+          name="list"
+          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+        >
+          <ResidentCard
+            v-for="item in dreamJobResidents"
             :key="item.resident.id"
             :resident="item.resident"
             :stores="allStores ?? []"
@@ -340,7 +382,7 @@ const showImportDialog = ref(false)
 const showEditDialog = ref(false)
 
 const searchQuery = ref('')
-const quickFilter = ref<'all' | 'attention' | 'in-progress' | 'settled' | 'unassigned'>('all')
+const quickFilter = ref<'all' | 'ready' | 'working' | 'waiting' | 'dream-job'>('all')
 
 const editingResidentId = ref<string | null>(null)
 const editName = ref('')
@@ -409,28 +451,27 @@ const residentsWithState = computed(() => {
   return residents.map((resident: Resident) => {
     const currentStore = residentsStore.getCurrentStore(resident.id)
     const isSettled = !!currentStore && currentStore === resident.dreamJob
-    const needsPlacement = !currentStore || currentStore !== resident.dreamJob
     const dreamJobStoreBuilt = builtStoreIds.value.has(resident.dreamJob)
     const dreamJobStoreFull =
       (storeOccupancyCountById.value.get(resident.dreamJob) ?? 0) >=
       APP_CONSTANTS.MAX_STORE_CAPACITY
-    const demand = dreamJobDemandCount.value.get(resident.dreamJob) ?? 0
 
-    // "Needs Attention" should be actionable/meaningful:
-    // - Place in dream job now (built + has room)
-    // - Dream job store not built, but you have a full crew ready (3)
-    // - Dream job store is built but full (blocked)
-    const canPlaceInDreamJob = needsPlacement && dreamJobStoreBuilt && !dreamJobStoreFull
-    const shouldBuildDreamStore = needsPlacement && !dreamJobStoreBuilt && demand >= 3
-    const dreamStoreFull = needsPlacement && dreamJobStoreBuilt && dreamJobStoreFull
-    const needsAttention =
-      !isSettled && (canPlaceInDreamJob || shouldBuildDreamStore || dreamStoreFull)
+    // Clear, mutually exclusive categories:
+    // 1. Dream Job ✨ - Living the dream
+    // 2. Ready to Place ⭐ - Dream store built with room, can move now
+    // 3. Working Elsewhere 💼 - Has a job but not dream job
+    // 4. Waiting for Store 🏗️ - Dream store not built yet (unemployed)
+    const canPlaceInDreamJob = !isSettled && dreamJobStoreBuilt && !dreamJobStoreFull
+    const isWorkingElsewhere = !isSettled && !!currentStore && currentStore !== resident.dreamJob
+    const isWaitingForStore = !isSettled && !currentStore && !dreamJobStoreBuilt
 
     return {
       resident,
       currentStore,
       isSettled,
-      needsAttention,
+      canPlaceInDreamJob,
+      isWorkingElsewhere,
+      isWaitingForStore,
       dreamJobStoreBuilt,
       dreamJobStoreFull,
     }
@@ -439,25 +480,25 @@ const residentsWithState = computed(() => {
 
 const residentCounts = computed(() => {
   const all = residentsWithState.value.length
-  const settled = residentsWithState.value.filter(r => r.isSettled).length
-  const attention = residentsWithState.value.filter(r => r.needsAttention).length
-  const inProgress = residentsWithState.value.filter(r => !r.isSettled && !r.needsAttention).length
-  const unassigned = residentsWithState.value.filter(r => !r.currentStore).length
-  return { all, attention, inProgress, settled, unassigned }
+  const dreamJob = residentsWithState.value.filter(r => r.isSettled).length
+  const readyToPlace = residentsWithState.value.filter(r => r.canPlaceInDreamJob).length
+  const workingElsewhere = residentsWithState.value.filter(r => r.isWorkingElsewhere).length
+  const waitingForStore = residentsWithState.value.filter(r => r.isWaitingForStore).length
+  return { all, dreamJob, readyToPlace, workingElsewhere, waitingForStore }
 })
 
 const filteredResidentsWithState = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
   let list = residentsWithState.value
 
-  if (quickFilter.value === 'attention') {
-    list = list.filter(r => r.needsAttention)
-  } else if (quickFilter.value === 'in-progress') {
-    list = list.filter(r => !r.isSettled && !r.needsAttention)
-  } else if (quickFilter.value === 'settled') {
+  if (quickFilter.value === 'ready') {
+    list = list.filter(r => r.canPlaceInDreamJob)
+  } else if (quickFilter.value === 'working') {
+    list = list.filter(r => r.isWorkingElsewhere)
+  } else if (quickFilter.value === 'waiting') {
+    list = list.filter(r => r.isWaitingForStore)
+  } else if (quickFilter.value === 'dream-job') {
     list = list.filter(r => r.isSettled)
-  } else if (quickFilter.value === 'unassigned') {
-    list = list.filter(r => !r.currentStore)
   }
 
   if (!query) {
@@ -477,13 +518,16 @@ const filteredResidentsWithState = computed(() => {
   })
 })
 
-const attentionResidents = computed(() =>
-  filteredResidentsWithState.value.filter(r => r.needsAttention)
+const readyToPlaceResidents = computed(() =>
+  filteredResidentsWithState.value.filter(r => r.canPlaceInDreamJob)
 )
-const inProgressResidents = computed(() =>
-  filteredResidentsWithState.value.filter(r => !r.isSettled && !r.needsAttention)
+const workingElsewhereResidents = computed(() =>
+  filteredResidentsWithState.value.filter(r => r.isWorkingElsewhere)
 )
-const settledResidents = computed(() => filteredResidentsWithState.value.filter(r => r.isSettled))
+const waitingForStoreResidents = computed(() =>
+  filteredResidentsWithState.value.filter(r => r.isWaitingForStore)
+)
+const dreamJobResidents = computed(() => filteredResidentsWithState.value.filter(r => r.isSettled))
 
 function handleEditDialogOpenChange(isOpen: boolean) {
   showEditDialog.value = isOpen

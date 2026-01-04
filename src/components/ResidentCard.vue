@@ -40,41 +40,36 @@
       </div>
     </div>
     <div class="space-y-3 p-3 pt-0 md:p-4 md:pt-0">
-      <div class="grid grid-cols-2 gap-2 text-xs md:gap-3 md:text-sm">
-        <div class="rounded-md bg-muted/50 p-2">
-          <p class="mb-0.5 font-medium text-muted-foreground">Dream Job</p>
+      <div class="grid grid-cols-2 gap-3 text-xs md:text-sm">
+        <div>
+          <p class="mb-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+            Dream Job
+          </p>
           <p class="truncate font-semibold">{{ getDreamJobName() }}</p>
         </div>
-        <div class="rounded-md bg-muted/50 p-2">
-          <p class="mb-0.5 font-medium text-muted-foreground">Current</p>
-          <p class="truncate font-semibold">{{ currentStore ? getCurrentStoreName() : '—' }}</p>
+        <div>
+          <p class="mb-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+            Current
+          </p>
+          <p class="truncate font-semibold">
+            {{ currentStore ? getCurrentStoreName() : 'Unassigned' }}
+          </p>
         </div>
       </div>
 
-      <!-- Status alerts -->
-      <div
+      <!-- Status hints -->
+      <p
         v-if="needsPlacement && !dreamJobStoreBuilt && dreamJobDemandCount >= 3"
-        class="motion-safe:animate-slide-up flex items-center gap-2 rounded-lg bg-blue-50 p-2.5 dark:bg-blue-950/30"
+        class="text-xs text-muted-foreground"
       >
-        <span class="text-base">🏗️</span>
-        <p class="text-xs font-medium text-blue-800 dark:text-blue-200">
-          Build store! <span class="font-bold">{{ dreamJobDemandCount }}</span> want it
-        </p>
-      </div>
-      <div
-        v-else-if="needsPlacement && canPlaceInDreamJob"
-        class="motion-safe:animate-slide-up flex items-center gap-2 rounded-lg bg-yellow-50 p-2.5 dark:bg-yellow-900/30"
-      >
-        <span class="motion-safe:animate-heartbeat text-base">⭐</span>
-        <p class="text-xs font-medium text-yellow-800 dark:text-yellow-200">Ready for dream job!</p>
-      </div>
-      <div
+        {{ dreamJobDemandCount }} residents want this store
+      </p>
+      <p
         v-else-if="needsPlacement && dreamJobStoreBuilt && !canPlaceInDreamJob"
-        class="motion-safe:animate-slide-up flex items-center gap-2 rounded-lg bg-orange-50 p-2.5 dark:bg-orange-900/30"
+        class="text-xs text-muted-foreground"
       >
-        <span class="text-base">⚠️</span>
-        <p class="text-xs font-medium text-orange-800 dark:text-orange-200">Store is full (3/3)</p>
-      </div>
+        Store is full (3/3)
+      </p>
 
       <!-- Actions -->
       <div class="flex flex-col gap-2">
@@ -85,7 +80,6 @@
           class="w-full"
           @click="$emit('place-in-dream-job')"
         >
-          <span aria-hidden="true" class="motion-safe:animate-sparkle mr-1.5 inline-block">✨</span>
           Place in Dream Job
         </Button>
 

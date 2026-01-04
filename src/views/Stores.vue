@@ -129,11 +129,9 @@
     </div>
 
     <div v-if="userStoresWithData.length > 0">
-      <div v-if="activeStores.length > 0" class="mb-6">
-        <div class="mb-3 flex items-center justify-between">
-          <h2 class="flex items-center gap-2 text-lg font-semibold">
-            <span>Needs Attention</span>
-          </h2>
+      <div v-if="activeStores.length > 0" class="mb-8">
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="text-lg font-semibold">Needs Attention</h2>
           <span class="text-sm text-muted-foreground">{{ activeStores.length }}</span>
         </div>
         <TransitionGroup
@@ -164,10 +162,8 @@
       </div>
 
       <div v-if="completeStores.length > 0">
-        <div class="mb-3 flex items-center justify-between">
-          <h2 class="flex items-center gap-2 text-lg font-semibold">
-            <span>All Set</span>
-          </h2>
+        <div class="mb-4 flex items-center justify-between">
+          <h2 class="text-lg font-semibold">All Set</h2>
           <span class="text-sm text-muted-foreground">{{ completeStores.length }}</span>
         </div>
         <TransitionGroup
@@ -201,7 +197,7 @@
     <!-- Full Store List Dialog (only shown when clicking "View All") -->
     <Dialog :open="showAddDialog" @update:open="handleDialogOpenChange">
       <DialogContent>
-        <div class="flex flex-col space-y-1.5 text-center sm:text-left">
+        <div class="pr-10">
           <DialogTitle>All Available Stores ({{ filteredStores.length }})</DialogTitle>
         </div>
         <div class="space-y-3">
@@ -271,6 +267,41 @@
       @update:open="showConfirmDialog = $event"
       @confirm="confirmDialogData.onConfirm"
     />
+
+    <!-- Add Resident Dialog -->
+    <Dialog :open="showAddResidentDialog" @update:open="handleAddResidentDialogClose">
+      <DialogContent class="max-w-md">
+        <div class="pr-10">
+          <DialogTitle>👤 Assign Resident</DialogTitle>
+        </div>
+        <div v-if="addResidentTargetStore" class="space-y-4">
+          <p class="text-sm text-muted-foreground">
+            Choose a resident to work at <strong>{{ addResidentTargetStore.name }}</strong>
+          </p>
+          <div>
+            <Label class="mb-2 block text-sm font-medium">Resident</Label>
+            <SearchableSelect
+              v-model="selectedResidentToAdd"
+              :items="availableResidentItems"
+              placeholder="Choose a resident..."
+              search-placeholder="Search residents…"
+            />
+          </div>
+        </div>
+        <div class="mt-6 flex flex-col gap-2">
+          <Button
+            :disabled="!selectedResidentToAdd"
+            class="w-full"
+            @click="handleConfirmAddResident"
+          >
+            Assign Resident
+          </Button>
+          <Button variant="outline" class="w-full" @click="handleAddResidentDialogClose(false)">
+            Cancel
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
@@ -289,6 +320,8 @@ import DialogContent from '@/components/ui/DialogContent.vue'
 import DialogTitle from '@/components/ui/DialogTitle.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import Input from '@/components/ui/Input.vue'
+import Label from '@/components/ui/Label.vue'
+import SearchableSelect from '@/components/ui/SearchableSelect.vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { useDarkMode } from '@/composables/useDarkMode'
 import { useUserStoresWithData } from '@/queries'
@@ -374,6 +407,11 @@ const showAddDialog = ref(false)
 const searchQuery = ref('')
 const selectedCategory = ref<string | null>(null)
 
+// Add resident dialog state
+const showAddResidentDialog = ref(false)
+const addResidentTargetStoreId = ref<string | null>(null)
+const selectedResidentToAdd = ref<string | undefined>(undefined)
+
 const categoryColors = computed(
   () => (category: string) => getCategoryColors(category, isDark.value)
 )
@@ -430,6 +468,36 @@ const filteredStores = computed(() => {
   return stores
 })
 
+const addResidentTargetStore = computed(() => {
+  if (!addResidentTargetStoreId.value) return null
+  return storeById.value.get(addResidentTargetStoreId.value) ?? null
+})
+
+const availableResidentItems = computed(() => {
+  if (!addResidentTargetStoreId.value) return []
+  const storeId = addResidentTargetStoreId.value
+  const residentIdsInStore = residentIdsByStoreId.value.get(storeId) ?? new Set<string>()
+  
+  // Get available residents (not already in this store)
+  const available = residents.filter((r: Resident) => !residentIdsInStore.has(r.id))
+  
+  // Sort: dream job matches first, then alphabetically
+  const sorted = [...available].sort((a, b) => {
+    const aIsDream = a.dreamJob === storeId
+    const bIsDream = b.dreamJob === storeId
+    if (aIsDream && !bIsDream) return -1
+    if (!aIsDream && bIsDream) return 1
+    return a.name.localeCompare(b.name)
+  })
+  
+  return sorted.map(r => ({
+    value: r.id,
+    label: r.dreamJob === storeId 
+      ? `⭐ ${formatResidentName(r.name)} (dream job)`
+      : formatResidentName(r.name),
+  }))
+})
+
 function toggleCategory(category: string) {
   selectedCategory.value = selectedCategory.value === category ? null : category
 }
@@ -455,8 +523,6 @@ function handleAddStore(storeId: string) {
 }
 
 function handleAddResidentToStore(storeId: string) {
-  // Find available residents (not in this store, ideally with this as dream job)
-  const store = storeById.value.get(storeId)
   const residentIdsInStore = residentIdsByStoreId.value.get(storeId) ?? new Set<string>()
   const availableResidents = residents.filter((r: Resident) => !residentIdsInStore.has(r.id))
 
@@ -465,13 +531,32 @@ function handleAddResidentToStore(storeId: string) {
     return
   }
 
-  // Prefer residents with this as dream job
-  const dreamJobResidents = availableResidents.filter((r: Resident) => r.dreamJob === storeId)
-  const residentToAdd = dreamJobResidents.length > 0 ? dreamJobResidents[0] : availableResidents[0]
+  // Open dialog to let user choose
+  addResidentTargetStoreId.value = storeId
+  selectedResidentToAdd.value = undefined
+  showAddResidentDialog.value = true
+}
 
-  const result = storesStore.addResidentToStore(storeId, residentToAdd.id)
+function handleAddResidentDialogClose(isOpen: boolean) {
+  if (!isOpen) {
+    showAddResidentDialog.value = false
+    addResidentTargetStoreId.value = null
+    selectedResidentToAdd.value = undefined
+  }
+}
+
+function handleConfirmAddResident() {
+  if (!addResidentTargetStoreId.value || !selectedResidentToAdd.value) return
+  
+  const storeId = addResidentTargetStoreId.value
+  const residentId = selectedResidentToAdd.value
+  const store = storeById.value.get(storeId)
+  const resident = residentById.value.get(residentId)
+  
+  const result = storesStore.addResidentToStore(storeId, residentId)
   if (result.success) {
-    toast.success(`Added ${formatResidentName(residentToAdd.name)} to ${store?.name}`)
+    toast.success(`Added ${formatResidentName(resident?.name ?? '')} to ${store?.name}`)
+    handleAddResidentDialogClose(false)
   } else {
     toast.error(result.error ?? 'Failed to add resident')
   }

@@ -1,0 +1,563 @@
+{
+  "text": "*170\n398,688\nJOB\nDREAM JOBS: 77\nKENT LOWE\n39179\nFLORAL STUDIO FLORAL STUDIO\nAMANDA COOK\n27278\nSODA BREWERY SODA BREWERY\nCARLOS SILVA\nPHOTO STUDIO\nJ. ROBERTS\n15599\nCHOCOLATIER\n48559\nPOTTERY STUDIO OTTERY STUDIO\nJORDAN FLEMING\n53197\nGAME STUDIO\nSURF SHOP\nSHANNON BAILEY\n48829\nARCHITECT OFFICE CAKE STUDIO\nC. JENKINS\n62406\nGRAPHIC DESIGN COFFEE HOUSE\nMARGARET DAVIS\n41858\nGRAPHIC DESIGNRCHERY RANGE\nJULIO WILSON\n39179\nFASHION STUDIOFASHION STUDIO\nWESLEY HUNT\n36217\nTATTOO PARLOR\nCAKE STUDIO\nDEREK CHAVEZ\n74118\nTATTOO PARLORMATION STUDIO\nBERNARD PAYNE\n77339\nARCHITECT OFFICECHITECT OFFICE\nJIMMY HENRY\n77339\nFLORAL STUDIO\nCAKE STUDIO\nLUCILLE NGUYEN\n24245\nTATTOO PARLOR TATTOO PARLOR\nMILDRED NEAL\n24578\nTV STUDIO\nCOSTUME SHOP\nS. ROBERTSON\nWOOD SHOP\n03369\nGLASS STUDIO\n286\n[H\n[H\n93",
+  "lines": [
+    {
+      "text": "* 170",
+      "bbox": {
+        "x0": 93,
+        "y0": 63,
+        "x1": 218,
+        "y1": 96
+      }
+    },
+    {
+      "text": "398,688",
+      "bbox": {
+        "x0": 101,
+        "y0": 2643,
+        "x1": 288,
+        "y1": 2672
+      }
+    },
+    {
+      "text": "JOB",
+      "bbox": {
+        "x0": 321,
+        "y0": 270,
+        "x1": 402,
+        "y1": 299
+      }
+    },
+    {
+      "text": "DREAM JOBS : 77",
+      "bbox": {
+        "x0": 461,
+        "y0": 168,
+        "x1": 834,
+        "y1": 197
+      }
+    },
+    {
+      "text": "KENT LOWE",
+      "bbox": {
+        "x0": 284,
+        "y0": 370,
+        "x1": 526,
+        "y1": 398
+      }
+    },
+    {
+      "text": "39179",
+      "bbox": {
+        "x0": 826,
+        "y0": 370,
+        "x1": 997,
+        "y1": 400
+      }
+    },
+    {
+      "text": "FLORAL STUDIO FLORAL STUDIO",
+      "bbox": {
+        "x0": 284,
+        "y0": 411,
+        "x1": 1004,
+        "y1": 440
+      }
+    },
+    {
+      "text": "AMANDA COOK",
+      "bbox": {
+        "x0": 283,
+        "y0": 514,
+        "x1": 611,
+        "y1": 544
+      }
+    },
+    {
+      "text": "27278",
+      "bbox": {
+        "x0": 825,
+        "y0": 512,
+        "x1": 996,
+        "y1": 543
+      }
+    },
+    {
+      "text": "SODA BREWERY SODA BREWERY",
+      "bbox": {
+        "x0": 281,
+        "y0": 554,
+        "x1": 1002,
+        "y1": 586
+      }
+    },
+    {
+      "text": "CARLOS SILVA",
+      "bbox": {
+        "x0": 284,
+        "y0": 659,
+        "x1": 606,
+        "y1": 688
+      }
+    },
+    {
+      "text": "PHOTO STUDIO",
+      "bbox": {
+        "x0": 283,
+        "y0": 700,
+        "x1": 597,
+        "y1": 727
+      }
+    },
+    {
+      "text": "J. ROBERTS",
+      "bbox": {
+        "x0": 284,
+        "y0": 802,
+        "x1": 537,
+        "y1": 832
+      }
+    },
+    {
+      "text": "15599",
+      "bbox": {
+        "x0": 829,
+        "y0": 659,
+        "x1": 997,
+        "y1": 687
+      }
+    },
+    {
+      "text": "CHOCOLATIER",
+      "bbox": {
+        "x0": 716,
+        "y0": 698,
+        "x1": 1004,
+        "y1": 727
+      }
+    },
+    {
+      "text": "48559",
+      "bbox": {
+        "x0": 824,
+        "y0": 801,
+        "x1": 1000,
+        "y1": 833
+      }
+    },
+    {
+      "text": "POTTERY STUDIO OTTERY STUDIO",
+      "bbox": {
+        "x0": 283,
+        "y0": 844,
+        "x1": 1005,
+        "y1": 873
+      }
+    },
+    {
+      "text": "JORDAN FLEMING",
+      "bbox": {
+        "x0": 286,
+        "y0": 946,
+        "x1": 672,
+        "y1": 975
+      }
+    },
+    {
+      "text": "53197",
+      "bbox": {
+        "x0": 824,
+        "y0": 945,
+        "x1": 997,
+        "y1": 976
+      }
+    },
+    {
+      "text": "GAME STUDIO",
+      "bbox": {
+        "x0": 284,
+        "y0": 987,
+        "x1": 573,
+        "y1": 1015
+      }
+    },
+    {
+      "text": "SURF SHOP",
+      "bbox": {
+        "x0": 757,
+        "y0": 985,
+        "x1": 1005,
+        "y1": 1017
+      }
+    },
+    {
+      "text": "SHANNON BAILEY",
+      "bbox": {
+        "x0": 282,
+        "y0": 1090,
+        "x1": 682,
+        "y1": 1120
+      }
+    },
+    {
+      "text": "48829",
+      "bbox": {
+        "x0": 824,
+        "y0": 1088,
+        "x1": 995,
+        "y1": 1119
+      }
+    },
+    {
+      "text": "ARCHITECT OFFICE CAKE STUDIO",
+      "bbox": {
+        "x0": 284,
+        "y0": 1131,
+        "x1": 1006,
+        "y1": 1161
+      }
+    },
+    {
+      "text": "C. JENKINS",
+      "bbox": {
+        "x0": 283,
+        "y0": 1235,
+        "x1": 540,
+        "y1": 1264
+      }
+    },
+    {
+      "text": "62406",
+      "bbox": {
+        "x0": 827,
+        "y0": 1233,
+        "x1": 995,
+        "y1": 1264
+      }
+    },
+    {
+      "text": "GRAPHIC DESIGN COFFEE HOUSE",
+      "bbox": {
+        "x0": 285,
+        "y0": 1275,
+        "x1": 1006,
+        "y1": 1305
+      }
+    },
+    {
+      "text": "MARGARET DAVIS",
+      "bbox": {
+        "x0": 283,
+        "y0": 1377,
+        "x1": 670,
+        "y1": 1409
+      }
+    },
+    {
+      "text": "41858",
+      "bbox": {
+        "x0": 825,
+        "y0": 1379,
+        "x1": 997,
+        "y1": 1408
+      }
+    },
+    {
+      "text": "GRAPHIC DESIGNRCHERY RANGE",
+      "bbox": {
+        "x0": 284,
+        "y0": 1419,
+        "x1": 1008,
+        "y1": 1449
+      }
+    },
+    {
+      "text": "JULIO WILSON",
+      "bbox": {
+        "x0": 286,
+        "y0": 1520,
+        "x1": 589,
+        "y1": 1553
+      }
+    },
+    {
+      "text": "39179",
+      "bbox": {
+        "x0": 825,
+        "y0": 1521,
+        "x1": 995,
+        "y1": 1553
+      }
+    },
+    {
+      "text": "FASHION STUDIOFASHION STUDIO",
+      "bbox": {
+        "x0": 284,
+        "y0": 1562,
+        "x1": 1005,
+        "y1": 1594
+      }
+    },
+    {
+      "text": "WESLEY HUNT",
+      "bbox": {
+        "x0": 282,
+        "y0": 1665,
+        "x1": 595,
+        "y1": 1696
+      }
+    },
+    {
+      "text": "36217",
+      "bbox": {
+        "x0": 826,
+        "y0": 1666,
+        "x1": 995,
+        "y1": 1694
+      }
+    },
+    {
+      "text": "TATTOO PARLOR",
+      "bbox": {
+        "x0": 284,
+        "y0": 1708,
+        "x1": 633,
+        "y1": 1736
+      }
+    },
+    {
+      "text": "CAKE STUDIO",
+      "bbox": {
+        "x0": 721,
+        "y0": 1708,
+        "x1": 1004,
+        "y1": 1736
+      }
+    },
+    {
+      "text": "DEREK CHAVEZ",
+      "bbox": {
+        "x0": 284,
+        "y0": 1810,
+        "x1": 611,
+        "y1": 1840
+      }
+    },
+    {
+      "text": "74118",
+      "bbox": {
+        "x0": 826,
+        "y0": 1809,
+        "x1": 995,
+        "y1": 1840
+      }
+    },
+    {
+      "text": "TATTOO PARLORMATION STUDIO",
+      "bbox": {
+        "x0": 284,
+        "y0": 1851,
+        "x1": 1006,
+        "y1": 1881
+      }
+    },
+    {
+      "text": "BERNARD PAYNE",
+      "bbox": {
+        "x0": 284,
+        "y0": 1951,
+        "x1": 666,
+        "y1": 1985
+      }
+    },
+    {
+      "text": "77339",
+      "bbox": {
+        "x0": 824,
+        "y0": 1952,
+        "x1": 996,
+        "y1": 1984
+      }
+    },
+    {
+      "text": "ARCHITECT OFFICECHITECT OFFICE",
+      "bbox": {
+        "x0": 283,
+        "y0": 1994,
+        "x1": 1007,
+        "y1": 2026
+      }
+    },
+    {
+      "text": "JIMMY HENRY",
+      "bbox": {
+        "x0": 284,
+        "y0": 2098,
+        "x1": 605,
+        "y1": 2128
+      }
+    },
+    {
+      "text": "77339",
+      "bbox": {
+        "x0": 825,
+        "y0": 2097,
+        "x1": 999,
+        "y1": 2129
+      }
+    },
+    {
+      "text": "FLORAL STUDIO",
+      "bbox": {
+        "x0": 283,
+        "y0": 2140,
+        "x1": 618,
+        "y1": 2169
+      }
+    },
+    {
+      "text": "CAKE STUDIO",
+      "bbox": {
+        "x0": 721,
+        "y0": 2140,
+        "x1": 1007,
+        "y1": 2168
+      }
+    },
+    {
+      "text": "LUCILLE NGUYEN",
+      "bbox": {
+        "x0": 282,
+        "y0": 2241,
+        "x1": 657,
+        "y1": 2272
+      }
+    },
+    {
+      "text": "24245",
+      "bbox": {
+        "x0": 825,
+        "y0": 2243,
+        "x1": 996,
+        "y1": 2271
+      }
+    },
+    {
+      "text": "TATTOO PARLOR TATTOO PARLOR",
+      "bbox": {
+        "x0": 282,
+        "y0": 2282,
+        "x1": 1004,
+        "y1": 2313
+      }
+    },
+    {
+      "text": "MILDRED NEAL",
+      "bbox": {
+        "x0": 282,
+        "y0": 2384,
+        "x1": 600,
+        "y1": 2415
+      }
+    },
+    {
+      "text": "24578",
+      "bbox": {
+        "x0": 826,
+        "y0": 2387,
+        "x1": 998,
+        "y1": 2415
+      }
+    },
+    {
+      "text": "TV STUDIO",
+      "bbox": {
+        "x0": 283,
+        "y0": 2428,
+        "x1": 515,
+        "y1": 2457
+      }
+    },
+    {
+      "text": "COSTUME SHOP",
+      "bbox": {
+        "x0": 667,
+        "y0": 2425,
+        "x1": 1003,
+        "y1": 2458
+      }
+    },
+    {
+      "text": "S. ROBERTSON",
+      "bbox": {
+        "x0": 281,
+        "y0": 2530,
+        "x1": 603,
+        "y1": 2559
+      }
+    },
+    {
+      "text": "WOOD SHOP",
+      "bbox": {
+        "x0": 284,
+        "y0": 2570,
+        "x1": 543,
+        "y1": 2601
+      }
+    },
+    {
+      "text": "03369",
+      "bbox": {
+        "x0": 826,
+        "y0": 2530,
+        "x1": 996,
+        "y1": 2559
+      }
+    },
+    {
+      "text": "GLASS STUDIO",
+      "bbox": {
+        "x0": 692,
+        "y0": 2571,
+        "x1": 1006,
+        "y1": 2599
+      }
+    },
+    {
+      "text": "286",
+      "bbox": {
+        "x0": 545,
+        "y0": 2641,
+        "x1": 630,
+        "y1": 2670
+      }
+    },
+    {
+      "text": "[ H",
+      "bbox": {
+        "x0": 1054,
+        "y0": 2251,
+        "x1": 1088,
+        "y1": 2305
+      }
+    },
+    {
+      "text": "[ H",
+      "bbox": {
+        "x0": 1053,
+        "y0": 520,
+        "x1": 1088,
+        "y1": 577
+      }
+    },
+    {
+      "text": "93",
+      "bbox": {
+        "x0": 1114,
+        "y0": 65,
+        "x1": 1169,
+        "y1": 96
+      }
+    }
+  ]
+}

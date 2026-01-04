@@ -1,11 +1,8 @@
 <template>
   <Dialog :open="open" @update:open="handleOpenChange">
     <DialogContent class="max-w-2xl">
-      <div class="flex min-w-0 flex-col space-y-1.5 text-center sm:text-left">
-        <DialogTitle class="flex items-center gap-2">
-          <span class="text-2xl">📸</span>
-          <span>Import Residents from Screenshots</span>
-        </DialogTitle>
+      <div class="pr-10">
+        <DialogTitle>📸 Import Residents from Screenshots</DialogTitle>
       </div>
 
       <div class="min-w-0 space-y-4">

@@ -64,99 +64,91 @@
       </Card>
     </div>
 
-    <!-- Pending Missions Tabs -->
-    <Tabs v-model="activeTab" class="mb-6">
-      <TabsList>
-        <TabsTrigger value="pending"> Pending ({{ pendingMissions.length }}) </TabsTrigger>
-        <TabsTrigger value="completed"> Completed ({{ completedMissions.length }}) </TabsTrigger>
-        <TabsTrigger value="all"> Tracked ({{ userMissions.length }}) </TabsTrigger>
-      </TabsList>
-      <TabsContent value="pending">
-        <EmptyState
-          v-if="pendingMissions.length === 0"
-          title="No Pending Missions"
-          description="All your missions are completed! Scroll down to see available missions you can add."
-          :icon="MissionsEmptyIcon"
+    <!-- Your Missions Filter -->
+    <div v-if="userMissions.length > 0" class="mb-6">
+      <div class="flex flex-wrap gap-1.5 rounded-lg bg-muted/50 p-1.5">
+        <button
+          :class="[
+            'rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+            activeTab === 'pending'
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground',
+          ]"
+          @click="activeTab = 'pending'"
         >
-          <Button variant="outline" @click="activeTab = 'all'">View All Missions</Button>
-        </EmptyState>
-        <TransitionGroup
-          v-else
-          tag="div"
-          name="list"
-          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+          Pending
+          <span class="ml-1 tabular-nums opacity-70">{{ pendingMissions.length }}</span>
+        </button>
+        <button
+          :class="[
+            'rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+            activeTab === 'completed'
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground',
+          ]"
+          @click="activeTab = 'completed'"
         >
-          <MissionCard
-            v-for="userMission in pendingMissions"
-            :key="userMission.missionId"
-            :user-mission="userMission"
-            :is-completable="isMissionCompletable(userMission.missionId)"
-            @complete="handleCompleteMission(userMission.missionId)"
-            @reopen="handleReopenMission(userMission.missionId)"
-            @remove="handleRemoveMission(userMission.missionId)"
-          />
-        </TransitionGroup>
-      </TabsContent>
-      <TabsContent value="completed">
-        <EmptyState
-          v-if="completedMissions.length === 0"
-          title="No Completed Missions"
-          description="Complete missions to see them here. Keep building your tower!"
-          :icon="MissionsEmptyIcon"
+          Completed
+          <span class="ml-1 tabular-nums opacity-70">{{ completedMissions.length }}</span>
+        </button>
+        <button
+          :class="[
+            'rounded-md px-3 py-1.5 text-xs font-medium transition-colors',
+            activeTab === 'all'
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground',
+          ]"
+          @click="activeTab = 'all'"
+        >
+          All Tracked
+          <span class="ml-1 tabular-nums opacity-70">{{ userMissions.length }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filtered Missions Grid -->
+    <div v-if="userMissions.length > 0" class="mb-8">
+      <EmptyState
+        v-if="filteredMissions.length === 0"
+        :title="
+          activeTab === 'pending'
+            ? 'No Pending Missions'
+            : activeTab === 'completed'
+              ? 'No Completed Missions'
+              : 'No Missions Yet'
+        "
+        :description="
+          activeTab === 'pending'
+            ? 'All your missions are completed! Scroll down to see available missions you can add.'
+            : activeTab === 'completed'
+              ? 'Complete missions to see them here. Keep building your tower!'
+              : 'Start tracking your Tiny Tower missions!'
+        "
+        :icon="MissionsEmptyIcon"
+      />
+      <TransitionGroup
+        v-else
+        tag="div"
+        name="list"
+        class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+      >
+        <MissionCard
+          v-for="userMission in filteredMissions"
+          :key="userMission.missionId"
+          :user-mission="userMission"
+          :is-completable="isMissionCompletable(userMission.missionId)"
+          @complete="handleCompleteMission(userMission.missionId)"
+          @reopen="handleReopenMission(userMission.missionId)"
+          @remove="handleRemoveMission(userMission.missionId)"
         />
-        <TransitionGroup
-          v-else
-          tag="div"
-          name="list"
-          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-        >
-          <MissionCard
-            v-for="userMission in completedMissions"
-            :key="userMission.missionId"
-            :user-mission="userMission"
-            :is-completable="isMissionCompletable(userMission.missionId)"
-            @complete="handleCompleteMission(userMission.missionId)"
-            @reopen="handleReopenMission(userMission.missionId)"
-            @remove="handleRemoveMission(userMission.missionId)"
-          />
-        </TransitionGroup>
-      </TabsContent>
-      <TabsContent value="all">
-        <EmptyState
-          v-if="userMissions.length === 0"
-          title="No Missions Yet"
-          description="Start tracking your Tiny Tower missions! Click the available missions below to get started."
-          :icon="MissionsEmptyIcon"
-        />
-        <TransitionGroup
-          v-else
-          tag="div"
-          name="list"
-          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-        >
-          <MissionCard
-            v-for="userMission in userMissions"
-            :key="userMission.missionId"
-            :user-mission="userMission"
-            :is-completable="isMissionCompletable(userMission.missionId)"
-            @complete="handleCompleteMission(userMission.missionId)"
-            @reopen="handleReopenMission(userMission.missionId)"
-            @remove="handleRemoveMission(userMission.missionId)"
-          />
-        </TransitionGroup>
-      </TabsContent>
-    </Tabs>
+      </TransitionGroup>
+    </div>
 
     <!-- Available Missions Section -->
     <div v-if="sortedCompletableMissions.length > 0" class="mb-8">
-      <div class="mb-3 flex items-center justify-between">
-        <h2 class="flex items-center gap-2 text-lg font-semibold">
-          <span class="text-xl">🎯</span>
-          <span>Ready to Start</span>
-        </h2>
-        <Badge variant="default" class="bg-green-600 dark:bg-green-700">
-          {{ sortedCompletableMissions.length }}
-        </Badge>
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-lg font-semibold">Ready to Start</h2>
+        <span class="text-sm text-muted-foreground">{{ sortedCompletableMissions.length }}</span>
       </div>
       <TransitionGroup
         tag="div"
@@ -178,7 +170,7 @@
                 {{ mission.name }}
               </h3>
               <Badge variant="default" class="shrink-0 bg-green-600 text-xs dark:bg-green-700">
-                💰 {{ mission.reward }}
+                {{ mission.reward }} Bux
               </Badge>
             </div>
             <p class="line-clamp-1 text-xs text-muted-foreground md:line-clamp-2">
@@ -207,12 +199,9 @@
     </div>
 
     <div v-if="sortedNonCompletableMissions.length > 0" class="mb-8">
-      <div class="mb-3 flex items-center justify-between">
-        <h2 class="flex items-center gap-2 text-lg font-semibold text-muted-foreground">
-          <span class="text-xl">🔒</span>
-          <span>Need More Stores</span>
-        </h2>
-        <Badge variant="outline">{{ sortedNonCompletableMissions.length }}</Badge>
+      <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-muted-foreground">Need More Stores</h2>
+        <span class="text-sm text-muted-foreground">{{ sortedNonCompletableMissions.length }}</span>
       </div>
       <TransitionGroup
         tag="div"
@@ -231,7 +220,7 @@
                 {{ entry.mission.name }}
               </h3>
               <Badge variant="outline" class="shrink-0 text-xs"
-                >💰 {{ entry.mission.reward }}</Badge
+                >{{ entry.mission.reward }} Bux</Badge
               >
             </div>
             <p class="line-clamp-1 text-xs text-muted-foreground md:line-clamp-2">
@@ -293,14 +282,9 @@ import PageHeader from '@/components/PageHeader.vue'
 import TowerIllustration from '@/components/TowerIllustration.vue'
 import MissionsEmptyIcon from '@/components/illustrations/MissionsEmptyIcon.vue'
 import Badge from '@/components/ui/Badge.vue'
-import Button from '@/components/ui/Button.vue'
 import Card from '@/components/ui/Card.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
-import Tabs from '@/components/ui/Tabs.vue'
-import TabsContent from '@/components/ui/TabsContent.vue'
-import TabsList from '@/components/ui/TabsList.vue'
-import TabsTrigger from '@/components/ui/TabsTrigger.vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { useCompletableMissions, useUserMissionsWithData, useUserStoresWithData } from '@/queries'
 import { useMissionsStore } from '@/stores'
@@ -321,6 +305,12 @@ const toast = useToast()
 const { showConfirmDialog, confirmDialogData, confirm } = useConfirmDialog()
 
 const activeTab = ref<'pending' | 'completed' | 'all'>('pending')
+
+const filteredMissions = computed(() => {
+  if (activeTab.value === 'pending') return pendingMissions.value
+  if (activeTab.value === 'completed') return completedMissions.value
+  return userMissions.value
+})
 
 const availableMissions = computed(() => {
   const userMissionIds = new Set(

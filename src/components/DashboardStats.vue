@@ -1,7 +1,7 @@
 <template>
   <div v-if="hasAnyData" class="mb-6">
     <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
-      <Card class="stat-card card-game overflow-hidden">
+      <Card class="overflow-hidden">
         <div class="p-3 md:p-4">
           <div class="mb-2 flex items-center gap-2">
             <div
@@ -27,7 +27,7 @@
         </div>
       </Card>
 
-      <Card class="stat-card card-game overflow-hidden">
+      <Card class="overflow-hidden">
         <div class="p-3 md:p-4">
           <div class="mb-2 flex items-center gap-2">
             <div
@@ -53,7 +53,7 @@
         </div>
       </Card>
 
-      <Card class="stat-card card-game overflow-hidden">
+      <Card class="overflow-hidden">
         <div class="p-3 md:p-4">
           <div class="mb-2 flex items-center gap-2">
             <div
@@ -78,7 +78,7 @@
         </div>
       </Card>
 
-      <Card class="stat-card card-game overflow-hidden">
+      <Card class="overflow-hidden">
         <div class="p-3 md:p-4">
           <div class="mb-2 flex items-center gap-2">
             <div

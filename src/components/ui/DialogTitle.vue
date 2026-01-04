@@ -1,5 +1,5 @@
 <template>
-  <DialogTitle class="text-lg font-semibold leading-none tracking-tight">
+  <DialogTitle class="text-lg font-semibold">
     <slot />
   </DialogTitle>
 </template>

@@ -13,7 +13,9 @@ const defaultConfig: ConfirmDialogConfig = {
   message: '',
   variant: 'default',
   confirmText: 'Confirm',
-  onConfirm: () => {},
+  onConfirm: () => {
+    // Default no-op, overridden when confirm() is called
+  },
 }
 
 export function useConfirmDialog() {

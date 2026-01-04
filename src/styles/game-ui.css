@@ -241,16 +241,6 @@
 
   /* === Stat Card Game Styling === */
 
-  .stat-card {
-    @apply relative overflow-hidden;
-  }
-
-  .stat-card::before {
-    @apply pointer-events-none absolute -right-4 -top-4 h-16 w-16 rounded-full opacity-10;
-    content: '';
-    background: radial-gradient(circle, hsl(var(--primary)), transparent 70%);
-  }
-
   .stat-value {
     @apply text-2xl font-bold tabular-nums;
     text-shadow: 0 1px 2px rgb(0 0 0 / 0.05);

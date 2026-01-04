@@ -37,28 +37,31 @@
                       Menu
                     </Button>
                   </div>
-                  <div class="hidden items-center gap-2 md:flex">
+                  <div class="hidden items-center gap-3 md:flex">
                     <DarkModeToggle />
-                    <Button
-                      v-for="navRoute in routes"
-                      :key="navRoute.path"
-                      :variant="currentRoute === navRoute.path ? 'default' : 'ghost'"
-                      class="group relative"
-                      @click="$router.push(navRoute.path)"
-                    >
-                      <span
-                        aria-hidden="true"
-                        class="mr-1 inline-block motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:animate-jiggle motion-safe:group-active:scale-110"
+                    <div v-for="navRoute in routes" :key="navRoute.path" class="relative">
+                      <Button
+                        :variant="currentRoute === navRoute.path ? 'default' : 'ghost'"
+                        class="group"
+                        @click="$router.push(navRoute.path)"
                       >
-                        {{ navRoute.icon }}
-                      </span>
-                      {{ navRoute.name }}
-                      <CountBadge
+                        <span
+                          aria-hidden="true"
+                          class="mr-1 inline-block motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:animate-jiggle motion-safe:group-active:scale-110"
+                        >
+                          {{ navRoute.icon }}
+                        </span>
+                        {{ navRoute.name }}
+                      </Button>
+                      <span
                         v-if="getPendingCount(navRoute.path) > 0"
-                        :count="getPendingCount(navRoute.path)"
-                        class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground"
-                      />
-                    </Button>
+                        class="pointer-events-none absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold tabular-nums text-destructive-foreground shadow"
+                      >
+                        {{
+                          getPendingCount(navRoute.path) > 9 ? '9+' : getPendingCount(navRoute.path)
+                        }}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -70,7 +73,7 @@
                     v-for="menuRoute in routes"
                     :key="menuRoute.path"
                     variant="ghost"
-                    class="group relative w-full justify-start"
+                    class="group w-full justify-start"
                     @click="handleNavClick(menuRoute.path)"
                   >
                     <span
@@ -83,7 +86,7 @@
                     <CountBadge
                       v-if="getPendingCount(menuRoute.path) > 0"
                       :count="getPendingCount(menuRoute.path)"
-                      class="absolute right-2 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground"
+                      class="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold tabular-nums text-destructive-foreground"
                     />
                   </Button>
                 </div>
@@ -125,9 +128,11 @@
               </div>
             </div>
             <RouterView v-else v-slot="{ Component }">
-              <Transition :name="slideDirection" mode="out-in">
-                <component :is="Component" :key="route.fullPath" />
-              </Transition>
+              <div class="overflow-x-clip">
+                <Transition :name="slideDirection" mode="out-in">
+                  <component :is="Component" :key="route.fullPath" />
+                </Transition>
+              </div>
             </RouterView>
           </main>
 
@@ -135,47 +140,44 @@
           <div
             class="fixed bottom-0 left-0 right-0 z-40 border-t bg-background/95 backdrop-blur-sm md:hidden"
           >
-            <div class="grid grid-cols-4 gap-1.5 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-              <button
-                v-for="mobileRoute in routes"
-                :key="mobileRoute.path"
-                :data-active="currentRoute === mobileRoute.path"
-                :class="[
-                  'nav-item-game pressable-strong group relative flex min-h-[56px] flex-col items-center justify-center gap-0.5 rounded-xl p-2 text-[11px] font-semibold ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  currentRoute === mobileRoute.path
-                    ? 'bg-primary text-primary-foreground shadow-lg'
-                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground active:bg-accent/80',
-                ]"
-                :aria-label="`Navigate to ${mobileRoute.name}`"
-                :aria-current="currentRoute === mobileRoute.path ? 'page' : undefined"
-                @click="$router.push(mobileRoute.path)"
-              >
-                <span
-                  aria-hidden="true"
+            <div
+              class="grid grid-cols-4 gap-1 p-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))]"
+            >
+              <div v-for="mobileRoute in routes" :key="mobileRoute.path" class="relative">
+                <button
+                  :data-active="currentRoute === mobileRoute.path"
                   :class="[
-                    'inline-block text-xl leading-none',
+                    'nav-item-game pressable-strong group flex h-full min-h-[52px] w-full flex-col items-center justify-center gap-0.5 rounded-xl p-1.5 text-[11px] font-semibold ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                     currentRoute === mobileRoute.path
-                      ? 'motion-safe:animate-bounce-in'
-                      : 'motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-active:scale-110',
+                      ? 'bg-primary text-primary-foreground shadow-lg'
+                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground active:bg-accent/80',
                   ]"
+                  :aria-label="`Navigate to ${mobileRoute.name}`"
+                  :aria-current="currentRoute === mobileRoute.path ? 'page' : undefined"
+                  @click="$router.push(mobileRoute.path)"
                 >
-                  {{ mobileRoute.icon }}
-                </span>
-                <span class="truncate">{{ mobileRoute.name }}</span>
+                  <span
+                    aria-hidden="true"
+                    :class="[
+                      'inline-block text-xl leading-none',
+                      currentRoute === mobileRoute.path
+                        ? 'motion-safe:animate-bounce-in'
+                        : 'motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-active:scale-110',
+                    ]"
+                  >
+                    {{ mobileRoute.icon }}
+                  </span>
+                  <span class="truncate">{{ mobileRoute.name }}</span>
+                </button>
                 <span
                   v-if="getPendingCount(mobileRoute.path) > 0"
-                  :class="[
-                    'count-badge-game absolute right-1.5 top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold tabular-nums text-destructive-foreground',
-                    getPendingCount(mobileRoute.path) > 0 ? 'badge-urgent' : '',
-                  ]"
+                  class="pointer-events-none absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold tabular-nums text-destructive-foreground shadow"
                 >
                   {{
-                    getPendingCount(mobileRoute.path) > 99
-                      ? '99+'
-                      : getPendingCount(mobileRoute.path)
+                    getPendingCount(mobileRoute.path) > 9 ? '9+' : getPendingCount(mobileRoute.path)
                   }}
                 </span>
-              </button>
+              </div>
             </div>
           </div>
           <div class="h-[76px] md:hidden" />

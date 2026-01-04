@@ -98,7 +98,7 @@
             <RouterView v-else v-slot="{ Component }">
               <div class="overflow-x-clip">
                 <Transition :name="slideDirection" mode="out-in">
-                  <component :is="Component" :key="route.fullPath" />
+                  <component :is="Component" :key="route.path" />
                 </Transition>
               </div>
             </RouterView>

@@ -89,13 +89,29 @@
       </div>
 
       <!-- Complete state -->
-      <div v-if="isComplete" class="mt-auto">
+      <div v-if="isComplete" class="mt-auto" :class="showViewButton ? 'space-y-2' : ''">
         <div
           class="flex items-center justify-center gap-1.5 rounded-lg bg-green-500/10 py-2 text-center"
         >
           <span class="text-sm">🎉</span>
           <p class="text-xs font-bold text-green-600 dark:text-green-400">Fully staffed!</p>
         </div>
+        <Button
+          v-if="showViewButton"
+          variant="outline"
+          size="sm"
+          class="w-full"
+          @click="$emit('view-store')"
+        >
+          View
+        </Button>
+      </div>
+
+      <!-- Actions for incomplete stores -->
+      <div v-else-if="!isComplete && capacity > 0 && showViewButton" class="mt-auto">
+        <Button variant="outline" size="sm" class="w-full" @click="$emit('view-store')">
+          View
+        </Button>
       </div>
     </div>
   </Card>
@@ -117,15 +133,18 @@ const {
   userStore,
   residents: allResidents,
   isComplete = false,
+  showViewButton = false,
 } = defineProps<{
   userStore: UserStore & { store: Store }
   residents: Resident[]
   isComplete?: boolean
+  showViewButton?: boolean
 }>()
 
 defineEmits<{
   'remove-resident': [residentId: string]
   'add-resident': []
+  'view-store': []
 }>()
 
 const { isDark } = useDarkMode()

@@ -141,6 +141,34 @@
     </EmptyState>
 
     <div v-else>
+      <!-- Overdemand warning -->
+      <div
+        v-if="overdemandedStores.length > 0"
+        class="mb-4 space-y-2 rounded-lg border border-amber-500/50 bg-amber-500/10 p-4"
+      >
+        <div class="flex items-start gap-2">
+          <span class="text-lg">⚠️</span>
+          <div class="flex-1">
+            <h3 class="font-semibold text-amber-900 dark:text-amber-100">
+              Store Capacity Issues
+            </h3>
+            <p class="mt-1 text-sm text-amber-800 dark:text-amber-200">
+              These stores have more residents than they can hold (max 3 per store):
+            </p>
+            <ul class="mt-2 space-y-1 text-sm text-amber-800 dark:text-amber-200">
+              <li v-for="store in overdemandedStores" :key="store.storeId" class="flex items-center gap-2">
+                <span class="font-semibold">{{ store.storeName }}</span>
+                <span class="text-xs opacity-75">{{ store.count }} residents</span>
+                <span v-if="!store.isBuilt" class="text-xs opacity-75">(unbuilt)</span>
+              </li>
+            </ul>
+            <p class="mt-2 text-xs text-amber-700 dark:text-amber-300">
+              💡 Remove extra residents before building, or you'll need to manage who gets placed
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div class="mb-6 space-y-3">
         <Input
           v-model="searchQuery"
@@ -405,6 +433,22 @@ const dreamJobDemandCount = computed(() => {
     map.set(resident.dreamJob, (map.get(resident.dreamJob) ?? 0) + 1)
   }
   return map
+})
+
+const overdemandedStores = computed(() => {
+  const result: Array<{ storeId: string; storeName: string; count: number; isBuilt: boolean }> = []
+
+  for (const [storeId, count] of dreamJobDemandCount.value.entries()) {
+    // Warn if more than 3 residents want this store (regardless of built status)
+    if (count > APP_CONSTANTS.MAX_STORE_CAPACITY) {
+      const storeName = storeNameById.value.get(storeId) ?? storeId
+      const isBuilt = builtStoreIds.value.has(storeId)
+      result.push({ storeId, storeName, count, isBuilt })
+    }
+  }
+
+  // Sort by count descending (most overdemanded first)
+  return result.sort((a, b) => b.count - a.count)
 })
 
 const builtStoreItems = computed(() => {

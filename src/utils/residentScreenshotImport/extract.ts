@@ -48,6 +48,15 @@ function isValidName(text: string): boolean {
   if (isUnemployed(cleaned)) return false
   if (/\d/.test(cleaned)) return false
   if (!cleaned.includes(' ') && cleaned.length < 6) return false
+
+  // Reject names with single-letter last names (likely OCR corruption)
+  // e.g., "C Nguy N" or "John D"
+  const parts = cleaned.split(/\s+/)
+  if (parts.length >= 2) {
+    const lastPart = parts[parts.length - 1]
+    if (lastPart.length === 1) return false
+  }
+
   return true
 }
 

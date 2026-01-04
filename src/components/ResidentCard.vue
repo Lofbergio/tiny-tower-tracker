@@ -33,7 +33,7 @@
               variant="success"
               class="badge-pop shrink-0 text-[10px] md:text-xs"
             >
-              <span class="star-filled mr-0.5 inline-block text-[8px]">★</span>
+              <span class="mr-0.5 inline-block text-xs font-bold">★</span>
               Dream Job
             </Badge>
           </div>
@@ -58,27 +58,14 @@
         </div>
       </div>
 
-      <!-- Status hints -->
-      <p
-        v-if="needsPlacement && !dreamJobStoreBuilt && dreamJobDemandCount >= 3"
-        class="text-xs text-muted-foreground"
-      >
-        {{ dreamJobDemandCount }} residents want this store
-      </p>
-      <p
-        v-else-if="needsPlacement && dreamJobStoreBuilt && !canPlaceInDreamJob"
-        class="text-xs text-muted-foreground"
-      >
-        Store is full (3/3)
-      </p>
-
       <!-- Actions -->
       <div class="flex flex-col gap-2">
         <Button
-          v-if="!isSettled && needsPlacement && canPlaceInDreamJob"
           variant="success"
           size="sm"
           class="w-full"
+          :class="{ 'invisible': isSettled || !needsPlacement || !canPlaceInDreamJob }"
+          :disabled="isSettled || !needsPlacement || !canPlaceInDreamJob"
           @click="$emit('place-in-dream-job')"
         >
           Place in Dream Job
@@ -118,14 +105,12 @@ const {
   currentStore,
   dreamJobStoreBuilt = true,
   dreamJobStoreFull = false,
-  dreamJobDemandCount = 0,
 } = defineProps<{
   resident: Resident
   stores: Store[]
   currentStore?: string
   dreamJobStoreBuilt?: boolean
   dreamJobStoreFull?: boolean
-  dreamJobDemandCount?: number
 }>()
 
 defineEmits<{

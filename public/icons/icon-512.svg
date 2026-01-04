@@ -1,0 +1,30 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#0f172a" rx="64"/>
+  
+  <!-- Tower body -->
+  <rect x="128" y="64" width="256" height="384" fill="#4ECDC4" rx="16"/>
+  
+  <!-- Windows Row 1 -->
+  <rect x="160" y="96" width="48" height="48" fill="#45B7AF" rx="4"/>
+  <rect x="232" y="96" width="48" height="48" fill="#45B7AF" rx="4"/>
+  <rect x="304" y="96" width="48" height="48" fill="#45B7AF" rx="4"/>
+  
+  <!-- Windows Row 2 -->
+  <rect x="160" y="176" width="48" height="48" fill="#45B7AF" rx="4"/>
+  <rect x="232" y="176" width="48" height="48" fill="#45B7AF" rx="4"/>
+  <rect x="304" y="176" width="48" height="48" fill="#45B7AF" rx="4"/>
+  
+  <!-- Windows Row 3 -->
+  <rect x="160" y="256" width="48" height="48" fill="#45B7AF" rx="4"/>
+  <rect x="232" y="256" width="48" height="48" fill="#45B7AF" rx="4"/>
+  <rect x="304" y="256" width="48" height="48" fill="#45B7AF" rx="4"/>
+  
+  <!-- Windows Row 4 -->
+  <rect x="160" y="336" width="48" height="48" fill="#45B7AF" rx="4"/>
+  <rect x="232" y="336" width="48" height="48" fill="#45B7AF" rx="4"/>
+  <rect x="304" y="336" width="48" height="48" fill="#45B7AF" rx="4"/>
+  
+  <!-- Roof -->
+  <polygon points="64,64 256,0 448,64" fill="#654321"/>
+</svg>

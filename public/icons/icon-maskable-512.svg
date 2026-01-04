@@ -1,0 +1,30 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background - full bleed for maskable icon safe zone -->
+  <rect width="512" height="512" fill="#0f172a"/>
+  
+  <!-- Tower body - centered in safe zone (inner 80% = ~410x410 centered) -->
+  <rect x="154" y="102" width="204" height="308" fill="#4ECDC4" rx="12"/>
+  
+  <!-- Windows Row 1 -->
+  <rect x="176" y="128" width="38" height="38" fill="#45B7AF" rx="4"/>
+  <rect x="237" y="128" width="38" height="38" fill="#45B7AF" rx="4"/>
+  <rect x="298" y="128" width="38" height="38" fill="#45B7AF" rx="4"/>
+  
+  <!-- Windows Row 2 -->
+  <rect x="176" y="192" width="38" height="38" fill="#45B7AF" rx="4"/>
+  <rect x="237" y="192" width="38" height="38" fill="#45B7AF" rx="4"/>
+  <rect x="298" y="192" width="38" height="38" fill="#45B7AF" rx="4"/>
+  
+  <!-- Windows Row 3 -->
+  <rect x="176" y="256" width="38" height="38" fill="#45B7AF" rx="4"/>
+  <rect x="237" y="256" width="38" height="38" fill="#45B7AF" rx="4"/>
+  <rect x="298" y="256" width="38" height="38" fill="#45B7AF" rx="4"/>
+  
+  <!-- Windows Row 4 -->
+  <rect x="176" y="320" width="38" height="38" fill="#45B7AF" rx="4"/>
+  <rect x="237" y="320" width="38" height="38" fill="#45B7AF" rx="4"/>
+  <rect x="298" y="320" width="38" height="38" fill="#45B7AF" rx="4"/>
+  
+  <!-- Roof -->
+  <polygon points="102,102 256,51 410,102" fill="#654321"/>
+</svg>

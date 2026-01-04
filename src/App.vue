@@ -230,6 +230,8 @@ const topNavClass = computed(() => [
 const mainStyle = computed(() => {
   return {
     paddingTop: `${TOP_NAV_HEIGHT_PX}px`,
+    // PWA safe area for home indicator on notched devices
+    paddingBottom: 'env(safe-area-inset-bottom, 0px)',
   }
 })
 

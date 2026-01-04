@@ -576,25 +576,6 @@ function handleConfirmAddResident() {
   }
 }
 
-function goToStore(storeId: string) {
-  // If already on stores page, just update query
-  if (route.path === '/stores') {
-    router.replace({
-      query: {
-        ...route.query,
-        focusStoreId: storeId,
-      },
-    })
-  } else {
-    router.push({
-      path: '/stores',
-      query: {
-        focusStoreId: storeId,
-      },
-    })
-  }
-}
-
 function handleRemoveResident(storeId: string, residentId: string) {
   const resident = residentById.value.get(residentId)
   if (!resident) {

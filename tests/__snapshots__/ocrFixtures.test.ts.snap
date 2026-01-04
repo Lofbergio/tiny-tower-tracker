@@ -602,13 +602,6 @@ exports[`OCR fixtures (golden) > keeps parsing stable for all saved fixtures 1`]
         "selected": true,
       },
       {
-        "currentJobStoreId": null,
-        "dreamJobStoreId": "aquarium",
-        "issues": [],
-        "name": "C NGUY N",
-        "selected": true,
-      },
-      {
         "currentJobStoreId": "rock-climbing",
         "dreamJobStoreId": "rock-climbing",
         "issues": [],

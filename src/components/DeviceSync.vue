@@ -245,9 +245,15 @@ async function generateQR() {
 
     // QR codes have size limits - check if data fits
     // Version 40 QR code can hold ~4,296 alphanumeric chars in L error correction
-    if (encoded.length > 4000) {
-      qrError.value =
-        'Your data is too large for a QR code. Please use the copy/paste option instead.'
+    const QR_LIMIT = 4000
+    if (encoded.length > QR_LIMIT) {
+      const storeCount = appStore.data.stores.length
+      const residentCount = appStore.data.residents.length
+      qrError.value = `Your tower is too large for a QR code (${encoded.length.toLocaleString()}/${QR_LIMIT.toLocaleString()} chars).
+
+QR codes work best for small-medium towers (<20 stores, <60 residents). You have ${storeCount} stores and ${residentCount} residents.
+
+Please use the copy/paste option instead - it works for any size tower.`
       return
     }
 

@@ -64,6 +64,43 @@
 - Use Tailwind utilities over custom CSS
 - Follow mobile-first responsive design
 
+## Code Architecture (IMPORTANT - Avoid Bloat)
+
+**Prefer consolidated, readable code over deeply fragmented helper structures.**
+
+### ❌ DON'T: Over-engineer with excessive files/helpers
+
+- Don't create a folder with 10+ tiny helper files for a single feature
+- Don't split logic across multiple "extractors", "matchers", "utils", "helpers" when one file would suffice
+- Don't create abstractions "just in case" - YAGNI (You Aren't Gonna Need It)
+- Don't make the reader jump between 5+ files to understand a single operation
+
+### ✅ DO: Keep it simple and consolidated
+
+- **One feature = one primary file** where possible (aim for <500 lines)
+- Inline small helper functions in the same file rather than importing from separate modules
+- Only extract to separate files when: (a) genuinely reused elsewhere, OR (b) file exceeds ~500 lines
+- Use clear section comments (`// === Section Name ===`) to organize a larger file
+- Prioritize readability: someone should understand the flow by reading ONE file top-to-bottom
+
+### Example: OCR Import Simplification
+
+**Before (sprawling):** 12 files, ~1,264 lines
+
+```
+extractors/threeColumn.ts, verticalPair.ts, plainText.ts
+dedupe.ts, storeMatching.ts, textUtils.ts, namePicking.ts, layout.ts...
+```
+
+**After (consolidated):** 1 primary file, ~425 lines
+
+```
+extract.ts  (all extraction logic, store matching, deduplication)
+index.ts    (thin entry point)
+```
+
+**Why this matters:** The consolidated version is easier to debug, understand, and modify. When fixing a bug, you don't need to trace through 6 files to find where the issue is.
+
 ## Vue-Specific Patterns (CRITICAL - READ THIS)
 
 **This is a Vue 3 project. DO NOT use React patterns, conventions, or utilities.**

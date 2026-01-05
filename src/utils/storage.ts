@@ -60,18 +60,18 @@ function minifyUserData(data: UserData): unknown {
     bt: baseTime, // Base timestamp for delta encoding
     // Stores: [storeIndex, [residentNumericIds]]
     s: data.stores.map(store => [
-      storeIdToIndex.get(store.storeId)!,
+      storeIdToIndex.get(store.storeId) ?? 0,
       store.residents.map(residentIdToNumber),
     ]),
     // Residents: [numericId, dreamJobIndex]
     // Names omitted for QR code size - regenerated as "Resident N" on import
     r: data.residents.map(resident => [
       residentIdToNumber(resident.id),
-      storeIdToIndex.get(resident.dreamJob)!,
+      storeIdToIndex.get(resident.dreamJob) ?? 0,
     ]),
     // Missions: [missionIndex, status, timeDelta]
     m: data.missions.map(mission => [
-      missionIdToIndex.get(mission.missionId)!,
+      missionIdToIndex.get(mission.missionId) ?? 0,
       mission.status === 'completed' ? 1 : 0,
       mission.addedAt - baseTime,
     ]),
@@ -104,7 +104,7 @@ function expandUserData(
         s: Array<{ i: string; r: string[] }>
         r: Array<{ i: string; n: string; d: string }>
         m: Array<{ i: string; s: number; a: number }>
-      },
+      }
 ): UserData {
   // Check if it's the new array format or legacy object format
   if ('si' in minified) {

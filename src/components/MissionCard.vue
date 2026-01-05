@@ -64,7 +64,7 @@
         v-if="isCompletable && userMission.status === 'pending'"
         class="motion-safe:animate-slide-up flex items-center gap-2 rounded-lg bg-green-50 p-2 dark:bg-green-900/30"
       >
-        <span class="motion-safe:animate-bounce-in text-sm">✨</span>
+        <span class="text-sm motion-safe:animate-bounce-in">✨</span>
         <p class="text-xs font-semibold text-green-700 dark:text-green-300">Ready to complete!</p>
       </div>
 

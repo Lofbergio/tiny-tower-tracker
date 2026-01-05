@@ -55,17 +55,20 @@
 }
 
 /* Page (route) slide transitions - outside @layer for higher specificity */
+
+/* Base transition timing for all screen sizes */
 .slide-left-enter-active,
 .slide-left-leave-active,
 .slide-right-enter-active,
 .slide-right-leave-active {
   transition:
-    opacity 120ms ease,
-    transform 120ms ease-out;
+    opacity 150ms ease,
+    transform 150ms ease-out;
 }
 
+/* Slide transitions for all screen sizes */
 .slide-left-enter-from {
-  @apply translate-x-10 opacity-0;
+  @apply translate-x-6 opacity-0;
 }
 
 .slide-left-enter-to,
@@ -76,13 +79,13 @@
 }
 
 .slide-left-leave-to {
-  @apply -translate-x-10 opacity-0;
+  @apply -translate-x-6 opacity-0;
 }
 
 .slide-right-enter-from {
-  @apply -translate-x-10 opacity-0;
+  @apply -translate-x-6 opacity-0;
 }
 
 .slide-right-leave-to {
-  @apply translate-x-10 opacity-0;
+  @apply translate-x-6 opacity-0;
 }

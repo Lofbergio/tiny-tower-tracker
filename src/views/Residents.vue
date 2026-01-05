@@ -149,14 +149,16 @@
         <div class="flex items-start gap-2">
           <span class="text-lg">⚠️</span>
           <div class="flex-1">
-            <h3 class="font-semibold text-amber-900 dark:text-amber-100">
-              Store Capacity Issues
-            </h3>
+            <h3 class="font-semibold text-amber-900 dark:text-amber-100">Store Capacity Issues</h3>
             <p class="mt-1 text-sm text-amber-800 dark:text-amber-200">
               These stores have more residents than they can hold (max 3 per store):
             </p>
             <ul class="mt-2 space-y-1 text-sm text-amber-800 dark:text-amber-200">
-              <li v-for="store in overdemandedStores" :key="store.storeId" class="flex items-center gap-2">
+              <li
+                v-for="store in overdemandedStores"
+                :key="store.storeId"
+                class="flex items-center gap-2"
+              >
                 <span class="font-semibold">{{ store.storeName }}</span>
                 <span class="text-xs opacity-75">{{ store.count }} residents</span>
                 <span v-if="!store.isBuilt" class="text-xs opacity-75">(unbuilt)</span>

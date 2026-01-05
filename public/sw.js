@@ -1,7 +1,8 @@
+/* global clients */
 // Minimal service worker for PWA installability
 // Not focused on offline functionality - just enables "Add to Home Screen"
 
-self.addEventListener('install', event => {
+self.addEventListener('install', () => {
   self.skipWaiting()
 })
 

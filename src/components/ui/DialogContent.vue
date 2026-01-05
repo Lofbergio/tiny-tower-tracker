@@ -8,7 +8,7 @@
         :disable-outside-pointer-events="false"
         :aria-describedby="undefined"
         :class="[
-          'dialog-game fixed left-[50%] top-[50%] z-50 flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg translate-x-[-50%] translate-y-[-50%] flex-col touch-pan-y gap-4 overflow-y-auto overscroll-contain rounded-lg border bg-background p-4 shadow-lg sm:w-full sm:p-6',
+          'dialog-game fixed inset-0 z-50 m-auto flex h-fit max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg touch-pan-y flex-col gap-4 overflow-y-auto overscroll-contain rounded-lg border bg-background p-4 shadow-lg sm:w-full sm:p-6',
           $attrs.class,
         ]"
       >

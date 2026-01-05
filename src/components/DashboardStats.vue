@@ -47,7 +47,7 @@
           </div>
           <div v-if="readyMissionsCount > 0" class="flex items-center">
             <span
-              class="motion-safe:animate-pulse-soft inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-green-500 px-1.5 text-[10px] font-bold text-white"
+              class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-green-500 px-1.5 text-[10px] font-bold text-white motion-safe:animate-pulse-soft"
             >
               {{ readyMissionsCount }}
             </span>

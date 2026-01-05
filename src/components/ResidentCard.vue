@@ -64,7 +64,7 @@
           variant="success"
           size="sm"
           class="w-full"
-          :class="{ 'invisible': isSettled || !needsPlacement || !canPlaceInDreamJob }"
+          :class="{ invisible: isSettled || !needsPlacement || !canPlaceInDreamJob }"
           :disabled="isSettled || !needsPlacement || !canPlaceInDreamJob"
           @click="$emit('place-in-dream-job')"
         >

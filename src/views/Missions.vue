@@ -263,7 +263,12 @@
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
         </svg>
       </button>
       <TransitionGroup
@@ -348,8 +353,8 @@ import PageHeader from '@/components/PageHeader.vue'
 import TowerIllustration from '@/components/TowerIllustration.vue'
 import MissionsEmptyIcon from '@/components/illustrations/MissionsEmptyIcon.vue'
 import Badge from '@/components/ui/Badge.vue'
-import Card from '@/components/ui/Card.vue'
 import Button from '@/components/ui/Button.vue'
+import Card from '@/components/ui/Card.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import Select from '@/components/ui/Select.vue'
@@ -451,7 +456,10 @@ const sortedCompletableMissions = computed(() => {
 })
 
 const displayedCompletableMissions = computed(() => {
-  if (showAllReadyMissions.value || sortedCompletableMissions.value.length <= READY_MISSIONS_LIMIT) {
+  if (
+    showAllReadyMissions.value ||
+    sortedCompletableMissions.value.length <= READY_MISSIONS_LIMIT
+  ) {
     return sortedCompletableMissions.value
   }
   return sortedCompletableMissions.value.slice(0, READY_MISSIONS_LIMIT)

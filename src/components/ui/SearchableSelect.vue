@@ -24,7 +24,7 @@
         :side-offset="6"
         update-position-strategy="optimized"
         :avoid-collisions="false"
-        class="relative w-[var(--radix-select-trigger-width)] min-w-[12rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md"
+        class="z-50 w-[var(--radix-select-trigger-width)] min-w-[12rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-lg"
       >
         <div class="border-b p-2">
           <Input

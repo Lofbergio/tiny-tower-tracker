@@ -14,7 +14,7 @@ const props = defineProps<{
 }>()
 
 const baseClasses =
-  'overflow-hidden rounded-xl border bg-gradient-to-br from-card to-card/95 text-card-foreground shadow-sm dark:shadow-md transition-[box-shadow,border-color,background-color,transform] duration-200 ease-out'
+  'overflow-hidden rounded-xl border bg-card text-card-foreground shadow-[0_1px_3px_0_rgb(0_0_0/0.06),0_2px_8px_-2px_rgb(0_0_0/0.06)] dark:bg-gradient-to-br dark:from-card dark:to-card/95 dark:shadow-md transition-[box-shadow,border-color,background-color,transform] duration-200 ease-out'
 
 const cardClass = computed(() => {
   const classes = [baseClasses]
@@ -26,7 +26,9 @@ const cardClass = computed(() => {
     )
   } else if (props.hoverable) {
     // Card with buttons inside - subtle glow effect, border highlight
-    classes.push('hover:border-primary/30 hover:shadow-md hover:shadow-primary/5 dark:hover:shadow-primary/10')
+    classes.push(
+      'hover:border-primary/30 hover:shadow-md hover:shadow-primary/5 dark:hover:shadow-primary/10'
+    )
   } else {
     // Static card
     classes.push('')

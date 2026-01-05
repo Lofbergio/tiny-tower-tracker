@@ -10,7 +10,7 @@
           >
             Skip to content
           </a>
-          <nav :class="topNavClass" class="bg-background/95 backdrop-blur-md border-b shadow-sm">
+          <nav :class="topNavClass" class="border-b bg-background/95 shadow-sm backdrop-blur-md">
             <div class="container mx-auto px-4">
               <div class="flex h-16 items-center justify-between">
                 <div class="group flex select-none items-center gap-2">
@@ -20,7 +20,7 @@
                     </div>
                     <!-- Tiny glow behind icon -->
                     <div
-                      class="animate-pulse-soft pointer-events-none absolute inset-0 -z-10 rounded-full bg-primary/20 blur-lg"
+                      class="pointer-events-none absolute inset-0 -z-10 animate-pulse-soft rounded-full bg-primary/20 blur-lg"
                     />
                   </div>
                   <h1
@@ -39,12 +39,12 @@
                         class="group"
                         @click="$router.push(navRoute.path)"
                       >
-                        <span
+                        <component
+                          :is="navRoute.icon"
+                          :size="18"
                           aria-hidden="true"
-                          class="mr-1 inline-block motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:animate-jiggle motion-safe:group-active:scale-110"
-                        >
-                          {{ navRoute.icon }}
-                        </span>
+                          class="mr-1.5 inline-block motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover:animate-jiggle motion-safe:group-active:scale-110"
+                        />
                         {{ navRoute.name }}
                       </Button>
                       <span
@@ -62,7 +62,7 @@
             </div>
           </nav>
 
-          <main id="main-content" tabindex="-1" class="min-h-[calc(100vh-4rem)]" :style="mainStyle">
+          <main id="main-content" tabindex="-1" class="min-h-[calc(100vh-4rem)] overflow-x-clip" :style="mainStyle">
             <div
               v-if="hasLoadError"
               class="container mx-auto flex min-h-[calc(100vh-4rem)] items-center justify-center px-4"
@@ -96,11 +96,9 @@
               </div>
             </div>
             <RouterView v-else v-slot="{ Component }">
-              <div class="overflow-x-clip">
-                <Transition :name="slideDirection" mode="out-in">
-                  <component :is="Component" :key="route.path" />
-                </Transition>
-              </div>
+              <Transition :name="slideDirection" mode="out-in">
+                <component :is="Component" :key="route.path" />
+              </Transition>
             </RouterView>
           </main>
 
@@ -131,9 +129,9 @@
                   <span
                     aria-hidden="true"
                     :class="[
-                      'inline-block text-xl leading-none',
+                      'inline-block',
                       currentRoute === mobileRoute.path
-                        ? 'motion-safe:animate-bounce-in drop-shadow-sm'
+                        ? 'drop-shadow-sm motion-safe:animate-bounce-in'
                         : 'motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-active:scale-110',
                     ]"
                   >
@@ -143,7 +141,7 @@
                 </button>
                 <span
                   v-if="getPendingCount(mobileRoute.path) > 0"
-                  class="motion-safe:animate-pulse-soft pointer-events-none absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-rose-600 px-1 text-[10px] font-bold tabular-nums text-white shadow-lg shadow-red-500/30"
+                  class="pointer-events-none absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-rose-600 px-1 text-[10px] font-bold tabular-nums text-white shadow-lg shadow-red-500/30 motion-safe:animate-pulse-soft"
                 >
                   {{
                     getPendingCount(mobileRoute.path) > 9 ? '9+' : getPendingCount(mobileRoute.path)
@@ -170,12 +168,7 @@ import DarkModeToggle from './components/ui/DarkModeToggle.vue'
 import EmptyState from './components/ui/EmptyState.vue'
 import Toast from './components/ui/Toast.vue'
 import TooltipProvider from './components/ui/TooltipProvider.vue'
-import {
-  useCompletableMissions,
-  useMissionsQuery,
-  useStoresQuery,
-  useUserMissionsWithData,
-} from './queries'
+import { useCompletableMissions, useMissionsQuery, useStoresQuery } from './queries'
 import { useResidentsStore } from './stores'
 
 const router = useRouter()
@@ -297,7 +290,7 @@ const removeBeforeEach = router.beforeEach((to, from) => {
 })
 
 // Get pending counts for navigation badges
-const { pendingMissions } = useUserMissionsWithData()
+// Badges indicate "actions you can take" on each page
 const { completableMissions } = useCompletableMissions()
 const residentsStore = useResidentsStore()
 
@@ -314,15 +307,18 @@ onUnmounted(() => {
   removeBeforeEach()
 })
 
+// Residents not currently working in their dream job store
 const residentsNeedingPlacementCount = computed(
   () => residentsStore.getResidentsNotInDreamJob().length
 )
 
 const pendingCountByPath = computed<Record<string, number>>(() => {
   return {
-    '/missions': pendingMissions.value.length,
+    // Missions: completable missions (ones you can act on now)
+    '/missions': completableMissions.value.length,
+    // Residents: those not in their dream job
     '/residents': residentsNeedingPlacementCount.value,
-    '/': completableMissions.value.length + residentsNeedingPlacementCount.value,
+    // Dashboard: no badge (it's a summary page)
   }
 })
 

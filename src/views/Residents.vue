@@ -254,25 +254,21 @@
           <h2 class="text-lg font-semibold">Ready</h2>
           <span class="text-sm text-muted-foreground">{{ readyToPlaceResidents.length }}</span>
         </div>
-        <TransitionGroup
-          tag="div"
-          name="list"
-          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-        >
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <ResidentCard
             v-for="item in readyToPlaceResidents"
             :key="item.resident.id"
             :resident="item.resident"
-            :stores="allStores ?? []"
             :current-store="item.currentStore"
+            :dream-job-name="item.dreamJobName"
+            :current-store-name="item.currentStoreName"
             :dream-job-store-built="item.dreamJobStoreBuilt"
             :dream-job-store-full="item.dreamJobStoreFull"
-            :dream-job-demand-count="dreamJobDemandCount.get(item.resident.dreamJob) ?? 0"
             @remove-resident="handleRemoveResident(item.resident.id)"
             @place-in-dream-job="handlePlaceInDreamJob(item.resident.id)"
             @edit-resident="openEditResident(item.resident.id)"
           />
-        </TransitionGroup>
+        </div>
       </div>
 
       <!-- In Progress - has a job but not dream job -->
@@ -281,25 +277,21 @@
           <h2 class="text-lg font-semibold">In Progress</h2>
           <span class="text-sm text-muted-foreground">{{ workingElsewhereResidents.length }}</span>
         </div>
-        <TransitionGroup
-          tag="div"
-          name="list"
-          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-        >
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <ResidentCard
             v-for="item in workingElsewhereResidents"
             :key="item.resident.id"
             :resident="item.resident"
-            :stores="allStores ?? []"
             :current-store="item.currentStore"
+            :dream-job-name="item.dreamJobName"
+            :current-store-name="item.currentStoreName"
             :dream-job-store-built="item.dreamJobStoreBuilt"
             :dream-job-store-full="item.dreamJobStoreFull"
-            :dream-job-demand-count="dreamJobDemandCount.get(item.resident.dreamJob) ?? 0"
             @remove-resident="handleRemoveResident(item.resident.id)"
             @place-in-dream-job="handlePlaceInDreamJob(item.resident.id)"
             @edit-resident="openEditResident(item.resident.id)"
           />
-        </TransitionGroup>
+        </div>
       </div>
 
       <!-- Waiting - dream job store not built yet -->
@@ -308,25 +300,21 @@
           <h2 class="text-lg font-semibold">Waiting</h2>
           <span class="text-sm text-muted-foreground">{{ waitingForStoreResidents.length }}</span>
         </div>
-        <TransitionGroup
-          tag="div"
-          name="list"
-          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-        >
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <ResidentCard
             v-for="item in waitingForStoreResidents"
             :key="item.resident.id"
             :resident="item.resident"
-            :stores="allStores ?? []"
             :current-store="item.currentStore"
+            :dream-job-name="item.dreamJobName"
+            :current-store-name="item.currentStoreName"
             :dream-job-store-built="item.dreamJobStoreBuilt"
             :dream-job-store-full="item.dreamJobStoreFull"
-            :dream-job-demand-count="dreamJobDemandCount.get(item.resident.dreamJob) ?? 0"
             @remove-resident="handleRemoveResident(item.resident.id)"
             @place-in-dream-job="handlePlaceInDreamJob(item.resident.id)"
             @edit-resident="openEditResident(item.resident.id)"
           />
-        </TransitionGroup>
+        </div>
       </div>
 
       <!-- Dream Job - living the dream! -->
@@ -335,25 +323,21 @@
           <h2 class="text-lg font-semibold">Dream Job</h2>
           <span class="text-sm text-muted-foreground">{{ dreamJobResidents.length }}</span>
         </div>
-        <TransitionGroup
-          tag="div"
-          name="list"
-          class="relative grid gap-4 md:grid-cols-2 lg:grid-cols-3"
-        >
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <ResidentCard
             v-for="item in dreamJobResidents"
             :key="item.resident.id"
             :resident="item.resident"
-            :stores="allStores ?? []"
             :current-store="item.currentStore"
+            :dream-job-name="item.dreamJobName"
+            :current-store-name="item.currentStoreName"
             :dream-job-store-built="item.dreamJobStoreBuilt"
             :dream-job-store-full="item.dreamJobStoreFull"
-            :dream-job-demand-count="dreamJobDemandCount.get(item.resident.dreamJob) ?? 0"
             @remove-resident="handleRemoveResident(item.resident.id)"
             @place-in-dream-job="handlePlaceInDreamJob(item.resident.id)"
             @edit-resident="openEditResident(item.resident.id)"
           />
-        </TransitionGroup>
+        </div>
       </div>
     </div>
 
@@ -407,7 +391,7 @@ const showImportDialog = ref(false)
 const showEditDialog = ref(false)
 
 const searchQuery = ref('')
-const quickFilter = ref<'all' | 'ready' | 'working' | 'waiting' | 'dream-job'>('all')
+const quickFilter = ref<'all' | 'ready' | 'working' | 'waiting' | 'dream-job'>('ready')
 
 const editingResidentId = ref<string | null>(null)
 const editName = ref('')
@@ -489,6 +473,7 @@ const storeOccupancyCountById = computed(() => {
 })
 
 const residentsWithState = computed(() => {
+  const storeNames = storeNameById.value
   return residents.map((resident: Resident) => {
     const currentStore = residentsStore.getCurrentStore(resident.id)
     const isSettled = !!currentStore && currentStore === resident.dreamJob
@@ -496,6 +481,10 @@ const residentsWithState = computed(() => {
     const dreamJobStoreFull =
       (storeOccupancyCountById.value.get(resident.dreamJob) ?? 0) >=
       APP_CONSTANTS.MAX_STORE_CAPACITY
+
+    // Pre-resolve store names once (not per-card)
+    const dreamJobName = storeNames.get(resident.dreamJob) ?? resident.dreamJob
+    const currentStoreName = currentStore ? storeNames.get(currentStore) ?? currentStore : undefined
 
     // Clear, mutually exclusive categories:
     // 1. Dream Job ✨ - Living the dream
@@ -509,6 +498,8 @@ const residentsWithState = computed(() => {
     return {
       resident,
       currentStore,
+      dreamJobName,
+      currentStoreName,
       isSettled,
       canPlaceInDreamJob,
       isWorkingElsewhere,

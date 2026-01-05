@@ -46,14 +46,14 @@
           <p class="mb-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
             Dream Job
           </p>
-          <p class="truncate font-semibold">{{ getDreamJobName() }}</p>
+          <p class="truncate font-semibold">{{ dreamJobName }}</p>
         </div>
         <div>
           <p class="mb-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
             Current
           </p>
           <p class="truncate font-semibold">
-            {{ currentStore ? getCurrentStoreName() : 'Unassigned' }}
+            {{ currentStoreName ?? 'Unassigned' }}
           </p>
         </div>
       </div>
@@ -90,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Resident, Store } from '@/types'
+import type { Resident } from '@/types'
 import { getResidentAvatarUrl } from '@/utils/avatar'
 import { formatResidentName } from '@/utils/residentName'
 import { computed } from 'vue'
@@ -101,14 +101,16 @@ import Card from './ui/Card.vue'
 
 const {
   resident,
-  stores,
   currentStore,
+  dreamJobName,
+  currentStoreName,
   dreamJobStoreBuilt = true,
   dreamJobStoreFull = false,
 } = defineProps<{
   resident: Resident
-  stores: Store[]
   currentStore?: string
+  dreamJobName: string
+  currentStoreName?: string
   dreamJobStoreBuilt?: boolean
   dreamJobStoreFull?: boolean
 }>()
@@ -151,26 +153,7 @@ const avatarClass = computed(() => {
 
 const displayName = computed(() => formatResidentName(resident.name))
 
-const storeById = computed(() => {
-  const map = new Map<string, Store>()
-  for (const store of stores) {
-    map.set(store.id, store)
-  }
-  return map
-})
-
-// Generate avatar using DiceBear API
 const avatarUrl = computed(() => {
   return getResidentAvatarUrl(displayName.value)
 })
-
-function getDreamJobName() {
-  const store = storeById.value.get(resident.dreamJob)
-  return store?.name || resident.dreamJob
-}
-
-function getCurrentStoreName() {
-  const store = currentStore ? storeById.value.get(currentStore) : undefined
-  return store?.name || currentStore
-}
 </script>
